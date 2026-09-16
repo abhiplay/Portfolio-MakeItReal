@@ -124,6 +124,35 @@ const DEFAULT_NAV: HeroNavItem[] = [
   { label: "Contact", href: "mailto:hello@abhinesh.design" },
 ];
 
+/* Ease-in cubic: slow start, accelerating into the target. */
+const easeInCubic = (t: number) => t * t * t;
+
+/* Smooth-scrolls to an in-page anchor with ease-in. Returns false for
+   external links (mailto etc.) or missing targets so default behavior applies. */
+function smoothScrollToHref(href: string): boolean {
+  if (!href.startsWith("#") || href.length < 2) return false;
+  if (typeof window === "undefined" || typeof document === "undefined") return false;
+  const el = document.querySelector(href);
+  if (!el) return false;
+  const targetY = el.getBoundingClientRect().top + window.scrollY;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    window.scrollTo(0, targetY);
+    return true;
+  }
+  const startY = window.scrollY;
+  const dist = targetY - startY;
+  const duration = 900;
+  let start: number | null = null;
+  const step = (now: number) => {
+    if (start === null) start = now;
+    const t = Math.min((now - start) / duration, 1);
+    window.scrollTo(0, startY + dist * easeInCubic(t));
+    if (t < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+  return true;
+}
+
 const DEFAULT_DESCRIPTION =
   "Forward-deployed product designer turning ambiguity into something real — product thinking, UX, AI and code, from first question to shipped outcome.";
 
@@ -175,6 +204,9 @@ const PrismaHero = ({
               <a
                 key={item.label}
                 href={item.href}
+                onClick={(e) => {
+                  if (smoothScrollToHref(item.href)) e.preventDefault();
+                }}
                 className="text-[10px] transition-colors sm:text-xs md:text-sm"
                 style={{ color: "rgba(225, 224, 204, 0.8)" }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = "#E1E0CC")}
@@ -225,6 +257,9 @@ const PrismaHero = ({
               >
                 <a
                   href={primaryCta.href}
+                  onClick={(e) => {
+                    if (smoothScrollToHref(primaryCta.href)) e.preventDefault();
+                  }}
                   className="group inline-flex items-center gap-2 self-start rounded-full bg-primary py-1 pl-5 pr-1 text-sm font-medium text-black transition-all hover:gap-3 sm:text-base"
                 >
                   {primaryCta.label}
