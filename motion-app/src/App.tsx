@@ -1,6 +1,9 @@
 import { useMemo } from "react";
 import { CinematicFooter } from "@/components/ui/motion-footer";
 import { PrismaHero } from "@/components/ui/prisma-hero";
+import { Mindset } from "@/components/ui/mindset";
+import { HowIBuild } from "@/components/ui/how-i-build";
+import { Lab } from "@/components/ui/lab";
 import CarouselStacked, { type Slide } from "@/components/ui/carousel-07";
 import {
   HoverLink,
@@ -104,6 +107,8 @@ export default function Portfolio() {
 
         {/* HERO — Prisma media hero as background, portfolio copy on top */}
         <PrismaHero
+          primaryCta={{ label: "SEE MY WORK ↗", href: "#work" }}
+          secondaryCta={{ label: "SCROLL TO MOVE FORWARD", href: "#mindset" }}
           description={
             <>
               Forward-deployed product designer turning ambiguity into something real —{" "}
@@ -155,9 +160,23 @@ export default function Portfolio() {
           }
         />
 
+        {/* CHAPTER 02 — HOW I THINK */}
+        <Mindset />
+
         {/* WORK — stacked drag carousel */}
         <section id="work" className="px-6 md:px-10 py-16 md:py-24 max-w-6xl mx-auto">
-          <div className="flex items-end justify-between mb-2">
+          <p className="text-[11px] uppercase tracking-[0.3em] text-neutral-400">
+            Selected work
+          </p>
+          <h2 className="mt-4 max-w-4xl text-4xl font-black leading-[0.95] tracking-tighter text-white sm:text-5xl lg:text-6xl">
+            Real problems.
+            <br />
+            Real products.
+          </h2>
+          <p className="mt-6 max-w-xl text-base leading-relaxed text-neutral-400 md:text-lg">
+            A few problems I&apos;ve had the chance to get my hands dirty with.
+          </p>
+          <div className="flex items-end justify-between mt-12 mb-2">
             <h2 className="text-[11px] tracking-[0.3em] uppercase text-neutral-400">Selected work — 06</h2>
             <span className="text-[11px] tracking-[0.3em] uppercase text-neutral-600">2022 → 2026</span>
           </div>
@@ -189,19 +208,31 @@ export default function Portfolio() {
           />
         </section>
 
-        {/* CONTACT CTA */}
-        <section className="px-6 md:px-10 py-16 md:py-24 max-w-6xl mx-auto">
+        {/* CHAPTER 04 — HOW I BUILD */}
+        <HowIBuild />
+
+        {/* CHAPTER 05 — THE LAB */}
+        <Lab />
+
+        {/* CHAPTER 06 — WHAT'S NEXT */}
+        <section id="contact" className="px-6 md:px-10 py-16 md:py-24 max-w-6xl mx-auto">
           <div className="rounded-3xl border border-white/10 bg-white/[0.02] p-8 md:p-14 text-center">
-            <p className="text-[11px] tracking-[0.3em] uppercase text-neutral-400">What are we building next?</p>
+            <p className="text-[11px] tracking-[0.3em] uppercase text-neutral-400">What&apos;s next</p>
             <h2 className="mt-4 text-4xl md:text-6xl font-black tracking-tighter text-white">
-              Give me a difficult problem.
+              What should
+              <br />
+              we build next?
             </h2>
             <p className="mt-4 text-neutral-400 max-w-lg mx-auto">
-              Ambitious, messy, unfinished — that&apos;s where I do best.
+              I&apos;m looking for difficult problems, ambitious teams and
+              opportunities to turn ideas into something real.
             </p>
             <a href="mailto:hello@abhinesh.design" className="inline-block mt-8 px-10 py-5 rounded-full bg-white text-black font-bold text-sm hover:bg-neutral-200 transition-colors">
-              hello@abhinesh.design →
+              LET&apos;S TALK ↗
             </a>
+            <p className="mt-6 text-[11px] tracking-[0.3em] uppercase text-[#FF4B16]">
+              Better ideas ahead.
+            </p>
           </div>
         </section>
       </main>
@@ -222,11 +253,13 @@ export default function Portfolio() {
           { label: "View résumé", href: "#" },
         ]}
         secondaryPills={[
+          { label: "Designer", href: "#mindset" },
+          { label: "Thinker", href: "#build" },
+          { label: "Builder", href: "#lab" },
           { label: "Email", href: "mailto:hello@abhinesh.design" },
           { label: "LinkedIn", href: "#" },
-          { label: "GitHub", href: "#" },
         ]}
-        brandName="Abhinesh"
+        brandName="ABHI"
         copyright="© 2026 Abhinesh. All rights reserved."
       />
 
