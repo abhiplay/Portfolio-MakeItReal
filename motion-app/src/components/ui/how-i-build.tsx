@@ -23,7 +23,7 @@ const TOOLKIT = [
 
 export function HowIBuild() {
   return (
-    <section id="build" className="mx-auto max-w-6xl px-6 py-20 md:px-10 md:py-28">
+    <section id="build" className="mx-auto max-w-6xl py-20 md:py-28">
       <p className="text-[11px] uppercase tracking-[0.3em] text-neutral-400">
         How I build
       </p>

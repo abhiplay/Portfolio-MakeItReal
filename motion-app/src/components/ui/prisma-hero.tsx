@@ -1,9 +1,10 @@
 "use client";
 
 import type * as React from "react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "motion/react";
-import { ArrowRight } from "lucide-react";
+import { ArrowDown, ArrowRight } from "lucide-react";
+import { LoopVideo } from "@/components/ui/loop-video";
 import { cn } from "@/lib/utils";
 
 /* ---------------- WordsPullUp ---------------- */
@@ -12,9 +13,151 @@ interface WordsPullUpProps {
   className?: string;
   showAsterisk?: boolean;
   style?: React.CSSProperties;
+  /** Words rendered with `accentClassName` (exact match, e.g. ["problem"]). */
+  accentWords?: string[];
+  accentClassName?: string;
+  /** Words that decode from a mask (case-insensitive, e.g. ["problem"]). */
+  scrambleWords?: string[];
+  maskChar?: string;
 }
 
-export const WordsPullUp = ({ text, className = "", showAsterisk = false, style }: WordsPullUpProps) => {
+const SCRAMBLE_GLYPHS = ["#", "*", "/", "%"];
+
+interface ScrambleWordProps {
+  word: string;
+  /** Begins the sequence (wired to the parent pull-up landing). */
+  start: boolean;
+  startDelay?: number;
+  letterMs?: number;
+  holdMs?: number;
+  maskChar?: string;
+  loop?: boolean;
+  restMs?: number;
+}
+
+/* Decodes `word` from a mask, holds it, then encodes back right-to-left —
+   ping-pong. Hidden slots shimmer throughout. Reduced-motion renders
+   the final word. */
+const ScrambleWord = ({
+  word,
+  start,
+  startDelay = 900,
+  letterMs = 210,
+  holdMs = 500,
+  maskChar = "#",
+  loop = true,
+  restMs = 2000,
+}: ScrambleWordProps) => {
+  const [frame, setFrame] = useState({ revealed: 0, seed: 0, live: false });
+
+  useEffect(() => {
+    if (!start) return;
+    if (
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
+      setFrame({ revealed: word.length, seed: 0, live: true });
+      return;
+    }
+    const STEP = 50;
+    let interval = 0;
+    let timeout = 0;
+    let cancelled = false;
+
+    type Phase = "hold" | "decode" | "rest" | "encode";
+
+    const playCycle = (initialDelay: number) => {
+      timeout = window.setTimeout(() => {
+        if (cancelled) return;
+        let phase: Phase = "hold";
+        let elapsed = 0;
+        interval = window.setInterval(() => {
+          elapsed += STEP;
+          if (phase === "hold") {
+            if (elapsed <= holdMs) return;
+            phase = "decode";
+            elapsed = 0;
+            return;
+          }
+          if (phase === "decode") {
+            const next = Math.min(
+              word.length,
+              Math.floor(elapsed / letterMs),
+            );
+            setFrame((f) => ({
+              revealed: Math.max(f.revealed, next),
+              seed: f.seed + 1,
+              live: true,
+            }));
+            if (next >= word.length) {
+              if (!loop) {
+                window.clearInterval(interval);
+                return;
+              }
+              phase = "rest";
+              elapsed = 0;
+            }
+            return;
+          }
+          if (phase === "rest") {
+            if (elapsed >= restMs) {
+              phase = "encode";
+              elapsed = 0;
+            }
+            return;
+          }
+          const remaining = Math.max(
+            0,
+            word.length - Math.floor(elapsed / letterMs),
+          );
+          setFrame((f) => ({
+            revealed: Math.min(f.revealed, remaining),
+            seed: f.seed + 1,
+            live: true,
+          }));
+          if (remaining <= 0) {
+            phase = "hold";
+            elapsed = 0;
+          }
+        }, STEP);
+      }, initialDelay);
+    };
+
+    setFrame({ revealed: 0, seed: 0, live: false });
+    playCycle(startDelay);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+      if (interval) window.clearInterval(interval);
+    };
+  }, [start, startDelay, letterMs, holdMs, word, loop, restMs]);
+
+  const mask = maskChar ?? SCRAMBLE_GLYPHS[0];
+
+  return (
+    <span aria-label={word}>
+      {word.split("").map((ch, i) => {
+        if (i < frame.revealed) return <span key={i}>{ch}</span>;
+        if (!frame.live) {
+          return (
+            <span key={i} aria-hidden>
+              {mask}
+            </span>
+          );
+        }
+        const glyph =
+          SCRAMBLE_GLYPHS[(frame.seed + i * (i === frame.revealed ? 2 : 1)) % SCRAMBLE_GLYPHS.length];
+        return (
+          <span key={i} aria-hidden>
+            {glyph}
+          </span>
+        );
+      })}
+    </span>
+  );
+};
+
+export const WordsPullUp = ({ text, className = "", showAsterisk = false, style, accentWords = [], accentClassName = "", scrambleWords = [], maskChar = "#" }: WordsPullUpProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true });
   // "\n" forces a line break, so titles like "I go where the\nproblem is."
@@ -32,16 +175,29 @@ export const WordsPullUp = ({ text, className = "", showAsterisk = false, style 
             .map((word, i, words) => {
               const isLast = li === lines.length - 1 && i === words.length - 1;
               const delay = wordIndex++ * 0.08;
+              const accented = accentWords.includes(word);
+              const scrambled = scrambleWords
+                .map((s) => s.toLowerCase())
+                .includes(word.toLowerCase());
               return (
                 <motion.span
                   key={i}
                   initial={{ y: 20, opacity: 0 }}
                   animate={isInView ? { y: 0, opacity: 1 } : {}}
                   transition={{ duration: 0.6, delay, ease: [0.16, 1, 0.3, 1] }}
-                  className="inline-block relative"
+                  className={`inline-block relative ${accented ? accentClassName : ""}`}
                   style={{ marginRight: isLast ? 0 : "0.25em" }}
                 >
-                  {word}
+                  {scrambled ? (
+                    <ScrambleWord
+                      word={word}
+                      start={isInView}
+                      startDelay={delay * 1000 + 600}
+                      maskChar={maskChar}
+                    />
+                  ) : (
+                    word
+                  )}
                   {showAsterisk && isLast && (
                     <span className="absolute top-[0.65em] -right-[0.3em] text-[0.31em]">*</span>
                   )}
@@ -96,19 +252,14 @@ export const WordsPullUpMultiStyle = ({ segments, className = "", style }: Words
 };
 
 /* ---------------- Hero ---------------- */
-export interface HeroNavItem {
-  label: string;
-  href: string;
-}
-
 export interface HeroCta {
   label: string;
   href: string;
 }
 
 interface PrismaHeroProps {
-  navItems?: HeroNavItem[];
   eyebrow?: string;
+  meta?: string;
   title?: string;
   /** Accepts rich content (e.g. hover-preview links) so callers keep their copy interactions. */
   description?: React.ReactNode;
@@ -116,20 +267,21 @@ interface PrismaHeroProps {
   secondaryCta?: HeroCta;
   backgroundVideo?: string;
   backgroundImage?: string;
+  accentWords?: string[];
+  accentClassName?: string;
+  scrambleWords?: string[];
+  maskChar?: string;
+  marginNote?: string;
+  scrollTarget?: string;
   className?: string;
 }
-
-const DEFAULT_NAV: HeroNavItem[] = [
-  { label: "Work", href: "#work" },
-  { label: "Contact", href: "mailto:hello@abhinesh.design" },
-];
 
 /* Ease-in cubic: slow start, accelerating into the target. */
 const easeInCubic = (t: number) => t * t * t;
 
 /* Smooth-scrolls to an in-page anchor with ease-in. Returns false for
    external links (mailto etc.) or missing targets so default behavior applies. */
-function smoothScrollToHref(href: string): boolean {
+export function smoothScrollToHref(href: string): boolean {
   if (!href.startsWith("#") || href.length < 2) return false;
   if (typeof window === "undefined" || typeof document === "undefined") return false;
   const el = document.querySelector(href);
@@ -156,87 +308,121 @@ function smoothScrollToHref(href: string): boolean {
 const DEFAULT_DESCRIPTION =
   "Forward-deployed product designer turning ambiguity into something real — product thinking, UX, AI and code, from first question to shipped outcome.";
 
+/* Hero overlay grade (mockup match). Tune stops here — one-line changes.
+   Mobile extends the horizontal release since text covers more frame. */
+const GRADE = {
+  horizontal:
+    "linear-gradient(90deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.55) 28%, rgba(0,0,0,0.18) 52%, transparent 72%)",
+  horizontalMobile:
+    "linear-gradient(90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0.2) 65%, transparent 85%)",
+  vertical:
+    "linear-gradient(180deg, rgba(0,0,0,0.45) 0%, transparent 25%, transparent 38%, color-mix(in oklch, var(--background) 60%, transparent) 62%, var(--background) 88%)",
+  vignette:
+    "radial-gradient(ellipse at center, transparent 45%, rgba(0,0,0,0.55) 100%)",
+};
+
 const PrismaHero = ({
-  navItems = DEFAULT_NAV,
-  eyebrow = "Abhinesh — Product Designer",
+  eyebrow = "Forward-deployed\nProduct Designer",
+  meta = "Product · UX · AI · Build",
   title = "I go where the\nproblem is.",
   description = DEFAULT_DESCRIPTION,
   primaryCta = { label: "View work", href: "#work" },
   secondaryCta = { label: "Start a project", href: "mailto:hello@abhinesh.design" },
-  backgroundVideo = "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4",
+  backgroundVideo = "/art/hero-video.mp4",
   backgroundImage = "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=2400&auto=format&fit=crop&q=80",
+  accentWords = ["problem"],
+  accentClassName = "text-[#FF4B16]",
+  scrambleWords = ["problem"],
+  maskChar = "#",
+  marginNote = "Some Curiosity\nDifferent Problems.",
+  scrollTarget = "#mindset",
   className,
 }: PrismaHeroProps) => {
   return (
-    <section className={cn("w-full p-2 md:p-4", className)}>
-      <div className="relative h-[94vh] min-h-[620px] w-full overflow-hidden rounded-2xl md:rounded-[2rem]">
+    <section className={cn("w-full", className)}>
+      <div className="relative h-[100vh] min-h-[620px] w-full overflow-hidden">
 
         {/* Background image (fallback / poster underneath the video) */}
         <img
           src={backgroundImage}
           alt=""
           aria-hidden
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absolute inset-0 h-full w-full object-cover [object-position:50%_15%] max-sm:[object-position:63%_15%]"
         />
 
-        {/* Background video */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          poster={backgroundImage}
-          className="absolute inset-0 h-full w-full object-cover"
+        {/* Background video — dips to black before each loop restart */}
+        <LoopVideo
           src={backgroundVideo}
+          poster={backgroundImage}
+          fadeToBlack={0.8}
+          className="absolute inset-0 h-full w-full"
+          videoClassName="[object-position:50%_15%] max-sm:[object-position:63%_15%]"
+        />
+
+        {/* Overlay grade — horizontal linear scrim (desktop) */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 hidden sm:block"
+          style={{ background: GRADE.horizontal }}
+        />
+
+        {/* Overlay grade — horizontal linear scrim (mobile, extended release) */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 sm:hidden"
+          style={{ background: GRADE.horizontalMobile }}
+        />
+
+        {/* Overlay grade — vertical linear melt (nav shade + base dissolve) */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{ background: GRADE.vertical }}
+        />
+
+        {/* Overlay grade — vignette */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{ background: GRADE.vignette }}
         />
 
         {/* Noise overlay */}
         <div className="noise-overlay pointer-events-none absolute inset-0 opacity-[0.7] mix-blend-overlay" />
 
-        {/* Gradient overlay */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/60" />
-
-        {/* Navbar */}
-        <nav className="absolute left-1/2 top-0 z-20 -translate-x-1/2">
-          <div className="flex items-center gap-3 rounded-b-2xl bg-black px-4 py-2 sm:gap-6 md:gap-12 md:rounded-b-3xl md:px-8 lg:gap-14">
-            {navItems.map((item) => (
-              <a
-                key={item.label}
-                href={item.href}
-                onClick={(e) => {
-                  if (smoothScrollToHref(item.href)) e.preventDefault();
-                }}
-                className="text-[10px] transition-colors sm:text-xs md:text-sm"
-                style={{ color: "rgba(225, 224, 204, 0.8)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = "#E1E0CC")}
-                onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(225, 224, 204, 0.8)")}
-              >
-                {item.label}
-              </a>
-            ))}
-          </div>
-        </nav>
+        {/* Handwritten margin note — mockup voice, desktop only */}
+        <p
+          aria-hidden
+          className="font-hand absolute right-6 top-24 hidden w-32 rotate-3 whitespace-pre-line text-right text-2xl leading-tight text-[#E1E0CC]/60 lg:block lg:right-[120px]"
+        >
+          {marginNote}
+        </p>
 
         {/* Hero content — title top, description + CTAs bottom-right */}
-        <div className="absolute inset-0 flex flex-col justify-between px-4 sm:px-6 md:px-10">
+        <div className="absolute inset-0 flex flex-col justify-between px-6 pt-32 pb-6 sm:px-8 sm:pb-8 sm:pt-32 md:px-[120px] md:pb-12 md:pt-40">
 
-          <div className="mt-20 md:mt-24">
+          <div>
             <p
-              className="mb-4 text-[11px] uppercase tracking-[0.3em]"
-              style={{ color: "rgba(225, 224, 204, 0.7)" }}
+              className="font-hand mb-5 ml-1 -rotate-[4deg] origin-left whitespace-pre-line text-2xl leading-tight md:text-3xl"
+              style={{ color: "rgba(225, 224, 204, 0.85)" }}
             >
               {eyebrow}
             </p>
-            <h1
-              className="font-medium leading-[0.9] tracking-[-0.04em] text-[13vw] sm:text-[11vw] lg:text-[8vw] xl:text-[7vw]"
-              style={{ color: "#E1E0CC" }}
-            >
-              <WordsPullUp text={title} />
+            <h1 className="font-display font-bold leading-[0.95] tracking-[-0.02em] text-white text-[13vw] sm:text-[11vw] lg:text-[8vw] xl:text-[7vw]">
+              <WordsPullUp
+                text={title}
+                accentWords={accentWords}
+                accentClassName={accentClassName}
+                scrambleWords={scrambleWords}
+                maskChar={maskChar}
+              />
             </h1>
+            <p className="mt-12 text-[22px] uppercase tracking-[0.35em] text-white/55">
+              {meta}
+            </p>
           </div>
 
-          <div className="flex justify-end pb-6 md:pb-10">
+          <div className="flex justify-end">
             <div className="flex w-full flex-col gap-5 md:w-2/3 lg:w-1/3">
 
               <motion.p
@@ -278,6 +464,21 @@ const PrismaHero = ({
             </div>
           </div>
         </div>
+
+        {/* Scroll cue — bottom-left, eased scroll into the next chapter */}
+        <button
+          onClick={() => smoothScrollToHref(scrollTarget)}
+          className="absolute bottom-6 left-6 z-10 flex items-center gap-4 text-xs uppercase tracking-[0.35em] text-[#E1E0CC]/55 transition-colors hover:text-[#E1E0CC] sm:bottom-8 sm:left-8 md:bottom-12 md:left-[120px]"
+        >
+          <span className="relative flex h-11 w-11 items-center justify-center rounded-full border border-[#FF4B16]/60">
+            <span
+              aria-hidden
+              className="scroll-cue-ring absolute inset-0 rounded-full border border-[#FF4B16]/50"
+            />
+            <ArrowDown className="scroll-cue-arrow h-5 w-5 text-[#FF4B16]" strokeWidth={1.75} />
+          </span>
+          Scroll to explore
+        </button>
       </div>
     </section>
   );

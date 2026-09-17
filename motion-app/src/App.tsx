@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { CinematicFooter } from "@/components/ui/motion-footer";
 import { PrismaHero } from "@/components/ui/prisma-hero";
+import { SiteHeader } from "@/components/ui/site-header";
 import { Mindset } from "@/components/ui/mindset";
 import { HowIBuild } from "@/components/ui/how-i-build";
 import { Lab } from "@/components/ui/lab";
@@ -97,6 +98,7 @@ export default function Portfolio() {
   return (
     <div className="dark relative w-full bg-background min-h-screen font-sans selection:bg-white/20 overflow-x-hidden">
       <HoverPreviewStyles />
+      <SiteHeader />
 
       {/*
         PORTFOLIO CONTENT
@@ -160,11 +162,14 @@ export default function Portfolio() {
           }
         />
 
+        {/* Page gutters — 120px sides on desktop, hero stays full-bleed */}
+        <div className="px-5 md:px-[120px]">
+
         {/* CHAPTER 02 — HOW I THINK */}
         <Mindset />
 
         {/* WORK — stacked drag carousel */}
-        <section id="work" className="px-6 md:px-10 py-16 md:py-24 max-w-6xl mx-auto">
+        <section id="work" className="py-16 md:py-24 max-w-6xl mx-auto">
           <p className="text-[11px] uppercase tracking-[0.3em] text-neutral-400">
             Selected work
           </p>
@@ -183,7 +188,7 @@ export default function Portfolio() {
           <p className="text-[11px] tracking-[0.3em] uppercase text-neutral-600 mb-4">
             ← Drag to explore →
           </p>
-          <CarouselStacked slides={workSlides} className="-mx-6 md:-mx-10" />
+          <CarouselStacked slides={workSlides} className="-mx-5 md:-mx-[120px]" />
           <div className="mt-4 divide-y divide-white/10 border-y border-white/10">
             {WORK.map((p) => (
               <a
@@ -215,7 +220,7 @@ export default function Portfolio() {
         <Lab />
 
         {/* CHAPTER 06 — WHAT'S NEXT */}
-        <section id="contact" className="px-6 md:px-10 py-16 md:py-24 max-w-6xl mx-auto">
+        <section id="contact" className="py-16 md:py-24 max-w-6xl mx-auto">
           <div className="rounded-3xl border border-white/10 bg-white/[0.02] p-8 md:p-14 text-center">
             <p className="text-[11px] tracking-[0.3em] uppercase text-neutral-400">What&apos;s next</p>
             <h2 className="mt-4 text-4xl md:text-6xl font-black tracking-tighter text-white">
@@ -235,6 +240,7 @@ export default function Portfolio() {
             </p>
           </div>
         </section>
+        </div>
       </main>
 
       {/* Portfolio footer — same cinematic component, portfolio content */}
