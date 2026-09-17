@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
+import { useLocation, useNavigate } from "react-router";
 import { smoothScrollToHref } from "@/components/ui/prisma-hero";
 
 /* ---------------- Site header ----------------
@@ -15,8 +16,23 @@ const LINKS = [
 ];
 
 export function SiteHeader() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   // Transparent over the hero; gains a blurred backdrop once scrolled.
   const [scrolled, setScrolled] = useState(false);
+
+  // Chapter anchors live on home; from /allprojects, go home first.
+  const goSection = (href: string) => (e: MouseEvent) => {
+    if (!href.startsWith("#") || href.length < 2) return;
+    e.preventDefault();
+    if (location.pathname !== "/") {
+      navigate("/");
+      window.setTimeout(() => smoothScrollToHref(href), 120);
+    } else {
+      smoothScrollToHref(href);
+    }
+  };
 
   useEffect(() => {
     let raf = 0;
@@ -67,9 +83,7 @@ export function SiteHeader() {
             <a
               key={item.label}
               href={item.href}
-              onClick={(e) => {
-                if (smoothScrollToHref(item.href)) e.preventDefault();
-              }}
+              onClick={goSection(item.href)}
               className="text-base text-[#E1E0CC]/70 transition-colors hover:text-[#E1E0CC]"
             >
               {item.label}
@@ -81,7 +95,21 @@ export function SiteHeader() {
           href="mailto:hello@abhinesh.design"
           className="inline-flex items-center gap-2 justify-self-end rounded-full border border-white/10 bg-black px-6 py-2.5 text-base font-medium text-white transition-colors hover:border-white/25"
         >
-          Let&apos;s talk
+          <span className="relative">
+            Let&apos;s talk
+            <svg
+              aria-hidden
+              viewBox="0 0 80 8"
+              preserveAspectRatio="none"
+              className="absolute -bottom-1 left-0 h-[5px] w-full text-[#FF4B16]"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+            >
+              <path d="M2 6 C 25 2, 55 2, 78 5" pathLength="100" className="cta-underline" />
+            </svg>
+          </span>
           <span aria-hidden className="h-2 w-2 rounded-full bg-[#FF4B16]" />
         </a>
       </div>

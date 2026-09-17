@@ -82,6 +82,28 @@ body {
   }
 }
 
+/* Let's-talk underline: draws itself, holds, breathes out, rests. */
+@keyframes cta-underline-draw {
+  0% { stroke-dashoffset: 100; opacity: 0; }
+  6% { opacity: 1; }
+  30% { stroke-dashoffset: 0; opacity: 1; }
+  55% { stroke-dashoffset: 0; opacity: 1; }
+  68%, 100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+.cta-underline {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: cta-underline-draw 4.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta-underline {
+    animation: none;
+    opacity: 0;
+  }
+}
+
 /* Display grotesk for editorial headlines (mockup voice). */
 .font-display {
   font-family: 'Space Grotesk', sans-serif;

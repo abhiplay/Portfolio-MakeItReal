@@ -1,10 +1,13 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { Route, Routes, useLocation, useNavigate } from "react-router";
 import { CinematicFooter } from "@/components/ui/motion-footer";
 import { PrismaHero } from "@/components/ui/prisma-hero";
 import { SiteHeader } from "@/components/ui/site-header";
 import { Mindset } from "@/components/ui/mindset";
 import { HowIBuild } from "@/components/ui/how-i-build";
 import { Lab } from "@/components/ui/lab";
+import { ImagesBadge } from "@/components/ui/images-badge";
+import { AllProjects } from "@/pages/all-projects";
 import CarouselStacked, { type Slide } from "@/components/ui/carousel-07";
 import {
   HoverLink,
@@ -14,30 +17,43 @@ import {
   type PreviewMap,
 } from "@/components/ui/hover-preview";
 
-const WORK = [
+export interface WorkItem {
+  title: string;
+  tag: string;
+  question: string;
+  img: string;
+  featured?: boolean;
+  isNew?: boolean;
+}
+
+export const WORK: WorkItem[] = [
   {
     title: "FundedGlobal",
     tag: "Fintech · Web App",
     question: "How do you make financial complexity feel trustworthy?",
     img: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&auto=format&fit=crop&q=60",
+    featured: true,
   },
   {
     title: "Barrelhand",
     tag: "Inventory · Ops Tool",
     question: "Can a workshop manage without spreadsheets?",
     img: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=60",
+    featured: true,
   },
   {
     title: "VividVision",
     tag: "Architecture · Spatial UI",
     question: "What if architecture had a live companion?",
     img: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&auto=format&fit=crop&q=60",
+    featured: true,
   },
   {
     title: "Northwind Analytics",
     tag: "Data · Dashboard",
     question: "How do you make dense data feel calm?",
     img: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&auto=format&fit=crop&q=60",
+    isNew: true,
   },
   {
     title: "Studio Mono",
@@ -53,7 +69,10 @@ const WORK = [
   },
 ];
 
-export default function Portfolio() {
+// Home shows best + latest only; the full archive lives on /allprojects.
+export const HOME_WORK = WORK.filter((p) => p.featured || p.isNew);
+
+function Portfolio() {
   const previewItems: PreviewMap = useMemo(
     () => ({
       thinking: {
@@ -80,13 +99,14 @@ export default function Portfolio() {
     []
   );
   const preview = useHoverPreview(previewItems);
+  const navigate = useNavigate();
 
   // Selected Work → stacked carousel slides.
   // Badge keeps the short category (fits the card); the full tag stays
   // visible in the index list below the carousel.
   const workSlides: Slide[] = useMemo(
     () =>
-      WORK.map((p) => ({
+      HOME_WORK.map((p) => ({
         image: p.img,
         title: p.title,
         description: p.question,
@@ -96,16 +116,7 @@ export default function Portfolio() {
   );
 
   return (
-    <div className="dark relative w-full bg-background min-h-screen font-sans selection:bg-white/20 overflow-x-hidden">
-      <HoverPreviewStyles />
-      <SiteHeader />
-
-      {/*
-        PORTFOLIO CONTENT
-        Stays above the fixed footer (z-10) so the curtain reveal works:
-        scrolling past this content unveils the footer pinned underneath.
-      */}
-      <main className="relative z-10 bg-background border-b border-white/10 shadow-md rounded-b-3xl">
+    <main className="relative z-10 bg-background border-b border-white/10 shadow-md rounded-b-3xl">
 
         {/* HERO — Prisma media hero as background, portfolio copy on top */}
         <PrismaHero
@@ -182,15 +193,25 @@ export default function Portfolio() {
             A few problems I&apos;ve had the chance to get my hands dirty with.
           </p>
           <div className="flex items-end justify-between mt-12 mb-2">
-            <h2 className="text-[11px] tracking-[0.3em] uppercase text-neutral-400">Selected work — 06</h2>
+            <h2 className="text-[11px] tracking-[0.3em] uppercase text-neutral-400">Selected work — {String(HOME_WORK.length).padStart(2, "0")}</h2>
             <span className="text-[11px] tracking-[0.3em] uppercase text-neutral-600">2022 → 2026</span>
           </div>
           <p className="text-[11px] tracking-[0.3em] uppercase text-neutral-600 mb-4">
             ← Drag to explore →
           </p>
           <CarouselStacked slides={workSlides} className="-mx-5 md:-mx-[120px]" />
+          <div className="mt-10 flex justify-center">
+            <ImagesBadge
+              images={WORK.map((p) => ({
+                src: p.img.replace("w=1200", "w=200"),
+                alt: p.title,
+              }))}
+              label="View all projects"
+              onClick={() => navigate("/allprojects")}
+            />
+          </div>
           <div className="mt-4 divide-y divide-white/10 border-y border-white/10">
-            {WORK.map((p) => (
+            {HOME_WORK.map((p) => (
               <a
                 key={p.title}
                 href="#"
@@ -241,7 +262,28 @@ export default function Portfolio() {
           </div>
         </section>
         </div>
-      </main>
+    </main>
+  );
+}
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
+export default function App() {
+  return (
+    <div className="dark relative w-full bg-background min-h-screen font-sans selection:bg-white/20 overflow-x-hidden">
+      <HoverPreviewStyles />
+      <SiteHeader />
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<Portfolio />} />
+        <Route path="/allprojects" element={<AllProjects />} />
+      </Routes>
 
       {/* Portfolio footer — same cinematic component, portfolio content */}
       <CinematicFooter
