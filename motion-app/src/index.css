@@ -43,6 +43,18 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Section snap: scrolling settles each chapter into place.
+   Proximity (not mandatory) so it assists without trapping. */
+html {
+  scroll-snap-type: y proximity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-snap-type: none;
+  }
+}
+
 /* Film-grain texture used by the Prisma hero overlay
    (class referenced by prisma-hero.tsx; defined here so it
    ships with the global stylesheet, Tailwind v4 style). */
@@ -111,6 +123,23 @@ body {
 
 /* Dissolves a media frame into the page on all four sides. */
 .fade-all-sides {
-  -webkit-mask-image: radial-gradient(ellipse 92% 92% at 50% 50%, black 55%, transparent 98%);
-  mask-image: radial-gradient(ellipse 92% 92% at 50% 50%, black 55%, transparent 98%);
+  -webkit-mask-image: radial-gradient(ellipse 95% 95% at 50% 50%, black 45%, transparent 92%);
+  mask-image: radial-gradient(ellipse 95% 95% at 50% 50%, black 45%, transparent 92%);
+}
+
+/* Melts a frame into the page background: bg-colored edge gradients do the
+   actual blending (exact theme match), the radial falloff adds the graded
+   darkness from the reference still. Tune stops here. */
+.video-vignette {
+  background:
+    linear-gradient(to right, var(--background) 0%, transparent 16%),
+    linear-gradient(to left, var(--background) 0%, transparent 16%),
+    linear-gradient(to bottom, var(--background) 0%, transparent 16%),
+    linear-gradient(to top, var(--background) 0%, transparent 16%),
+    radial-gradient(
+      ellipse at center,
+      transparent 50%,
+      rgba(0, 0, 0, 0.45) 82%,
+      rgba(0, 0, 0, 0.85) 100%
+    );
 }

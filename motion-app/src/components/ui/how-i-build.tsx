@@ -23,11 +23,11 @@ const TOOLKIT = [
 
 export function HowIBuild() {
   return (
-    <section id="build" className="mx-auto max-w-6xl py-20 md:py-28">
+    <section id="build" className="mx-auto max-w-6xl py-20 md:py-28 snap-start">
       <p className="text-[11px] uppercase tracking-[0.3em] text-neutral-400">
         How I build
       </p>
-      <h2 className="mt-4 max-w-4xl text-4xl font-black leading-[0.95] tracking-tighter text-white sm:text-5xl lg:text-6xl">
+      <h2 className="font-display mt-4 max-w-4xl text-[10vw] font-bold leading-[0.95] tracking-[-0.02em] text-white sm:text-5xl lg:text-6xl">
         <WordsPullUp text={"Design isn't\nthe finish line."} />
       </h2>
       <p className="mt-6 max-w-xl text-base leading-relaxed text-neutral-400 md:text-lg">
@@ -67,11 +67,11 @@ export function HowIBuild() {
       </div>
 
       <div className="mt-14 border-t border-white/10 pt-8">
-        <p className="text-xl font-black uppercase tracking-tight text-white md:text-2xl">
+        <h3 className="text-xl font-black uppercase tracking-tight text-white md:text-2xl">
           Tools are not the skill.
           <br />
           Thinking is.
-        </p>
+        </h3>
         <p className="mt-4 text-[11px] uppercase leading-loose tracking-[0.2em] text-neutral-500">
           {TOOLKIT.join("  ·  ")}
         </p>

@@ -18,11 +18,11 @@ const TOPICS = [
 
 export function Lab() {
   return (
-    <section id="lab" className="mx-auto max-w-6xl py-20 md:py-28">
+    <section id="lab" className="mx-auto max-w-6xl py-20 md:py-28 snap-start">
       <p className="text-[11px] uppercase tracking-[0.3em] text-neutral-400">
         The lab — a digital sketchbook
       </p>
-      <h2 className="mt-4 max-w-4xl text-4xl font-black leading-[0.95] tracking-tighter text-white sm:text-5xl lg:text-6xl">
+      <h2 className="font-display mt-4 max-w-4xl text-[10vw] font-bold leading-[0.95] tracking-[-0.02em] text-white sm:text-5xl lg:text-6xl">
         <WordsPullUp text={"Things I'm\nfiguring out."} />
       </h2>
 

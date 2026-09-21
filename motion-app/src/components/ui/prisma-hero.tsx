@@ -264,7 +264,7 @@ interface PrismaHeroProps {
   /** Accepts rich content (e.g. hover-preview links) so callers keep their copy interactions. */
   description?: React.ReactNode;
   primaryCta?: HeroCta;
-  secondaryCta?: HeroCta;
+  secondaryCta?: HeroCta | null;
   backgroundVideo?: string;
   backgroundImage?: string;
   accentWords?: string[];
@@ -327,7 +327,7 @@ const PrismaHero = ({
   title = "I go where the\nproblem is.",
   description = DEFAULT_DESCRIPTION,
   primaryCta = { label: "View work", href: "#work" },
-  secondaryCta = { label: "Start a project", href: "mailto:hello@abhinesh.design" },
+  secondaryCta = null,
   backgroundVideo = "/art/hero-video.mp4",
   backgroundImage = "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=2400&auto=format&fit=crop&q=80",
   accentWords = ["problem"],
@@ -340,7 +340,7 @@ const PrismaHero = ({
 }: PrismaHeroProps) => {
   return (
     <section className={cn("w-full", className)}>
-      <div className="relative h-[100vh] min-h-[620px] w-full overflow-hidden">
+      <div className="relative h-[100vh] min-h-[620px] w-full overflow-hidden snap-start">
 
         {/* Background image (fallback / poster underneath the video) */}
         <img
@@ -408,7 +408,7 @@ const PrismaHero = ({
             >
               {eyebrow}
             </p>
-            <h1 className="font-display font-bold leading-[0.95] tracking-[-0.02em] text-white text-[13vw] sm:text-[11vw] lg:text-[8vw] xl:text-[7vw]">
+            <h1 className="font-display font-bold leading-[0.95] tracking-[-0.02em] text-white text-[clamp(2.25rem,7vw,5.25rem)]">
               <WordsPullUp
                 text={title}
                 accentWords={accentWords}
@@ -417,7 +417,7 @@ const PrismaHero = ({
                 maskChar={maskChar}
               />
             </h1>
-            <p className="mt-12 text-[22px] uppercase tracking-[0.35em] text-white/55">
+            <p className="mt-8 text-[13px] uppercase tracking-[0.25em] text-white/55 sm:text-sm md:mt-12 md:text-[22px] md:tracking-[0.35em]">
               {meta}
             </p>
           </div>
@@ -453,12 +453,14 @@ const PrismaHero = ({
                     <ArrowRight className="h-4 w-4" style={{ color: "#E1E0CC" }} />
                   </span>
                 </a>
+                {secondaryCta ? (
                 <a
                   href={secondaryCta.href}
                   className="inline-flex items-center self-start rounded-full border border-white/30 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10 sm:text-base"
                 >
                   {secondaryCta.label}
                 </a>
+                ) : null}
               </motion.div>
 
             </div>

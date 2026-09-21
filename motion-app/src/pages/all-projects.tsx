@@ -48,9 +48,9 @@ export function AllProjects() {
                   {p.featured ? " · Best" : ""}
                   {p.isNew ? " · Latest" : ""}
                 </p>
-                <p className="mt-1 truncate text-xl font-bold text-white md:text-2xl">
+                <h3 className="mt-1 truncate text-xl font-bold text-white md:text-2xl">
                   {p.title}
-                </p>
+                </h3>
                 <p className="mt-1 text-sm text-neutral-400">{p.question}</p>
               </div>
             </div>
