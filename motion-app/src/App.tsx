@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Route, Routes, useLocation, useNavigate } from "react-router";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
@@ -9,6 +9,7 @@ import { Mindset } from "@/components/ui/mindset";
 import { HowIBuild } from "@/components/ui/how-i-build";
 import { Lab } from "@/components/ui/lab";
 import { ImagesBadge } from "@/components/ui/images-badge";
+import { IntroSequence } from "@/components/ui/intro-sequence";
 import { AllProjects } from "@/pages/all-projects";
 import { HeroCarousel, type HeroCarouselItem } from "@/components/ui/hero-carousel";
 import {
@@ -131,6 +132,15 @@ function Portfolio() {
   const preview = useHoverPreview(previewItems);
   const navigate = useNavigate();
 
+  // Intro autoplay: overlay plays first, hero copy appears 1s after reveal.
+  const [introDone, setIntroDone] = useState(false);
+  const [copyOn, setCopyOn] = useState(false);
+  useEffect(() => {
+    if (!introDone) return;
+    const t = window.setTimeout(() => setCopyOn(true), 1000);
+    return () => window.clearTimeout(t);
+  }, [introDone]);
+
   // Section 3 parallax: overlay copy drifts against the stage while the
   // stage settles from a slight scale as it travels through view.
   const reduceMotion = useReducedMotion();
@@ -161,10 +171,12 @@ function Portfolio() {
   );
 
   return (
+    <>
     <main className="relative z-10 bg-background border-b border-white/10 shadow-md rounded-b-3xl">
 
         {/* HERO — Prisma media hero as background, portfolio copy on top */}
         <PrismaHero
+          copyVisible={copyOn}
           primaryCta={{ label: "SEE MY WORK", href: "#work" }}
           description={
             <>
@@ -354,6 +366,8 @@ function Portfolio() {
           </div>
         </div>
     </main>
+    {!introDone && <IntroSequence onDone={() => setIntroDone(true)} />}
+    </>
   );
 }
 

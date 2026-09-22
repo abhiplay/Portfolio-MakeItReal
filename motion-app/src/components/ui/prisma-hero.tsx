@@ -116,6 +116,8 @@ interface PrismaHeroProps {
   backgroundImage?: string;
   marginNote?: string;
   scrollTarget?: string;
+  /** Gates the hero copy animations (used by the intro reveal). @default true */
+  copyVisible?: boolean;
   className?: string;
 }
 
@@ -173,6 +175,7 @@ const PrismaHero = ({
   backgroundImage = "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=2400&auto=format&fit=crop&q=80",
   marginNote = "Some Curiosity\nDifferent Problems.",
   scrollTarget = "#mindset",
+  copyVisible = true,
   className,
 }: PrismaHeroProps) => {
   return (
@@ -230,7 +233,7 @@ const PrismaHero = ({
         {/* Handwritten margin note — mockup voice, desktop only */}
         <p
           aria-hidden
-          className="font-hand absolute right-6 top-24 hidden w-32 rotate-3 whitespace-pre-line text-right text-2xl leading-tight text-[#E1E0CC]/60 lg:block lg:right-[120px]"
+          className={`font-hand absolute right-6 top-24 hidden w-32 rotate-3 whitespace-pre-line text-right text-2xl leading-tight text-[#E1E0CC]/60 transition-opacity duration-700 lg:block lg:right-[120px] ${copyVisible ? "opacity-100" : "opacity-0"}`}
         >
           {marginNote}
         </p>
@@ -240,7 +243,7 @@ const PrismaHero = ({
 
           <div>
             <p
-              className="font-hand mb-5 ml-1 -rotate-[4deg] origin-left whitespace-pre-line text-2xl leading-tight md:text-3xl"
+              className={`font-hand mb-5 ml-1 -rotate-[4deg] origin-left whitespace-pre-line text-2xl leading-tight transition-opacity duration-700 md:text-3xl ${copyVisible ? "opacity-100" : "opacity-0"}`}
               style={{ color: "rgba(225, 224, 204, 0.85)" }}
             >
               {eyebrow}
@@ -252,8 +255,9 @@ const PrismaHero = ({
 
               <motion.p
                 initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
+                animate={copyVisible ? { y: 0, opacity: 1 } : {}}
                 transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                inert={!copyVisible}
                 className="text-xs text-primary/70 sm:text-sm md:text-base"
                 style={{ lineHeight: 1.2 }}
               >
@@ -262,8 +266,9 @@ const PrismaHero = ({
 
               <motion.div
                 initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
+                animate={copyVisible ? { y: 0, opacity: 1 } : {}}
                 transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                inert={!copyVisible}
                 className="flex flex-wrap items-center gap-3"
               >
                 <a
@@ -295,7 +300,8 @@ const PrismaHero = ({
         {/* Scroll cue — bottom-left, eased scroll into the next chapter */}
         <button
           onClick={() => smoothScrollToHref(scrollTarget)}
-          className="absolute bottom-6 left-6 z-10 flex items-center gap-4 text-xs uppercase tracking-[0.35em] text-[#E1E0CC]/55 transition-colors hover:text-[#E1E0CC] sm:bottom-8 sm:left-8 md:bottom-12 md:left-[120px]"
+          disabled={!copyVisible}
+          className={`absolute bottom-6 left-6 z-10 flex items-center gap-4 text-xs uppercase tracking-[0.35em] transition-all duration-700 sm:bottom-8 sm:left-8 md:bottom-12 md:left-[120px] ${copyVisible ? "text-[#E1E0CC]/55 hover:text-[#E1E0CC]" : "pointer-events-none opacity-0"}`}
         >
           <span className="relative flex h-11 w-11 items-center justify-center rounded-full border border-[#FF4B16]/60">
             <span
