@@ -42,7 +42,7 @@ export function Lab() {
           <p className="text-xs uppercase tracking-[0.3em] text-neutral-400 lg:text-xl">
             04&nbsp;&nbsp;/&nbsp;&nbsp;The lab
           </p>
-          <h2 className="font-display mt-4 max-w-3xl text-[10vw] font-bold leading-[0.95] tracking-[-0.02em] text-white sm:text-5xl lg:text-6xl">
+          <h2 className="font-display mt-4 max-w-3xl text-[8vw] font-bold leading-[0.95] tracking-[-0.02em] text-white sm:text-4xl lg:text-5xl">
             <WordsPullUp text={"Things I'm\nfiguring out."} />
           </h2>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-neutral-400 md:text-lg">

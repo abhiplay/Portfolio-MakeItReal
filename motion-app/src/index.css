@@ -47,6 +47,25 @@ body {
    Proximity (not mandatory) so it assists without trapping. */
 html {
   scroll-snap-type: y proximity;
+  /* Global type scale-down: all rem-based type renders ~12% smaller. */
+  font-size: 14px;
+}
+
+/* Hidden scrollbars site-wide — scrolling (wheel, touch, keyboard,
+   anchors) keeps working, only the visual bars are removed. */
+html,
+body {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  display: none;
+}
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -66,6 +85,11 @@ html {
 /* Handwritten margin annotations (mockup voice). */
 .font-hand {
   font-family: 'Caveat', cursive;
+}
+
+/* Intro beat statements — matches the Figma filmstrip voice. */
+.font-beat {
+  font-family: 'Indie Flower', cursive;
 }
 
 /* Scroll-cue idle animation: bobbing arrow + soft sonar ring. */

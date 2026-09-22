@@ -38,7 +38,7 @@ export function Mindset() {
 
       <div className="mt-8 grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div>
-          <h2 className="font-display text-[10vw] font-bold leading-[0.95] tracking-[-0.02em] text-white sm:text-[7vw] lg:text-[5vw]">
+          <h2 className="font-display text-[8vw] font-bold leading-[0.95] tracking-[-0.02em] text-white sm:text-[5.5vw] lg:text-[4vw]">
             <WordsPullUp text={"I don't need\na perfect brief."} />
           </h2>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-neutral-400 md:text-xl">

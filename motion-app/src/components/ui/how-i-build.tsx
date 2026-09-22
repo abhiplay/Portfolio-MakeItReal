@@ -27,7 +27,7 @@ export function HowIBuild() {
       <p className="text-[11px] uppercase tracking-[0.3em] text-neutral-400">
         How I build
       </p>
-      <h2 className="font-display mt-4 max-w-4xl text-[10vw] font-bold leading-[0.95] tracking-[-0.02em] text-white sm:text-5xl lg:text-6xl">
+      <h2 className="font-display mt-4 max-w-4xl text-[8vw] font-bold leading-[0.95] tracking-[-0.02em] text-white sm:text-4xl lg:text-5xl">
         <WordsPullUp text={"Design isn't\nthe finish line."} />
       </h2>
       <p className="mt-6 max-w-xl text-base leading-relaxed text-neutral-400 md:text-lg">

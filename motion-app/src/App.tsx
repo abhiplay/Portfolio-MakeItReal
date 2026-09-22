@@ -180,7 +180,7 @@ function Portfolio() {
           primaryCta={{ label: "SEE MY WORK", href: "#work" }}
           description={
             <>
-              Forward-deployed product designer turning ambiguity into something real —{" "}
+              From{" "}
               <HoverLink
                 previewKey="thinking"
                 active={preview.activeKey === "thinking" && preview.isVisible}
@@ -189,9 +189,9 @@ function Portfolio() {
                 onHoverEnd={preview.handleHoverEnd}
                 onTap={preview.handleTap}
               >
-                product thinking
+                product strategy
               </HoverLink>
-              {", "}
+              {" to "}
               <HoverLink
                 previewKey="ux"
                 active={preview.activeKey === "ux" && preview.isVisible}
@@ -202,7 +202,7 @@ function Portfolio() {
               >
                 UX
               </HoverLink>
-              {", "}
+              {", prototypes and "}
               <HoverLink
                 previewKey="ai"
                 active={preview.activeKey === "ai" && preview.isVisible}
@@ -213,18 +213,11 @@ function Portfolio() {
               >
                 AI
               </HoverLink>
-              {" and "}
-              <HoverLink
-                previewKey="code"
-                active={preview.activeKey === "code" && preview.isVisible}
-                onHoverStart={preview.handleHoverStart}
-                onHoverMove={preview.handleHoverMove}
-                onHoverEnd={preview.handleHoverEnd}
-                onTap={preview.handleTap}
-              >
-                code
-              </HoverLink>
-              {", from first question to shipped outcome."}
+              {" —"}
+              <br />
+              I work across the messy middle
+              <br />
+              to turn ideas into useful products.
             </>
           }
         />
@@ -237,7 +230,7 @@ function Portfolio() {
           <p className="text-[10px] uppercase tracking-[0.3em] text-neutral-300 sm:text-[11px]">
             Selected work
           </p>
-                <h2 className="font-display mt-3 max-w-4xl text-4xl font-bold leading-[0.95] tracking-[-0.02em] text-white sm:mt-4 sm:text-5xl lg:text-6xl">
+                <h2 className="font-display mt-3 max-w-4xl text-3xl font-bold leading-[0.95] tracking-[-0.02em] text-white sm:mt-4 sm:text-4xl lg:text-5xl">
                   Real problems.
                   <br />
                   Real products.
@@ -326,7 +319,7 @@ function Portfolio() {
               <p className="text-[11px] uppercase tracking-[0.3em] text-neutral-300">
                 05&nbsp;&nbsp;/&nbsp;&nbsp;What&apos;s next
               </p>
-              <h2 className="font-display mt-4 max-w-3xl text-[10vw] font-bold leading-[0.95] tracking-[-0.02em] text-white sm:text-6xl lg:text-7xl">
+              <h2 className="font-display mt-4 max-w-3xl text-[8vw] font-bold leading-[0.95] tracking-[-0.02em] text-white sm:text-5xl lg:text-6xl">
                 What should
                 <br />
                 we build next?
@@ -412,7 +405,7 @@ export default function App() {
           { label: "Email", href: "mailto:hello@abhinesh.design" },
           { label: "LinkedIn", href: "#" },
         ]}
-        brandName="ABHI"
+        brandName="ABHINESH B."
         copyright="© 2026 Abhinesh. All rights reserved."
       />
 

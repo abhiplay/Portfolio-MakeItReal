@@ -108,6 +108,7 @@ export interface HeroCta {
 
 interface PrismaHeroProps {
   eyebrow?: string;
+  title?: string;
   /** Accepts rich content (e.g. hover-preview links) so callers keep their copy interactions. */
   description?: React.ReactNode;
   primaryCta?: HeroCta;
@@ -151,7 +152,7 @@ export function smoothScrollToHref(href: string): boolean {
 }
 
 const DEFAULT_DESCRIPTION =
-  "Forward-deployed product designer turning ambiguity into something real — product thinking, UX, AI and code, from first question to shipped outcome.";
+  "From product strategy to UX, prototypes and AI — I work across the messy middle to turn ideas into useful products.";
 
 /* Hero overlay grade (mockup match). Tune stops here — one-line changes.
    Mobile extends the horizontal release since text covers more frame. */
@@ -168,6 +169,7 @@ const GRADE = {
 
 const PrismaHero = ({
   eyebrow = "Forward-deployed\nProduct Designer",
+  title = "I MAKE SENSE\nOF MESSY THINGS.",
   description = DEFAULT_DESCRIPTION,
   primaryCta = { label: "View work", href: "#work" },
   secondaryCta = null,
@@ -233,7 +235,7 @@ const PrismaHero = ({
         {/* Handwritten margin note — mockup voice, desktop only */}
         <p
           aria-hidden
-          className={`font-hand absolute right-6 top-24 hidden w-32 rotate-3 whitespace-pre-line text-right text-2xl leading-tight text-[#E1E0CC]/60 transition-opacity duration-700 lg:block lg:right-[120px] ${copyVisible ? "opacity-100" : "opacity-0"}`}
+          className={`font-hand absolute right-6 top-24 hidden w-32 rotate-3 whitespace-pre-line text-right text-2xl leading-tight text-[#E1E0CC]/60 transition-all duration-700 lg:block lg:right-[120px] ${copyVisible ? "opacity-100 blur-none" : "opacity-0 blur-md"}`}
         >
           {marginNote}
         </p>
@@ -243,19 +245,29 @@ const PrismaHero = ({
 
           <div>
             <p
-              className={`font-hand mb-5 ml-1 -rotate-[4deg] origin-left whitespace-pre-line text-2xl leading-tight transition-opacity duration-700 md:text-3xl ${copyVisible ? "opacity-100" : "opacity-0"}`}
+              className={`font-hand mb-5 ml-1 -rotate-[4deg] origin-left whitespace-pre-line text-2xl leading-tight transition-all duration-700 md:text-3xl ${copyVisible ? "opacity-100 blur-none" : "opacity-0 blur-md"}`}
               style={{ color: "rgba(225, 224, 204, 0.85)" }}
             >
               {eyebrow}
             </p>
+            <motion.div
+              initial={{ opacity: 0, filter: "blur(12px)" }}
+              animate={copyVisible ? { opacity: 1, filter: "blur(0px)" } : {}}
+              transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              inert={!copyVisible}
+            >
+            <h1 className="font-display font-bold leading-[0.95] tracking-[-0.02em] text-white text-[clamp(2rem,5.5vw,4.5rem)]">
+              <WordsPullUp text={title} />
+            </h1>
+            </motion.div>
           </div>
 
           <div className="flex justify-end">
             <div className="flex w-full flex-col gap-5 md:w-2/3 lg:w-1/3">
 
               <motion.p
-                initial={{ y: 20, opacity: 0 }}
-                animate={copyVisible ? { y: 0, opacity: 1 } : {}}
+                initial={{ y: 20, opacity: 0, filter: "blur(12px)" }}
+                animate={copyVisible ? { y: 0, opacity: 1, filter: "blur(0px)" } : {}}
                 transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
                 inert={!copyVisible}
                 className="text-xs text-primary/70 sm:text-sm md:text-base"
@@ -265,8 +277,8 @@ const PrismaHero = ({
               </motion.p>
 
               <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                animate={copyVisible ? { y: 0, opacity: 1 } : {}}
+                initial={{ y: 20, opacity: 0, filter: "blur(12px)" }}
+                animate={copyVisible ? { y: 0, opacity: 1, filter: "blur(0px)" } : {}}
                 transition={{ duration: 0.8, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
                 inert={!copyVisible}
                 className="flex flex-wrap items-center gap-3"
@@ -301,7 +313,7 @@ const PrismaHero = ({
         <button
           onClick={() => smoothScrollToHref(scrollTarget)}
           disabled={!copyVisible}
-          className={`absolute bottom-6 left-6 z-10 flex items-center gap-4 text-xs uppercase tracking-[0.35em] transition-all duration-700 sm:bottom-8 sm:left-8 md:bottom-12 md:left-[120px] ${copyVisible ? "text-[#E1E0CC]/55 hover:text-[#E1E0CC]" : "pointer-events-none opacity-0"}`}
+          className={`absolute bottom-6 left-6 z-10 flex items-center gap-4 text-xs uppercase tracking-[0.35em] transition-all duration-700 sm:bottom-8 sm:left-8 md:bottom-12 md:left-[120px] ${copyVisible ? "text-[#E1E0CC]/55 hover:text-[#E1E0CC]" : "pointer-events-none opacity-0 blur-md"}`}
         >
           <span className="relative flex h-11 w-11 items-center justify-center rounded-full border border-[#FF4B16]/60">
             <span

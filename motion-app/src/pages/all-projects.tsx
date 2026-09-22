@@ -22,7 +22,7 @@ export function AllProjects() {
         <p className="mt-8 text-[11px] uppercase tracking-[0.3em] text-neutral-400">
           Archive — {String(WORK.length).padStart(2, "0")} projects
         </p>
-        <h1 className="font-display mt-4 max-w-4xl text-5xl font-bold leading-[0.95] tracking-[-0.02em] text-white sm:text-6xl lg:text-7xl">
+        <h1 className="font-display mt-4 max-w-4xl text-4xl font-bold leading-[0.95] tracking-[-0.02em] text-white sm:text-5xl lg:text-6xl">
           All projects.
         </h1>
         <p className="mt-6 max-w-xl text-base leading-relaxed text-neutral-400 md:text-lg">

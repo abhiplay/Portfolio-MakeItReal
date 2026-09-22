@@ -75,7 +75,7 @@ export function SiteHeader() {
           }}
           className="justify-self-start text-xl font-extrabold tracking-tight text-white"
         >
-          ABHI
+          ABHINESH B.
         </a>
 
         <nav className="hidden items-center gap-8 justify-self-center md:flex lg:gap-12">
