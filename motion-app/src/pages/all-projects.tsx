@@ -10,7 +10,7 @@ import { WORK } from "@/App";
 export function AllProjects() {
   return (
     <main className="relative z-10 bg-background border-b border-white/10 shadow-md rounded-b-3xl">
-      <section className="mx-auto max-w-6xl px-6 md:px-10 pt-28 md:pt-36 pb-16 md:pb-24">
+      <section className="px-6 sm:px-8 md:px-[120px] pt-28 md:pt-36 pb-16 md:pb-24">
         <Link
           to="/"
           className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.3em] text-neutral-400 transition-colors hover:text-white"

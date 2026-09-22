@@ -1,7 +1,7 @@
 "use client";
 
 import type * as React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { motion, useInView } from "motion/react";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import { LoopVideo } from "@/components/ui/loop-video";
@@ -16,148 +16,9 @@ interface WordsPullUpProps {
   /** Words rendered with `accentClassName` (exact match, e.g. ["problem"]). */
   accentWords?: string[];
   accentClassName?: string;
-  /** Words that decode from a mask (case-insensitive, e.g. ["problem"]). */
-  scrambleWords?: string[];
-  maskChar?: string;
 }
 
-const SCRAMBLE_GLYPHS = ["#", "*", "/", "%"];
-
-interface ScrambleWordProps {
-  word: string;
-  /** Begins the sequence (wired to the parent pull-up landing). */
-  start: boolean;
-  startDelay?: number;
-  letterMs?: number;
-  holdMs?: number;
-  maskChar?: string;
-  loop?: boolean;
-  restMs?: number;
-}
-
-/* Decodes `word` from a mask, holds it, then encodes back right-to-left —
-   ping-pong. Hidden slots shimmer throughout. Reduced-motion renders
-   the final word. */
-const ScrambleWord = ({
-  word,
-  start,
-  startDelay = 900,
-  letterMs = 210,
-  holdMs = 500,
-  maskChar = "#",
-  loop = true,
-  restMs = 2000,
-}: ScrambleWordProps) => {
-  const [frame, setFrame] = useState({ revealed: 0, seed: 0, live: false });
-
-  useEffect(() => {
-    if (!start) return;
-    if (
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      setFrame({ revealed: word.length, seed: 0, live: true });
-      return;
-    }
-    const STEP = 50;
-    let interval = 0;
-    let timeout = 0;
-    let cancelled = false;
-
-    type Phase = "hold" | "decode" | "rest" | "encode";
-
-    const playCycle = (initialDelay: number) => {
-      timeout = window.setTimeout(() => {
-        if (cancelled) return;
-        let phase: Phase = "hold";
-        let elapsed = 0;
-        interval = window.setInterval(() => {
-          elapsed += STEP;
-          if (phase === "hold") {
-            if (elapsed <= holdMs) return;
-            phase = "decode";
-            elapsed = 0;
-            return;
-          }
-          if (phase === "decode") {
-            const next = Math.min(
-              word.length,
-              Math.floor(elapsed / letterMs),
-            );
-            setFrame((f) => ({
-              revealed: Math.max(f.revealed, next),
-              seed: f.seed + 1,
-              live: true,
-            }));
-            if (next >= word.length) {
-              if (!loop) {
-                window.clearInterval(interval);
-                return;
-              }
-              phase = "rest";
-              elapsed = 0;
-            }
-            return;
-          }
-          if (phase === "rest") {
-            if (elapsed >= restMs) {
-              phase = "encode";
-              elapsed = 0;
-            }
-            return;
-          }
-          const remaining = Math.max(
-            0,
-            word.length - Math.floor(elapsed / letterMs),
-          );
-          setFrame((f) => ({
-            revealed: Math.min(f.revealed, remaining),
-            seed: f.seed + 1,
-            live: true,
-          }));
-          if (remaining <= 0) {
-            phase = "hold";
-            elapsed = 0;
-          }
-        }, STEP);
-      }, initialDelay);
-    };
-
-    setFrame({ revealed: 0, seed: 0, live: false });
-    playCycle(startDelay);
-    return () => {
-      cancelled = true;
-      window.clearTimeout(timeout);
-      if (interval) window.clearInterval(interval);
-    };
-  }, [start, startDelay, letterMs, holdMs, word, loop, restMs]);
-
-  const mask = maskChar ?? SCRAMBLE_GLYPHS[0];
-
-  return (
-    <span aria-label={word}>
-      {word.split("").map((ch, i) => {
-        if (i < frame.revealed) return <span key={i}>{ch}</span>;
-        if (!frame.live) {
-          return (
-            <span key={i} aria-hidden>
-              {mask}
-            </span>
-          );
-        }
-        const glyph =
-          SCRAMBLE_GLYPHS[(frame.seed + i * (i === frame.revealed ? 2 : 1)) % SCRAMBLE_GLYPHS.length];
-        return (
-          <span key={i} aria-hidden>
-            {glyph}
-          </span>
-        );
-      })}
-    </span>
-  );
-};
-
-export const WordsPullUp = ({ text, className = "", showAsterisk = false, style, accentWords = [], accentClassName = "", scrambleWords = [], maskChar = "#" }: WordsPullUpProps) => {
+export const WordsPullUp = ({ text, className = "", showAsterisk = false, style, accentWords = [], accentClassName = "" }: WordsPullUpProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true });
   // "\n" forces a line break, so titles like "I go where the\nproblem is."
@@ -176,9 +37,6 @@ export const WordsPullUp = ({ text, className = "", showAsterisk = false, style,
               const isLast = li === lines.length - 1 && i === words.length - 1;
               const delay = wordIndex++ * 0.08;
               const accented = accentWords.includes(word);
-              const scrambled = scrambleWords
-                .map((s) => s.toLowerCase())
-                .includes(word.toLowerCase());
               return (
                 <motion.span
                   key={i}
@@ -188,16 +46,7 @@ export const WordsPullUp = ({ text, className = "", showAsterisk = false, style,
                   className={`inline-block relative ${accented ? accentClassName : ""}`}
                   style={{ marginRight: isLast ? 0 : "0.25em" }}
                 >
-                  {scrambled ? (
-                    <ScrambleWord
-                      word={word}
-                      start={isInView}
-                      startDelay={delay * 1000 + 600}
-                      maskChar={maskChar}
-                    />
-                  ) : (
-                    word
-                  )}
+                  {word}
                   {showAsterisk && isLast && (
                     <span className="absolute top-[0.65em] -right-[0.3em] text-[0.31em]">*</span>
                   )}
@@ -259,18 +108,12 @@ export interface HeroCta {
 
 interface PrismaHeroProps {
   eyebrow?: string;
-  meta?: string;
-  title?: string;
   /** Accepts rich content (e.g. hover-preview links) so callers keep their copy interactions. */
   description?: React.ReactNode;
   primaryCta?: HeroCta;
   secondaryCta?: HeroCta | null;
   backgroundVideo?: string;
   backgroundImage?: string;
-  accentWords?: string[];
-  accentClassName?: string;
-  scrambleWords?: string[];
-  maskChar?: string;
   marginNote?: string;
   scrollTarget?: string;
   className?: string;
@@ -323,17 +166,11 @@ const GRADE = {
 
 const PrismaHero = ({
   eyebrow = "Forward-deployed\nProduct Designer",
-  meta = "Product · UX · AI · Build",
-  title = "I go where the\nproblem is.",
   description = DEFAULT_DESCRIPTION,
   primaryCta = { label: "View work", href: "#work" },
   secondaryCta = null,
   backgroundVideo = "/art/hero-video.mp4",
   backgroundImage = "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=2400&auto=format&fit=crop&q=80",
-  accentWords = ["problem"],
-  accentClassName = "text-[#FF4B16]",
-  scrambleWords = ["problem"],
-  maskChar = "#",
   marginNote = "Some Curiosity\nDifferent Problems.",
   scrollTarget = "#mindset",
   className,
@@ -407,18 +244,6 @@ const PrismaHero = ({
               style={{ color: "rgba(225, 224, 204, 0.85)" }}
             >
               {eyebrow}
-            </p>
-            <h1 className="font-display font-bold leading-[0.95] tracking-[-0.02em] text-white text-[clamp(2.25rem,7vw,5.25rem)]">
-              <WordsPullUp
-                text={title}
-                accentWords={accentWords}
-                accentClassName={accentClassName}
-                scrambleWords={scrambleWords}
-                maskChar={maskChar}
-              />
-            </h1>
-            <p className="mt-8 text-[13px] uppercase tracking-[0.25em] text-white/55 sm:text-sm md:mt-12 md:text-[22px] md:tracking-[0.35em]">
-              {meta}
             </p>
           </div>
 

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Route, Routes, useLocation, useNavigate } from "react-router";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { CinematicFooter } from "@/components/ui/motion-footer";
@@ -217,7 +218,7 @@ function Portfolio() {
         />
 
         {/* Page gutters — 120px sides on desktop, hero stays full-bleed */}
-        <div className="px-5 md:px-[120px]">
+        <div className="px-6 md:px-[120px]">
 
         {/* CHAPTER 02 — SELECTED WORK */}
         <section id="work" ref={workRef} className="py-16 md:py-24">
@@ -240,7 +241,7 @@ function Portfolio() {
               items={looks}
               autoplay
               autoplayDelay={5000}
-              gutterPx={{ base: 20, md: 120 }}
+              gutterPx={{ base: 24, md: 120 }}
             />
             <div className="absolute bottom-20 left-1/2 z-10 -translate-x-1/2 origin-center scale-90 md:bottom-10 md:left-auto md:right-[120px] md:translate-x-0 md:origin-bottom-right md:scale-100">
               <ImagesBadge
@@ -267,30 +268,90 @@ function Portfolio() {
         {/* CHAPTER 04 — HOW I BUILD */}
         <HowIBuild />
 
-        {/* CHAPTER 05 — THE LAB */}
-        <Lab />
+        </div>
 
-        {/* CHAPTER 06 — WHAT'S NEXT */}
-        <section id="contact" className="py-16 md:py-24 max-w-6xl mx-auto snap-start">
-          <div className="rounded-3xl border border-white/10 bg-white/[0.02] p-8 md:p-14 text-center">
-            <p className="text-[11px] tracking-[0.3em] uppercase text-neutral-400">What&apos;s next</p>
-            <h2 className="font-display mt-4 text-[10vw] sm:text-5xl md:text-6xl font-bold leading-[0.95] tracking-[-0.02em] text-white">
-              What should
-              <br />
-              we build next?
-            </h2>
-            <p className="mt-4 text-neutral-400 max-w-lg mx-auto">
-              I&apos;m looking for difficult problems, ambitious teams and
-              opportunities to turn ideas into something real.
+        {/* LAB + CONTACT share one moon canvas, blended per reference */}
+        <div className="relative ml-[calc(50%-50vw)] w-screen overflow-hidden">
+          <img
+            src="/art/contact-moon.webp"
+            alt=""
+            aria-hidden
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover [object-position:50%_68%] max-sm:[object-position:85%_50%]"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(to bottom, var(--background) 0%, transparent 18%)",
+            }}
+          />
+          <div
+            aria-hidden
+            className="noise-overlay pointer-events-none absolute inset-0 opacity-40 mix-blend-overlay"
+          />
+          <div className="relative z-10 px-6 md:px-[120px]">
+
+          {/* CHAPTER 05 — THE LAB */}
+          <Lab />
+
+          {/* CHAPTER 06 — WHAT'S NEXT */}
+          <section id="contact" className="relative snap-start">
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/60 via-black/15 to-transparent"
+            />
+
+            <p
+              aria-hidden
+              className="font-hand absolute right-8 top-16 hidden w-36 rotate-3 whitespace-pre-line text-right text-3xl leading-tight text-[#E1E0CC]/70 lg:block"
+            >
+              {"Onward.\nTogether."}
             </p>
-            <a href="mailto:hello@abhinesh.design" className="inline-block mt-8 px-10 py-5 rounded-full bg-white text-black font-bold text-sm hover:bg-neutral-200 transition-colors">
-              LET&apos;S TALK ↗
-            </a>
-            <p className="mt-6 text-[11px] tracking-[0.3em] uppercase text-[#FF4B16]">
-              Better ideas ahead.
-            </p>
+
+            <div className="relative z-10 w-full py-16 md:py-24">
+              <p className="text-[11px] uppercase tracking-[0.3em] text-neutral-300">
+                05&nbsp;&nbsp;/&nbsp;&nbsp;What&apos;s next
+              </p>
+              <h2 className="font-display mt-4 max-w-3xl text-[10vw] font-bold leading-[0.95] tracking-[-0.02em] text-white sm:text-6xl lg:text-7xl">
+                What should
+                <br />
+                we build next?
+              </h2>
+              <p className="mt-6 max-w-xl text-base leading-relaxed text-neutral-300 md:text-lg">
+                I&apos;m looking for difficult problems, ambitious teams and
+                opportunities to turn ideas into something real.
+              </p>
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <a
+                  href="mailto:hello@abhinesh.design"
+                  className="group inline-flex items-center gap-2 rounded-full bg-white py-1.5 pl-6 pr-1.5 text-sm font-bold text-black transition-all hover:gap-3 sm:text-base"
+                >
+                  Let&apos;s talk
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-black transition-transform group-hover:scale-110 sm:h-10 sm:w-10">
+                    <ArrowRight className="h-4 w-4 text-[#FF4B16]" />
+                  </span>
+                </a>
+                <a
+                  href="#"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10 sm:text-base"
+                >
+                  View resume
+                  <ArrowUpRight className="h-4 w-4" />
+                </a>
+              </div>
+            </div>
+          </section>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-48"
+            style={{
+              background:
+                "linear-gradient(to top, var(--background) 0%, transparent 100%)",
+            }}
+          />
           </div>
-        </section>
         </div>
     </main>
   );

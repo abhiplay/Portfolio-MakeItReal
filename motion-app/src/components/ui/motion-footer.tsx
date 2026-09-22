@@ -401,7 +401,7 @@ export function CinematicFooter({
           </div>
 
           {/* 3. Bottom Bar / Credits */}
-          <div className="relative z-20 w-full pb-8 px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="relative z-20 w-full pb-8 px-6 sm:px-8 md:px-[120px] flex flex-col md:flex-row items-center justify-between gap-6">
 
             {/* Copyright */}
             <div className="text-muted-foreground text-[10px] md:text-xs font-semibold tracking-widest uppercase order-2 md:order-1">
