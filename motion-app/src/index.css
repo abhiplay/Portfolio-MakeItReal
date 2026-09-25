@@ -145,6 +145,11 @@ body::-webkit-scrollbar,
   font-family: 'Space Grotesk', sans-serif;
 }
 
+/* Condensed black for the About statement (reference voice). */
+.font-condensed {
+  font-family: 'Anton', sans-serif;
+}
+
 /* Dissolves a media frame into the page on all four sides. */
 .fade-all-sides {
   -webkit-mask-image: radial-gradient(ellipse 95% 95% at 50% 50%, black 45%, transparent 92%);

@@ -6,6 +6,7 @@ import { CinematicFooter } from "@/components/ui/motion-footer";
 import { PrismaHero } from "@/components/ui/prisma-hero";
 import { SiteHeader } from "@/components/ui/site-header";
 import { Mindset } from "@/components/ui/mindset";
+import { About } from "@/components/ui/about";
 import { HowIBuild } from "@/components/ui/how-i-build";
 import { Lab } from "@/components/ui/lab";
 import { ImagesBadge } from "@/components/ui/images-badge";
@@ -222,8 +223,11 @@ function Portfolio() {
           }
         />
 
+        {/* ABOUT — cream editorial band, directly below the hero */}
+        <About />
+
         {/* Page gutters — 120px sides on desktop, hero stays full-bleed */}
-        <div className="px-6 md:px-[120px]">
+        <div className="px-6 sm:px-8 md:px-[120px]">
 
         {/* CHAPTER 02 — SELECTED WORK */}
         <section id="work" ref={workRef} className="py-16 md:py-24">
@@ -296,7 +300,7 @@ function Portfolio() {
             aria-hidden
             className="noise-overlay pointer-events-none absolute inset-0 opacity-40 mix-blend-overlay"
           />
-          <div className="relative z-10 px-6 md:px-[120px]">
+          <div className="relative z-10 px-6 sm:px-8 md:px-[120px]">
 
           {/* CHAPTER 05 — THE LAB */}
           <Lab />

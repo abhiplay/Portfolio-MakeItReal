@@ -12,7 +12,7 @@ const LINKS = [
   { label: "Work", href: "#work" },
   { label: "Process", href: "#build" },
   { label: "Play", href: "#lab" },
-  { label: "About", href: "#contact" },
+  { label: "About", href: "#about" },
 ];
 
 export function SiteHeader() {
