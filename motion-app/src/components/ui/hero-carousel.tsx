@@ -221,6 +221,7 @@ export function HeroCarousel({
       ref={stageRef}
       tabIndex={0}
       role="group"
+      data-lenis-prevent
       aria-roledescription="carousel"
       aria-label="Selected work"
       onKeyDown={(e) => {

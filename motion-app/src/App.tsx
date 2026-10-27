@@ -11,6 +11,8 @@ import { HowIBuild } from "@/components/ui/how-i-build";
 import { Lab } from "@/components/ui/lab";
 import { ImagesBadge } from "@/components/ui/images-badge";
 import { IntroSequence } from "@/components/ui/intro-sequence";
+import { destroyLenis, getLenis, initLenis } from "@/lib/lenis";
+import { useHeroAboutParallax } from "@/lib/use-hero-about-parallax";
 import { AllProjects } from "@/pages/all-projects";
 import { HeroCarousel, type HeroCarouselItem } from "@/components/ui/hero-carousel";
 import {
@@ -132,6 +134,7 @@ function Portfolio() {
   );
   const preview = useHoverPreview(previewItems);
   const navigate = useNavigate();
+  useHeroAboutParallax();
 
   // Intro autoplay: overlay plays first, hero copy appears 1s after reveal.
   const [introDone, setIntroDone] = useState(false);
@@ -371,12 +374,18 @@ function Portfolio() {
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
-    window.scrollTo(0, 0);
+    const lenis = getLenis();
+    if (lenis) lenis.scrollTo(0, { immediate: true });
+    else window.scrollTo(0, 0);
   }, [pathname]);
   return null;
 }
 
 export default function App() {
+  useEffect(() => {
+    initLenis();
+    return () => destroyLenis();
+  }, []);
   return (
     <div className="dark relative w-full bg-background min-h-screen font-sans selection:bg-white/20 overflow-x-hidden">
       <HoverPreviewStyles />

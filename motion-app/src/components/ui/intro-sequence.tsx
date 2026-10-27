@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { BlurReveal } from "@/components/ui/blur-reveal";
+import { getLenis } from "@/lib/lenis";
 import { cn } from "@/lib/utils";
 
 /* ---------------- Intro autoplay sequence ----------------
@@ -58,8 +59,10 @@ export function IntroSequence({ onDone, className }: IntroSequenceProps) {
     if (reduce) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    getLenis()?.stop();
     return () => {
       document.body.style.overflow = prev;
+      getLenis()?.start();
     };
   }, [reduce]);
 

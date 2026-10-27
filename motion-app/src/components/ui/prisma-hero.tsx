@@ -5,6 +5,7 @@ import { useRef } from "react";
 import { motion, useInView } from "motion/react";
 import { ArrowDown, ArrowRight } from "lucide-react";
 import { LoopVideo } from "@/components/ui/loop-video";
+import { getLenis } from "@/lib/lenis";
 import { cn } from "@/lib/utils";
 
 /* ---------------- WordsPullUp ---------------- */
@@ -126,14 +127,22 @@ interface PrismaHeroProps {
 const easeInCubic = (t: number) => t * t * t;
 
 /* Smooth-scrolls to an in-page anchor with ease-in. Returns false for
-   external links (mailto etc.) or missing targets so default behavior applies. */
+   external links (mailto etc.) or missing targets so default behavior applies.
+   Rides Lenis when it is running, with the manual rAF fallback otherwise. */
 export function smoothScrollToHref(href: string): boolean {
   if (!href.startsWith("#") || href.length < 2) return false;
   if (typeof window === "undefined" || typeof document === "undefined") return false;
   const el = document.querySelector(href);
   if (!el) return false;
   const targetY = el.getBoundingClientRect().top + window.scrollY;
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const lenis = getLenis();
+  if (lenis) {
+    if (reduce) lenis.scrollTo(targetY, { immediate: true });
+    else lenis.scrollTo(targetY, { duration: 1.1, easing: easeInCubic });
+    return true;
+  }
+  if (reduce) {
     window.scrollTo(0, targetY);
     return true;
   }
@@ -182,7 +191,7 @@ const PrismaHero = ({
 }: PrismaHeroProps) => {
   return (
     <section className={cn("w-full", className)}>
-      <div className="relative h-[100vh] min-h-[620px] w-full overflow-hidden snap-start">
+      <div className="relative h-[100vh] min-h-[620px] w-full overflow-hidden snap-start" data-hp-stage="hero">
 
         {/* Background image (fallback / poster underneath the video) */}
         <img
@@ -197,6 +206,7 @@ const PrismaHero = ({
           src={backgroundVideo}
           poster={backgroundImage}
           fadeToBlack={0.8}
+          dataHp="hero-video"
           className="absolute inset-0 h-full w-full"
           videoClassName="[object-position:50%_15%] max-sm:[object-position:63%_15%]"
         />
@@ -241,7 +251,7 @@ const PrismaHero = ({
         </p>
 
         {/* Hero content — title top, description + CTAs bottom-right */}
-        <div className="absolute inset-0 flex flex-col justify-between px-6 pt-32 pb-6 sm:px-8 sm:pb-8 sm:pt-32 md:px-[120px] md:pb-12 md:pt-40">
+        <div data-hp="hero-copy" className="absolute inset-0 flex flex-col justify-between px-6 pt-32 pb-6 sm:px-8 sm:pb-8 sm:pt-32 md:px-[120px] md:pb-12 md:pt-40">
 
           <div>
             <p
@@ -311,6 +321,7 @@ const PrismaHero = ({
 
         {/* Scroll cue — bottom-left, eased scroll into the next chapter */}
         <button
+          data-hp="hero-cue"
           onClick={() => smoothScrollToHref(scrollTarget)}
           disabled={!copyVisible}
           className={`absolute bottom-6 left-6 z-10 flex items-center gap-4 text-xs uppercase tracking-[0.35em] transition-all duration-700 sm:bottom-8 sm:left-8 md:bottom-12 md:left-[120px] ${copyVisible ? "text-[#E1E0CC]/55 hover:text-[#E1E0CC]" : "pointer-events-none opacity-0 blur-md"}`}

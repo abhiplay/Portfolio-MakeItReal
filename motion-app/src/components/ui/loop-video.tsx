@@ -14,6 +14,8 @@ interface LoopVideoProps {
   className?: string;
   /** Extra classes for the inner video layer(s) (e.g. object-position). */
   videoClassName?: string;
+  /** Pass-through marker for scroll choreography (rendered as data-hp). */
+  dataHp?: string;
   poster?: string;
   /** Crossfade length in seconds. */
   fadeDuration?: number;
@@ -26,6 +28,7 @@ export function LoopVideo({
   src,
   className,
   videoClassName,
+  dataHp,
   poster,
   fadeDuration = 0.6,
   fadeToBlack = 0,
@@ -36,6 +39,7 @@ export function LoopVideo({
         src={src}
         className={className}
         videoClassName={videoClassName}
+        dataHp={dataHp}
         poster={poster}
         fadeSeconds={fadeToBlack}
       />
@@ -46,6 +50,7 @@ export function LoopVideo({
       src={src}
       className={className}
       videoClassName={videoClassName}
+      dataHp={dataHp}
       poster={poster}
       fadeDuration={fadeDuration}
     />
@@ -61,12 +66,14 @@ function FadeBlackLoop({
   src,
   className,
   videoClassName,
+  dataHp,
   poster,
   fadeSeconds,
 }: {
   src: string;
   className?: string;
   videoClassName?: string;
+  dataHp?: string;
   poster?: string;
   fadeSeconds: number;
 }) {
@@ -105,7 +112,7 @@ function FadeBlackLoop({
   }, [fadeSeconds]);
 
   return (
-    <div className={cn("relative overflow-hidden", className)}>
+    <div className={cn("relative overflow-hidden", className)} data-hp={dataHp}>
       <video
         ref={videoRef}
         muted
@@ -135,12 +142,14 @@ function CrossfadeLoop({
   src,
   className,
   videoClassName,
+  dataHp,
   poster,
   fadeDuration,
 }: {
   src: string;
   className?: string;
   videoClassName?: string;
+  dataHp?: string;
   poster?: string;
   fadeDuration: number;
 }) {
@@ -201,7 +210,7 @@ function CrossfadeLoop({
     "absolute inset-0 h-full w-full object-cover transition-opacity ease-linear";
 
   return (
-    <div className={cn("relative overflow-hidden", className)}>
+    <div className={cn("relative overflow-hidden", className)} data-hp={dataHp}>
       <video
         ref={aRef}
         muted

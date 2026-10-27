@@ -43,10 +43,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Section snap: scrolling settles each chapter into place.
-   Proximity (not mandatory) so it assists without trapping. */
+/* NOTE: no scroll-snap — it fights Lenis virtual scroll. Section
+   landings are handled by eased Lenis anchors instead. (Leftover
+   `snap-start` classes in markup are inert.) */
 html {
-  scroll-snap-type: y proximity;
   /* Global type scale-down: all rem-based type renders ~12% smaller. */
   font-size: 14px;
 }

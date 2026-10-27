@@ -19,6 +19,7 @@ export function About() {
   return (
     <section
       id="about"
+      data-hp-stage="about"
       className="relative ml-[calc(50%-50vw)] w-screen snap-start overflow-hidden bg-[#F4F0E8] text-neutral-900"
     >
       <div className="relative z-10 px-6 py-20 sm:px-8 md:px-[120px] md:py-28">
@@ -33,7 +34,7 @@ export function About() {
         </div>
 
         <div className="mt-10 grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
-          <div>
+          <div data-hp="about-head">
             <h2 className="font-condensed max-w-xl text-[clamp(2.75rem,6vw,5.5rem)] uppercase leading-[0.95] tracking-tight text-neutral-950">
               <WordsPullUp text={"I LIKE GETTING\nCLOSE TO\nTHE WORK."} />
             </h2>
@@ -71,7 +72,7 @@ export function About() {
             </svg>
           </div>
 
-          <div className="relative">
+          <div className="relative" data-hp="about-polaroids">
             <p className="font-hand absolute -top-14 right-2 hidden w-40 -rotate-3 whitespace-pre-line text-right text-2xl leading-tight text-neutral-800 sm:block">
               {"Ideas\nSketches\nCoffee\nProgress"}
             </p>
@@ -88,7 +89,7 @@ export function About() {
               <path d="M42 40 L50 49 L54 38" />
             </svg>
 
-            <div className="rotate-[1.5deg] bg-white p-3 pb-4 shadow-[0_18px_50px_rgba(0,0,0,0.25)]">
+            <div className="w-full max-w-md rotate-[1.5deg] bg-white p-3 pb-4 shadow-[0_18px_50px_rgba(0,0,0,0.25)]">
               <img
                 src={PHOTO}
                 alt="Wall of sketches, wireframes and sticky notes"
@@ -96,17 +97,6 @@ export function About() {
                 onError={hideOnError}
                 className="aspect-[4/3] w-full object-cover"
                 style={{ objectPosition: "72% 22%" }}
-              />
-            </div>
-
-            <div className="relative z-10 -mt-10 ml-auto w-[72%] rotate-[-2deg] bg-white p-3 pb-4 shadow-[0_18px_50px_rgba(0,0,0,0.28)]">
-              <img
-                src={PHOTO}
-                alt="Abhinesh at his desk reviewing product designs on a laptop"
-                loading="lazy"
-                onError={hideOnError}
-                className="aspect-[4/3] w-full object-cover"
-                style={{ objectPosition: "52% 82%" }}
               />
               <p className="font-hand whitespace-pre-line px-1 pt-3 text-2xl leading-tight text-neutral-800">
                 {"Same curiosity.\nDifferent problems."}
@@ -121,6 +111,7 @@ export function About() {
         alt=""
         aria-hidden
         loading="lazy"
+        data-hp="about-mountains"
         onError={hideOnError}
         className="pointer-events-none absolute bottom-0 right-0 z-0 hidden w-[min(620px,52vw)] lg:block"
       />
