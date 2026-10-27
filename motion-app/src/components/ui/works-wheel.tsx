@@ -33,13 +33,6 @@ export interface WorksWheelProps extends Omit<
   label?: string;
   /** Label on the card's hover affordance. Omit to drop it. @default undefined */
   action?: string;
-  /** Scroll-driven mode: a ref holding the wheel position (0..count), written
-      from the page's scroll each frame. Turns off the built-in wheel/drag
-      capture so the page keeps scrolling fluidly - the wheel is scrubbed by
-      the scroll, not steering it. */
-  scrollTurn?: React.RefObject<number>;
-  /** Where an index click should send the scroll (scroll-driven mode only). */
-  onSeek?: (turn: number) => void;
 }
 
 /* Geometry. The card is measured against the stage; everything else is measured
@@ -111,8 +104,6 @@ export function WorksWheel({
   items,
   label = "Works '26",
   action = "View",
-  scrollTurn,
-  onSeek,
   className,
   ...props
 }: WorksWheelProps) {
@@ -186,16 +177,9 @@ export function WorksWheel({
 
     const draw = () => {
       frame = requestAnimationFrame(draw);
-      if (scrollTurn) {
-        // Scrubbed: the scroll position IS the wheel position. No easing to
-        // fight the scroll, no settle snap - Lenis smooths the scroll itself,
-        // so the drum turns exactly as fluidly as the page moves.
-        turn.current = scrollTurn.current;
-      } else {
-        const gap = target.current - turn.current;
-        if (Math.abs(gap) < 0.0005) turn.current = target.current;
-        else turn.current += gap * (reduced ? 1 : EASE);
-      }
+      const gap = target.current - turn.current;
+      if (Math.abs(gap) < 0.0005) turn.current = target.current;
+      else turn.current += gap * (reduced ? 1 : EASE);
 
       const t = turn.current;
       const m = clamp(t, 0, 1);
@@ -239,7 +223,7 @@ export function WorksWheel({
 
     frame = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(frame);
-  }, [metrics, stage.h, count, last, reduced, scrollTurn]);
+  }, [metrics, stage.h, count, last, reduced]);
 
   const to = React.useCallback(
     (next: number) => {
@@ -254,9 +238,6 @@ export function WorksWheel({
   React.useEffect(() => {
     const el = stageRef.current;
     if (!el) return;
-    // Scroll-driven mode never steals the wheel: the page's own (Lenis-smoothed)
-    // scroll drives the drum, so the reader scrolls straight through.
-    if (scrollTurn) return;
     const onWheel = (event: WheelEvent) => {
       const next = target.current + event.deltaY / WHEEL_UNITS;
       if (next > 0 && next < last + 1) event.preventDefault();
@@ -276,7 +257,7 @@ export function WorksWheel({
       el.removeEventListener("wheel", onWheel);
       window.clearTimeout(settling.current);
     };
-  }, [to, last, scrollTurn]);
+  }, [to, last]);
 
   const drag = React.useRef<number | null>(null);
   const settling = React.useRef(0);
@@ -296,30 +277,27 @@ export function WorksWheel({
         role="listbox"
         aria-label={label}
         aria-activedescendant={`works-wheel-${active}`}
-        data-lenis-prevent={scrollTurn ? undefined : "true"}
-        className={cn(
-          "focus-visible:outline-foreground absolute inset-0 outline-none focus-visible:outline-2 focus-visible:-outline-offset-4 touch-pan-x",
-          scrollTurn ? "cursor-default" : "cursor-grab active:cursor-grabbing",
-        )}
+        /* Adaptation for this site: Lenis runs the page's smooth scroll.
+           Without this marker Lenis would scroll the page AND the wheel would
+           turn on the same gesture - the fight reads as choppy scrolling. */
+        data-lenis-prevent
+        className="focus-visible:outline-foreground absolute inset-0 cursor-grab touch-pan-x outline-none focus-visible:outline-2 focus-visible:-outline-offset-4 active:cursor-grabbing"
         style={{ perspective: `${metrics.depth}px` }}
         onPointerDown={(event) => {
-          if (scrollTurn) return;
           drag.current = event.clientY;
           event.currentTarget.setPointerCapture(event.pointerId);
         }}
         onPointerMove={(event) => {
-          if (drag.current === null || scrollTurn) return;
+          if (drag.current === null) return;
           to(target.current + (drag.current - event.clientY) / DRAG_UNITS);
           drag.current = event.clientY;
         }}
         onPointerUp={() => {
           // Land on an item rather than between two.
           drag.current = null;
-          if (scrollTurn) return;
           if (target.current > 1) to(Math.round(target.current));
         }}
         onKeyDown={(event) => {
-          if (scrollTurn) return;
           if (event.key === "ArrowDown") to(Math.round(target.current) + 1);
           else if (event.key === "ArrowUp") to(Math.round(target.current) - 1);
           else return;
@@ -410,9 +388,7 @@ export function WorksWheel({
           <li key={item.title}>
             <button
               type="button"
-              onClick={() =>
-                scrollTurn && onSeek ? onSeek(i + 1) : to(i + 1)
-              }
+              onClick={() => to(i + 1)}
               className={cn(
                 "focus-visible:outline-foreground cursor-pointer transition-colors outline-none focus-visible:outline-1",
                 i === active && "text-foreground font-medium",

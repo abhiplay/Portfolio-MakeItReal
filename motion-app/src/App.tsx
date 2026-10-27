@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Route, Routes, useLocation, useNavigate } from "react-router";
-import { motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { CinematicFooter } from "@/components/ui/motion-footer";
 import { PrismaHero } from "@/components/ui/prisma-hero";
 import { SiteHeader } from "@/components/ui/site-header";
@@ -166,37 +166,6 @@ function Portfolio() {
     [],
   );
 
-  // The wheel is scrubbed by scroll, not wheel-hijacked: a tall runway
-  // provides the scroll distance, the stage sticks, and progress 0..1 maps
-  // onto the wheel position 0..count (ring → drum → every item fronted).
-  const runwayRef = useRef<HTMLDivElement>(null);
-  const wheelTurn = useRef(0);
-  const { scrollYProgress: wheelProgress } = useScroll({
-    target: runwayRef,
-    offset: ["start start", "end end"],
-  });
-  useMotionValueEvent(wheelProgress, "change", (v) => {
-    // Reduced motion: no pin journey - the wheel rests on the first item.
-    if (reduceMotion) {
-      wheelTurn.current = 1;
-      return;
-    }
-    // Lead-in hold: the first ~8% of the runway keeps the ring at rest,
-    // so it registers for a beat before the drum starts turning.
-    const p = Math.min(Math.max((v - 0.08) / 0.92, 0), 1);
-    wheelTurn.current = p * WORK.length;
-  });
-  const seekWheel = (turn: number) => {
-    const runway = runwayRef.current;
-    if (!runway) return;
-    const top = runway.getBoundingClientRect().top + window.scrollY;
-    const max = Math.max(runway.offsetHeight - window.innerHeight, 1);
-    const y = top + max * (turn / WORK.length);
-    const lenis = getLenis();
-    if (lenis) lenis.scrollTo(y, { duration: 1.2, easing: (t) => 1 - Math.pow(1 - t, 3) });
-    else window.scrollTo({ top: y, behavior: "smooth" });
-  };
-
   return (
     <>
     <main className="relative z-10 bg-background border-b border-white/10 shadow-md rounded-b-3xl">
@@ -257,47 +226,24 @@ function Portfolio() {
 
         {/* CHAPTER 02 — SELECTED WORK */}
         <section id="work" ref={workRef} className="py-10 md:py-16">
-          <div
-            ref={runwayRef}
-            className={
-              reduceMotion
-                ? "relative ml-[calc(50%-50vw)] w-screen"
-                : "relative ml-[calc(50%-50vw)] h-[300vh] w-screen"
-            }
+          <motion.div
+            style={reduceMotion ? undefined : { scale: stageScale }}
+            className="relative ml-[calc(50%-50vw)] h-[100vh] min-h-[560px] w-screen"
           >
-            <div
-              className={
-                reduceMotion
-                  ? "relative h-screen min-h-[520px]"
-                  : "sticky top-0 h-screen min-h-[520px]"
-              }
-            >
-              <motion.div
-                style={reduceMotion ? undefined : { scale: stageScale }}
-                className="relative h-full w-full"
-              >
-                <WorksWheel
-                  items={wheelItems}
-                  label="Works '26"
-                  action="View"
-                  scrollTurn={wheelTurn}
-                  onSeek={seekWheel}
+            <WorksWheel items={wheelItems} label="Works '26" action="View" />
+            <div className="pointer-events-none absolute bottom-10 left-1/2 z-10 -translate-x-1/2 origin-center scale-90 md:bottom-12 md:left-auto md:right-[60px] md:translate-x-0 md:origin-bottom-right md:scale-100">
+              <span className="pointer-events-auto">
+                <ImagesBadge
+                  images={WORK.map((p) => ({
+                    src: p.img.replace("w=1200", "w=200"),
+                    alt: p.title,
+                  }))}
+                  label="View all projects"
+                  onClick={() => navigate("/allprojects")}
                 />
-              </motion.div>
-              <div className="pointer-events-none absolute bottom-10 left-1/2 z-10 -translate-x-1/2 origin-center scale-90 md:bottom-12 md:left-auto md:right-[60px] md:translate-x-0 md:origin-bottom-right md:scale-100">
-                <span className="pointer-events-auto">
-                  <ImagesBadge
-                    images={WORK.map((p) => ({
-                      src: p.img.replace("w=1200", "w=200"),
-                      alt: p.title,
-                    }))}
-                    label="View all projects"
-                    onClick={() => navigate("/allprojects")}
-                  />
-                </span>
-              </div>
+              </span>
             </div>
-          </div>
+          </motion.div>
           <PreviewCard
             data={preview.activePreview}
             position={preview.position}
