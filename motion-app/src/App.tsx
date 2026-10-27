@@ -176,7 +176,15 @@ function Portfolio() {
     offset: ["start start", "end end"],
   });
   useMotionValueEvent(wheelProgress, "change", (v) => {
-    wheelTurn.current = v * WORK.length;
+    // Reduced motion: no pin journey - the wheel rests on the first item.
+    if (reduceMotion) {
+      wheelTurn.current = 1;
+      return;
+    }
+    // Lead-in hold: the first ~8% of the runway keeps the ring at rest,
+    // so it registers for a beat before the drum starts turning.
+    const p = Math.min(Math.max((v - 0.08) / 0.92, 0), 1);
+    wheelTurn.current = p * WORK.length;
   });
   const seekWheel = (turn: number) => {
     const runway = runwayRef.current;
@@ -251,9 +259,19 @@ function Portfolio() {
         <section id="work" ref={workRef} className="py-10 md:py-16">
           <div
             ref={runwayRef}
-            className="relative ml-[calc(50%-50vw)] h-[300vh] w-screen"
+            className={
+              reduceMotion
+                ? "relative ml-[calc(50%-50vw)] w-screen"
+                : "relative ml-[calc(50%-50vw)] h-[300vh] w-screen"
+            }
           >
-            <div className="sticky top-[9vh] h-[82vh] min-h-[520px]">
+            <div
+              className={
+                reduceMotion
+                  ? "relative h-screen min-h-[520px]"
+                  : "sticky top-0 h-screen min-h-[520px]"
+              }
+            >
               <motion.div
                 style={reduceMotion ? undefined : { scale: stageScale }}
                 className="relative h-full w-full"
@@ -266,7 +284,7 @@ function Portfolio() {
                   onSeek={seekWheel}
                 />
               </motion.div>
-              <div className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 origin-center scale-90 md:bottom-8 md:left-auto md:right-[60px] md:translate-x-0 md:origin-bottom-right md:scale-100">
+              <div className="pointer-events-none absolute bottom-10 left-1/2 z-10 -translate-x-1/2 origin-center scale-90 md:bottom-12 md:left-auto md:right-[60px] md:translate-x-0 md:origin-bottom-right md:scale-100">
                 <span className="pointer-events-auto">
                   <ImagesBadge
                     images={WORK.map((p) => ({
