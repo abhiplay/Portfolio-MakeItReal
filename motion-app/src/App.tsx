@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Route, Routes, useLocation, useNavigate } from "react-router";
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { CinematicFooter } from "@/components/ui/motion-footer";
 import { PrismaHero } from "@/components/ui/prisma-hero";
 import { SiteHeader } from "@/components/ui/site-header";
@@ -14,7 +14,7 @@ import { IntroSequence } from "@/components/ui/intro-sequence";
 import { destroyLenis, getLenis, initLenis } from "@/lib/lenis";
 import { useHeroAboutParallax } from "@/lib/use-hero-about-parallax";
 import { AllProjects } from "@/pages/all-projects";
-import { HeroCarousel, type HeroCarouselItem } from "@/components/ui/hero-carousel";
+import { WorksWheel, type WorksWheelItem } from "@/components/ui/works-wheel";
 import {
   HoverLink,
   PreviewCard,
@@ -159,20 +159,35 @@ function Portfolio() {
     [0.965, 1, 1, 0.985],
   );
 
-  // Selected Work → filmstrip items. Backdrop ambience stays separate
-  // from the card covers by design.
-  const looks: HeroCarouselItem[] = useMemo(
-    () =>
-      HOME_WORK.map((p) => ({
-        title: p.cardTitle ?? p.title,
-        image: p.img,
-        backdrop: p.backdrop,
-        credit: p.tag.toUpperCase(),
-        meta: [(p.category ?? p.tag).toUpperCase(), "CASE STUDY"],
-        accent: p.accent,
-      })),
+  // Selected Work → wheel items. The whole index rides the wheel; the
+  // full archive still lives on /allprojects behind the badge below.
+  const wheelItems: WorksWheelItem[] = useMemo(
+    () => WORK.map((p) => ({ title: p.title, image: p.img })),
     [],
   );
+
+  // The wheel is scrubbed by scroll, not wheel-hijacked: a tall runway
+  // provides the scroll distance, the stage sticks, and progress 0..1 maps
+  // onto the wheel position 0..count (ring → drum → every item fronted).
+  const runwayRef = useRef<HTMLDivElement>(null);
+  const wheelTurn = useRef(0);
+  const { scrollYProgress: wheelProgress } = useScroll({
+    target: runwayRef,
+    offset: ["start start", "end end"],
+  });
+  useMotionValueEvent(wheelProgress, "change", (v) => {
+    wheelTurn.current = v * WORK.length;
+  });
+  const seekWheel = (turn: number) => {
+    const runway = runwayRef.current;
+    if (!runway) return;
+    const top = runway.getBoundingClientRect().top + window.scrollY;
+    const max = Math.max(runway.offsetHeight - window.innerHeight, 1);
+    const y = top + max * (turn / WORK.length);
+    const lenis = getLenis();
+    if (lenis) lenis.scrollTo(y, { duration: 1.2, easing: (t) => 1 - Math.pow(1 - t, 3) });
+    else window.scrollTo({ top: y, behavior: "smooth" });
+  };
 
   return (
     <>
@@ -233,39 +248,38 @@ function Portfolio() {
         <div className="px-6 sm:px-8 md:px-[120px]">
 
         {/* CHAPTER 02 — SELECTED WORK */}
-        <section id="work" ref={workRef} className="py-16 md:py-24">
-          <p className="text-[10px] uppercase tracking-[0.3em] text-neutral-300 sm:text-[11px]">
-            Selected work
-          </p>
-                <h2 className="font-display mt-3 max-w-4xl text-3xl font-bold leading-[0.95] tracking-[-0.02em] text-white sm:mt-4 sm:text-4xl lg:text-5xl">
-                  Real problems.
-                  <br />
-                  Real products.
-                </h2>
-          <p className="mt-4 max-w-xl text-sm leading-relaxed text-neutral-300 sm:mt-6 md:text-lg">
-            A few problems I&apos;ve had the chance to get my hands dirty with.
-          </p>
-          <motion.div
-            style={reduceMotion ? undefined : { scale: stageScale }}
-            className="relative ml-[calc(50%-50vw)] mt-10 h-[100vh] min-h-[560px] w-screen snap-start"
+        <section id="work" ref={workRef} className="py-10 md:py-16">
+          <div
+            ref={runwayRef}
+            className="relative ml-[calc(50%-50vw)] h-[300vh] w-screen"
           >
-            <HeroCarousel
-              items={looks}
-              autoplay
-              autoplayDelay={5000}
-              gutterPx={{ base: 24, md: 120 }}
-            />
-            <div className="absolute bottom-20 left-1/2 z-10 -translate-x-1/2 origin-center scale-90 md:bottom-10 md:left-auto md:right-[120px] md:translate-x-0 md:origin-bottom-right md:scale-100">
-              <ImagesBadge
-                images={WORK.map((p) => ({
-                  src: p.img.replace("w=1200", "w=200"),
-                  alt: p.title,
-                }))}
-                label="View all projects"
-                onClick={() => navigate("/allprojects")}
-              />
+            <div className="sticky top-[9vh] h-[82vh] min-h-[520px]">
+              <motion.div
+                style={reduceMotion ? undefined : { scale: stageScale }}
+                className="relative h-full w-full"
+              >
+                <WorksWheel
+                  items={wheelItems}
+                  label="Works '26"
+                  action="View"
+                  scrollTurn={wheelTurn}
+                  onSeek={seekWheel}
+                />
+              </motion.div>
+              <div className="pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 origin-center scale-90 md:bottom-8 md:left-auto md:right-[60px] md:translate-x-0 md:origin-bottom-right md:scale-100">
+                <span className="pointer-events-auto">
+                  <ImagesBadge
+                    images={WORK.map((p) => ({
+                      src: p.img.replace("w=1200", "w=200"),
+                      alt: p.title,
+                    }))}
+                    label="View all projects"
+                    onClick={() => navigate("/allprojects")}
+                  />
+                </span>
+              </div>
             </div>
-          </motion.div>
+          </div>
           <PreviewCard
             data={preview.activePreview}
             position={preview.position}
