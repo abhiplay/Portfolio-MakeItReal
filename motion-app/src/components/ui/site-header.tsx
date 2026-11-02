@@ -9,7 +9,7 @@ import { smoothScrollToHref } from "@/components/ui/prisma-hero";
    Let's-talk pill right. Transparent over the hero, fine over dark sections. */
 
 const LINKS = [
-  { label: "Work", href: "#work" },
+  { label: "Work", href: "/allprojects" },
   { label: "Process", href: "#build" },
   { label: "Play", href: "#lab" },
   { label: "About", href: "#about" },
@@ -67,6 +67,11 @@ export function SiteHeader() {
           href="#top"
           onClick={(e) => {
             e.preventDefault();
+            // From another page, go home; the route change scrolls to the top.
+            if (location.pathname !== "/") {
+              navigate("/");
+              return;
+            }
             if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
               window.scrollTo(0, 0);
             } else {
@@ -91,9 +96,12 @@ export function SiteHeader() {
           ))}
         </nav>
 
+        {/* Hidden on project pages, where the hero has its own Let's Talk button. */}
+        {!location.pathname.startsWith("/work/") && (
         <a
-          href="mailto:hello@abhinesh.design"
-          className="inline-flex items-center gap-2 justify-self-end rounded-full border border-white/10 bg-black px-6 py-2.5 text-base font-medium text-white transition-colors hover:border-white/25"
+          href="#contact"
+          onClick={goSection("#contact")}
+          className="inline-flex items-center gap-2 justify-self-end rounded-full border border-white/10 bg-black px-6 py-2.5 text-base font-medium text-white glass-hover"
         >
           <span className="relative">
             Let&apos;s talk
@@ -112,6 +120,7 @@ export function SiteHeader() {
           </span>
           <span aria-hidden className="h-2 w-2 rounded-full bg-[#FF4B16]" />
         </a>
+        )}
       </div>
     </header>
   );

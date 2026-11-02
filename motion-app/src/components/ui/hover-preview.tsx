@@ -31,7 +31,7 @@ const DEFAULT_ITEMS: PreviewMap = {
 
 const styles = `
   .hover-preview-scope {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: 'Hanken Grotesk', sans-serif;
   }
 
   .hover-preview-noise {
@@ -82,7 +82,7 @@ const styles = `
   .hover-link {
     color: #fff;
     font-weight: 700;
-    font-family: 'Syne', sans-serif;
+    font-family: 'Archivo', sans-serif;
     cursor: pointer;
     position: relative;
     display: inline-block;
@@ -145,7 +145,7 @@ const styles = `
     font-size: 0.85rem;
     color: #fff;
     font-weight: 600;
-    font-family: 'Syne', sans-serif;
+    font-family: 'Archivo', sans-serif;
   }
 
   .preview-card-subtitle {

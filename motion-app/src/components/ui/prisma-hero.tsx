@@ -177,7 +177,7 @@ const GRADE = {
 };
 
 const PrismaHero = ({
-  eyebrow = "Forward-deployed\nProduct Designer",
+  eyebrow = "Product Designer\nworking inside your team",
   title = "I MAKE SENSE\nOF MESSY THINGS.",
   description = DEFAULT_DESCRIPTION,
   primaryCta = { label: "View work", href: "#work" },
@@ -251,7 +251,7 @@ const PrismaHero = ({
         </p>
 
         {/* Hero content — title top, description + CTAs bottom-right */}
-        <div data-hp="hero-copy" className="absolute inset-0 flex flex-col justify-between px-6 pt-32 pb-6 sm:px-8 sm:pb-8 sm:pt-32 md:px-[120px] md:pb-12 md:pt-40">
+        <div data-hp="hero-copy" className="absolute inset-0 flex flex-col justify-between gap-8 px-6 pt-32 pb-6 max-md:justify-end sm:px-8 sm:pb-8 sm:pt-40 md:px-[120px] md:pb-12 md:pt-[220px]">
 
           <div>
             <p
@@ -298,7 +298,7 @@ const PrismaHero = ({
                   onClick={(e) => {
                     if (smoothScrollToHref(primaryCta.href)) e.preventDefault();
                   }}
-                  className="group inline-flex items-center gap-2 self-start rounded-full bg-primary py-1 pl-5 pr-1 text-sm font-medium text-black transition-all hover:gap-3 sm:text-base"
+                  className="group inline-flex items-center gap-2 self-start rounded-full bg-primary py-1 pl-5 pr-1 text-sm font-medium text-black glass-hover hover:gap-3 sm:text-base"
                 >
                   {primaryCta.label}
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-black transition-transform group-hover:scale-110 sm:h-10 sm:w-10">
@@ -308,7 +308,7 @@ const PrismaHero = ({
                 {secondaryCta ? (
                 <a
                   href={secondaryCta.href}
-                  className="inline-flex items-center self-start rounded-full border border-white/30 px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-white/10 sm:text-base"
+                  className="inline-flex items-center self-start rounded-full border border-white/30 px-6 py-3 text-sm font-medium text-white glass-hover sm:text-base"
                 >
                   {secondaryCta.label}
                 </a>

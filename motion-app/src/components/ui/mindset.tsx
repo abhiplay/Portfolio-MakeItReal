@@ -60,6 +60,7 @@ export function Mindset() {
           <div className="relative mt-8">
             <LoopVideo
               src="/art/cat-playing.mp4"
+              poster="/art/cat-poster.webp"
               className="fade-all-sides aspect-video w-full"
             />
             <div
