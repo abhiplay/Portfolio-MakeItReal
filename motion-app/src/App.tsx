@@ -9,6 +9,7 @@ import { Mindset } from "@/components/ui/mindset";
 import { About } from "@/components/ui/about";
 import { HowIBuild } from "@/components/ui/how-i-build";
 import { Lab } from "@/components/ui/lab";
+import { GithubContributionSkyline } from "@/components/ui/github-contribution-skyline";
 import { ImagesBadge } from "@/components/ui/images-badge";
 import { IntroSequence } from "@/components/ui/intro-sequence";
 import { destroyLenis, getLenis, initLenis } from "@/lib/lenis";
@@ -285,6 +286,11 @@ function Portfolio() {
 
           {/* CHAPTER 05 — THE LAB */}
           <Lab />
+
+          {/* Contribution skyline, below the lab. Real GitHub data once synced. */}
+          <div className="py-20 md:py-24">
+            <GithubContributionSkyline />
+          </div>
 
           {/* CHAPTER 06 — WHAT'S NEXT */}
           <section id="contact" className="relative snap-start">
