@@ -224,6 +224,7 @@ export const WORK: WorkItem[] = [
           tone: "paper",
           heading: "Making digital learning easier to navigate.",
           text: "The challenge was to translate educational requirements into a clear, accessible digital experience that works across different devices and user needs.",
+          image: "/projects/auroscholar-screen-1.webp",
           imageSide: "left",
         },
         {
@@ -243,6 +244,7 @@ export const WORK: WorkItem[] = [
           tone: "blush",
           heading: "Designed for different screens. Built around learners.",
           text: "The interfaces use clear visual hierarchy, intuitive navigation, and consistent design patterns to make learning easier to explore across platforms.",
+          image: "/projects/auroscholar-screen-2.webp",
           imageSide: "right",
         },
         {
