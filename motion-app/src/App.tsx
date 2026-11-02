@@ -104,13 +104,13 @@ export interface CaseStudyChapter {
   visual?:
     | { kind: "flow"; steps: string[] }
     | { kind: "stats"; stats: { icon: "users" | "school" | "sprout" | "heart"; value?: string; label: string }[] }
-    | { kind: "cards"; cards: { title: string; text: string }[] };
+    | { kind: "cards"; cards: { title: string; text: string; image?: string }[] };
 }
 
 export interface CaseStudy {
   meta: { label: string; value: string }[];
   chapters: CaseStudyChapter[];
-  closing: { heading: string; text: string; cta: { label: string; to: string } };
+  closing: { heading: string; text: string; image?: string; cta: { label: string; to: string } };
 }
 
 export const WORK: WorkItem[] = [
@@ -256,10 +256,22 @@ export const WORK: WorkItem[] = [
           visual: {
             kind: "cards",
             cards: [
-              { title: "Home", text: "Personalised learning pathways for every student." },
-              { title: "Learning Module", text: "Engaging, interactive content with rich media." },
-              { title: "Assessments", text: "Simple and clear question interface." },
-              { title: "Teacher Resources", text: "Tools to create and manage learning content." },
+              {
+                title: "Home",
+                text: "A central hub for learning, quizzes, progress, and rewards.",
+                image: "/projects/auroscholar-home.webp",
+              },
+              {
+                title: "Select Concepts",
+                text: "Choose your learning concepts and start topic-wise quizzes.",
+                image: "/projects/auroscholar-select-concepts.webp",
+              },
+              { title: "Assessments", text: "Simple and clear question interface.", image: "/projects/auroscholar-assessments.webp" },
+              {
+                title: "National Ranking",
+                text: "Recognising top learners at national, state, district, and school levels.",
+                image: "/projects/auroscholar-national-ranking.webp",
+              },
             ],
           },
         },
@@ -284,7 +296,8 @@ export const WORK: WorkItem[] = [
       closing: {
         heading: "Better digital experiences begin with understanding people.",
         text: "AuroScholar reflects my approach to product design: translating complex requirements into clear, thoughtful, and accessible experiences.",
-        cta: { label: "See all projects", to: "/allprojects" },
+        image: "/projects/auroscholar-closing.webp",
+        cta: { label: "Get the app", to: "https://play.google.com/store/apps/details?id=com.auro.application&hl=en_IN" },
       },
     },
   },

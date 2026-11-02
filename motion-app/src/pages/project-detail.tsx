@@ -174,6 +174,16 @@ const ScreenSlot = ({ src, alt, aspect = "aspect-[4/3]" }: { src?: string; alt: 
 
 const STAT_ICONS = { users: Users, school: School, sprout: Sprout, heart: Heart };
 
+/* The Google Play triangle, in its four colours. */
+const PlayStoreMark = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+    <path d="M3.6 1.8 13.8 12 3.6 22.2A1.6 1.6 0 0 1 3 21V3c0-.6.2-1.1.6-1.2z" fill="#00D7FE" />
+    <path d="M13.8 12 16.9 8.9 4.3 1.6c-.4-.2-.9-.2-1.3 0L13.8 12z" fill="#00F076" />
+    <path d="M20.9 10.3 17.8 8.6 13.8 12l4 3.4 3.1-1.7c.9-.5.9-1.4 0-1.9z" fill="#FFD500" />
+    <path d="M13.8 12 4.3 22.4c.4.2.9.2 1.3 0l12.2-7.1-3.2-3.3L13.8 12z" fill="#FF3A44" />
+  </svg>
+);
+
 /* Numbered steps in a row, with the coral ring used across the case study. */
 const Flow = ({ steps }: { steps: string[] }) => (
   <ol className="grid grid-cols-2 gap-6 sm:grid-cols-5">
@@ -242,14 +252,41 @@ const Chapter = ({ chapter }: { chapter: CaseStudyChapter }) => {
         {copy}
         <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {visual.cards.map((card) => (
-            <div key={card.title}>
-              <ScreenSlot alt={card.title} aspect="aspect-[9/16]" />
-              <h3 className="mt-5 text-[22px] font-bold" style={{ color: INK }}>
-                {card.title}
-              </h3>
-              <p className="mt-2 text-[15px] leading-relaxed" style={{ color: BODY }}>
-                {card.text}
-              </p>
+            // The frame follows the reference: a rounded dark panel with the screen on top
+            // and the title and text in a caption panel below. The text comes from data only.
+            <div
+              key={card.title}
+              className="flex flex-col overflow-hidden rounded-[24px] border border-white/10 bg-gradient-to-b from-[#1d1b3d] to-[#07070f]"
+            >
+              {/* Every screen sits in the same inset, so the padding matches across the row. */}
+              <div className="p-5">
+                {card.image ? (
+                  <img
+                    src={card.image}
+                    alt=""
+                    loading="lazy"
+                    className="aspect-[1086/1085] w-full rounded-[16px] object-cover"
+                  />
+                ) : (
+                  <div
+                    role="img"
+                    aria-label={`${card.title}: screen coming soon`}
+                    className="flex aspect-[1086/1085] w-full items-center justify-center rounded-[16px]"
+                  >
+                    <span className="text-[12px] uppercase tracking-[0.2em]" style={{ color: MUTED }}>
+                      Screen coming soon
+                    </span>
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-1 flex-col border-t border-white/10 bg-black/40 px-6 py-6">
+                <h3 className="text-[22px] font-bold" style={{ color: INK }}>
+                  {card.title}
+                </h3>
+                <p className="mt-2 text-[15px] leading-relaxed" style={{ color: BODY }}>
+                  {card.text}
+                </p>
+              </div>
             </div>
           ))}
         </div>
@@ -304,17 +341,41 @@ const CaseStudyBody = ({ study }: { study: CaseStudy }) => (
           <div className="mt-8 max-w-xl text-[clamp(1.1rem,1.6vw,1.4rem)] leading-[1.35]" style={{ color: BODY }}>
             <FadeLines text={study.closing.text} />
           </div>
-          <Link
-            to={study.closing.cta.to}
-            className="mt-12 inline-flex items-center gap-3 rounded-full bg-white py-2 pl-7 pr-2 text-sm font-bold uppercase tracking-wide text-black glass-hover"
-          >
-            {study.closing.cta.label}
-            <span className="flex h-9 w-9 items-center justify-center rounded-full text-white" style={{ backgroundColor: ACCENT }}>
-              <ArrowUpRight className="h-4 w-4" />
-            </span>
-          </Link>
+          {/* An external link opens the app's store page with the Play Store mark; an internal one goes to the in-site route. */}
+          {study.closing.cta.to.startsWith("http") ? (
+            <a
+              href={study.closing.cta.to}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-12 inline-flex items-center gap-3 rounded-full bg-white py-2 pl-7 pr-2 text-sm font-bold uppercase tracking-wide text-black glass-hover"
+            >
+              {study.closing.cta.label}
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-black">
+                <PlayStoreMark className="h-4 w-4" />
+              </span>
+            </a>
+          ) : (
+            <Link
+              to={study.closing.cta.to}
+              className="mt-12 inline-flex items-center gap-3 rounded-full bg-white py-2 pl-7 pr-2 text-sm font-bold uppercase tracking-wide text-black glass-hover"
+            >
+              {study.closing.cta.label}
+              <span className="flex h-9 w-9 items-center justify-center rounded-full text-white" style={{ backgroundColor: ACCENT }}>
+                <ArrowUpRight className="h-4 w-4" />
+              </span>
+            </Link>
+          )}
         </div>
-        <ScreenSlot alt={study.closing.heading} />
+        {study.closing.image ? (
+          <img
+            src={study.closing.image}
+            alt=""
+            loading="lazy"
+            className="aspect-[4/3] w-full rounded-[16px] object-cover"
+          />
+        ) : (
+          <ScreenSlot alt={study.closing.heading} />
+        )}
       </div>
     </section>
   </>
