@@ -1,0 +1,42 @@
+name: Sync GitHub contributions
+
+# Refreshes motion-app/public/data/contributions.json once a day and commits it
+# when the activity has changed. A push to main then redeploys the site.
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Fetch contributions from GitHub
+        working-directory: motion-app
+        env:
+          # GH_CONTRIB_TOKEN is an optional repository secret. Without it, the built-in token is used.
+          GITHUB_TOKEN: ${{ secrets.GH_CONTRIB_TOKEN || secrets.GITHUB_TOKEN }}
+          GITHUB_LOGIN: abhiplay
+        run: node scripts/sync-contributions.mjs
+
+      - name: Commit if the data changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add motion-app/public/data/contributions.json
+          if git diff --cached --quiet; then
+            echo "No contribution changes."
+          else
+            git commit -m "Sync GitHub contributions"
+            git push
+          fi

@@ -7,7 +7,7 @@
 // The token only needs read access to public data (a classic token with no
 // scopes, or a fine-grained token with no repository permissions, both work).
 
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -69,6 +69,15 @@ const days = calendar.weeks
 
 const here = dirname(fileURLToPath(import.meta.url));
 const outFile = resolve(here, "..", "public", "data", "contributions.json");
+// Skip the write when the activity is unchanged, so a scheduled run makes no commit.
+const previous = await readFile(outFile, "utf8")
+  .then((text) => JSON.parse(text))
+  .catch(() => null);
+if (previous && previous.login === login && previous.total === calendar.totalContributions && JSON.stringify(previous.days) === JSON.stringify(days)) {
+  console.log(`No change for ${login}; ${outFile} is already up to date.`);
+  process.exit(0);
+}
+
 await mkdir(dirname(outFile), { recursive: true });
 await writeFile(
   outFile,
