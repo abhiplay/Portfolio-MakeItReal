@@ -4,6 +4,7 @@ import { Suspense, lazy, useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import { useNavigate } from "react-router";
 import { WordsPullUp } from "@/components/ui/prisma-hero";
+import { BRUSH_PALETTE, BrushHover } from "@/components/ui/selected-works";
 
 // The Rive runtime and the file load on demand, so they stay out of the main bundle.
 const RiveEmbed = lazy(() => import("@/components/ui/rive-embed"));
@@ -125,14 +126,13 @@ export function Lab() {
                 {topic.label}
               </p>
               <div className="overflow-hidden px-3 pb-3 pt-2">
-                <img
-                  src={topic.img}
-                  alt=""
-                  loading="lazy"
-                  className={`aspect-[4/5] w-full rounded-lg object-cover transition-transform duration-500 ${
-                    hovered === i ? "scale-[1.04]" : "scale-100"
-                  }`}
-                />
+                <div className="relative aspect-[4/5] w-full overflow-hidden rounded-lg">
+                  <BrushHover
+                    src={topic.img}
+                    brush={BRUSH_PALETTE[i % BRUSH_PALETTE.length]}
+                    active={hovered === i}
+                  />
+                </div>
               </div>
             </motion.a>
           ))}

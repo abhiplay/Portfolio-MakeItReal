@@ -39,7 +39,7 @@ const CARD_RADIUS = 16;
 const CLIP_SHOWN = `inset(0% 0% 0% 0% round ${CARD_RADIUS}px)`;
 
 // One brush colour per card, cycled by position, so each hover reads differently.
-const BRUSH_PALETTE = ["#FDE1FD", "#1A54E4", "#F25525", "#8134CD", "#153FE3", "#E5C9DF"];
+export const BRUSH_PALETTE = ["#FDE1FD", "#1A54E4", "#F25525", "#8134CD", "#153FE3", "#E5C9DF"];
 
 // Wavy S-curve the brush follows, drawn in a 709 x 1012 card space.
 const BRUSH_D =
@@ -49,18 +49,92 @@ const BRUSH_D =
 // and widens to cover the card, then reverses on leave.
 const BRUSH_HIDDEN = "[stroke-dasharray:1_1] [stroke-dashoffset:1] [stroke-width:0]";
 const BRUSH_SHOWN = "group-hover:[stroke-dashoffset:0] group-hover:[stroke-width:1200]";
+// !important: the hidden state's arbitrary classes sit later in the generated CSS and would win otherwise.
+const BRUSH_SHOWN_ACTIVE = "[stroke-dashoffset:0]! [stroke-width:1200]!";
+
+/* The brush-and-mask hover image, on its own so other cards can use it. It
+   fills its positioned parent and renders no wrapper. Pass `active` to drive
+   the hover from the caller (needed when a layer covers the card, so CSS hover
+   never fires). Without `active`, the parent's `group` hover drives it. */
+export function BrushHover({
+  src,
+  hoverSrc,
+  brush,
+  alt = "",
+  active,
+}: {
+  src: string;
+  hoverSrc?: string;
+  brush: string;
+  alt?: string;
+  active?: boolean;
+}) {
+  const maskId = `brush-mask-${useId().replace(/:/g, "")}`;
+  // Without a dedicated hover image, zoom the main one around the card centre.
+  const hoverTransform = hoverSrc ? undefined : "translate(354.5 506) scale(1.08) translate(-354.5 -506)";
+  const shown = active === undefined ? BRUSH_SHOWN : active ? BRUSH_SHOWN_ACTIVE : "";
+  const maskDelay = active === undefined ? "group-hover:delay-[350ms]" : active ? "delay-[350ms]" : "";
+
+  return (
+    <>
+      <img src={src} alt={alt} loading="lazy" className="absolute inset-0 h-full w-full object-cover" />
+
+      {/* Brush layer: a coloured stroke that leads the reveal */}
+      <svg
+        aria-hidden
+        viewBox="0 0 709 1012"
+        preserveAspectRatio="xMidYMid slice"
+        className="pointer-events-none absolute inset-0 z-[2] h-full w-full overflow-visible"
+      >
+        <path
+          d={BRUSH_D}
+          pathLength={1}
+          fill="none"
+          stroke={brush}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={`${BRUSH_HIDDEN} ${shown} transition-[stroke-dashoffset,stroke-width] duration-[950ms] ease-in-out`}
+        />
+      </svg>
+
+      {/* Mask layer: the hover image shows only where the brush has passed */}
+      <svg
+        aria-hidden
+        viewBox="0 0 709 1012"
+        preserveAspectRatio="xMidYMid slice"
+        className="pointer-events-none absolute inset-0 z-[3] h-full w-full overflow-visible"
+      >
+        <defs>
+          <mask id={maskId} maskUnits="userSpaceOnUse" x="-200" y="-200" width="1109" height="1412">
+            <path
+              d={BRUSH_D}
+              pathLength={1}
+              fill="none"
+              stroke="#FFFFFF"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className={`${BRUSH_HIDDEN} ${shown} transition-[stroke-dashoffset,stroke-width] duration-[1050ms] ease-in-out ${maskDelay}`}
+            />
+          </mask>
+        </defs>
+        <image
+          href={hoverSrc ?? src}
+          width={709}
+          height={1012}
+          preserveAspectRatio="xMidYMid slice"
+          mask={`url(#${maskId})`}
+          transform={hoverTransform}
+        />
+      </svg>
+    </>
+  );
+}
 
 function WorkCard({ item, delay, brush }: { item: SelectedWorkItem; delay: number; brush: string }) {
   // Trigger from the card itself: the clip mask hides most of the image, so
   // observing the masked element would never reach the visibility threshold.
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.2 });
-  const maskId = `work-mask-${useId().replace(/:/g, "")}`;
-  const hoverSrc = item.hoverImg ?? item.img;
-  // Without a dedicated hover image, zoom the main one around the card centre.
-  const hoverTransform = item.hoverImg
-    ? undefined
-    : "translate(354.5 506) scale(1.08) translate(-354.5 -506)";
 
   return (
     <motion.article
@@ -76,60 +150,7 @@ function WorkCard({ item, delay, brush }: { item: SelectedWorkItem; delay: numbe
         animate={{ clipPath: inView ? CLIP_SHOWN : CLIP_HIDDEN }}
         transition={{ duration: 1.25, ease: EASE }}
       >
-        <img
-          src={item.img}
-          alt={item.title}
-          loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-
-        {/* Brush layer: a coloured stroke that leads the reveal */}
-        <svg
-          aria-hidden
-          viewBox="0 0 709 1012"
-          preserveAspectRatio="xMidYMid slice"
-          className="pointer-events-none absolute inset-0 z-[2] h-full w-full overflow-visible"
-        >
-          <path
-            d={BRUSH_D}
-            pathLength={1}
-            fill="none"
-            stroke={brush}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className={`${BRUSH_HIDDEN} ${BRUSH_SHOWN} transition-[stroke-dashoffset,stroke-width] duration-[950ms] ease-in-out`}
-          />
-        </svg>
-
-        {/* Mask layer: the hover image shows only where the brush has passed */}
-        <svg
-          aria-hidden
-          viewBox="0 0 709 1012"
-          preserveAspectRatio="xMidYMid slice"
-          className="pointer-events-none absolute inset-0 z-[3] h-full w-full overflow-visible"
-        >
-          <defs>
-            <mask id={maskId} maskUnits="userSpaceOnUse" x="-200" y="-200" width="1109" height="1412">
-              <path
-                d={BRUSH_D}
-                pathLength={1}
-                fill="none"
-                stroke="#FFFFFF"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className={`${BRUSH_HIDDEN} ${BRUSH_SHOWN} transition-[stroke-dashoffset,stroke-width] duration-[1050ms] ease-in-out group-hover:delay-[350ms]`}
-              />
-            </mask>
-          </defs>
-          <image
-            href={hoverSrc}
-            width={709}
-            height={1012}
-            preserveAspectRatio="xMidYMid slice"
-            mask={`url(#${maskId})`}
-            transform={hoverTransform}
-          />
-        </svg>
+        <BrushHover src={item.img} hoverSrc={item.hoverImg} brush={brush} alt={item.title} />
       </motion.div>
 
       <div className="mt-3 flex h-[74px] items-center justify-between gap-[16px] pr-[16px]">
