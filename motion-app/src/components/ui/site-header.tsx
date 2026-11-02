@@ -89,7 +89,7 @@ export function SiteHeader() {
               key={item.label}
               href={item.href}
               onClick={goSection(item.href)}
-              className="text-base text-[#E1E0CC]/70 transition-colors hover:text-[#E1E0CC]"
+              className="text-base text-[#E1E0CC]/70 transition-colors hover:text-[#FF5400]"
             >
               {item.label}
             </a>
