@@ -158,8 +158,11 @@ function WorkflowFlow({ steps }: { steps: { role: string; action: string }[] }) 
    the layout holds its shape and no fake screen is used. */
 const ScreenSlot = ({ src, alt, aspect = "aspect-[4/3]" }: { src?: string; alt: string; aspect?: string }) =>
   src ? (
-    // Illustrations have a white ground, so multiply melts it into the section tone.
-    <img src={src} alt={alt} loading="lazy" className={`${aspect} w-full object-contain mix-blend-multiply`} />
+    // No blend mode: on the black section ground, multiply would turn the whole image black.
+    // The image sits inside a framed panel with a margin, as in the reference.
+    <div className="rounded-[24px] border border-white/10 bg-gradient-to-b from-[#1d1b3d] to-[#07070f] p-6">
+      <img src={src} alt={alt} loading="lazy" className={`${aspect} w-full rounded-[16px] object-contain`} />
+    </div>
   ) : (
     <div
       role="img"

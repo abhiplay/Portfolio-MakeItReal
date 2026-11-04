@@ -198,7 +198,7 @@ export const WORK: WorkItem[] = [
     summary: "Contributed to the design of an educational digital experience built to support learners and their learning journey.",
     tag: "EdTech · Learning platform",
     question: "Full case study on my Framer portfolio.",
-    img: "/projects/auroscholar.png",
+    img: "/projects/auroscholar-hero.webp",
     year: "2024",
     client: "Sri Aurobindo Society",
     caseStudy: {
@@ -281,6 +281,7 @@ export const WORK: WorkItem[] = [
           tone: "paper",
           heading: "A connected digital learning experience.",
           text: "The project brought the web and Android experiences together through a consistent design approach, supporting the platform's educational purpose across devices.",
+          image: "/projects/auroscholar-dashboard.webp",
           visual: {
             kind: "stats",
             stats: [
