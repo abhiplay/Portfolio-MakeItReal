@@ -67,10 +67,10 @@ interface Step {
 }
 
 const STEPS: Step[] = [
-  { name: "Think", copy: "Find the real problem before drawing anything.", animation: "/lottie/brand-strategy.json", x: 22, y: 12, side: "left" },
-  { name: "Make", copy: "Sketch and prototype fast, then argue with the result.", animation: "/lottie/brand-identity.json", x: 72, y: 30, side: "right" },
-  { name: "Test", copy: "Put it in front of people and watch what they do.", animation: "/lottie/web-design.json", x: 28, y: 50, side: "left" },
-  { name: "Build", copy: "Ship working code alongside the design, not after it.", animation: "/lottie/motion-design.json", x: 70, y: 70, side: "right" },
+  { name: "Think", copy: "Find the real problem before drawing anything.", animation: "/lottie/brand-identity.json", x: 22, y: 12, side: "left" },
+  { name: "Make", copy: "Sketch and prototype fast, then argue with the result.", animation: "/lottie/brand-strategy.json", x: 72, y: 30, side: "right" },
+  { name: "Test", copy: "Put it in front of people and watch what they do.", animation: "/lottie/motion-design.json", x: 28, y: 50, side: "left" },
+  { name: "Build", copy: "Ship working code alongside the design, not after it.", animation: "/lottie/web-design.json", x: 70, y: 70, side: "right" },
   { name: "Ship", copy: "Launch, measure, and learn what to change next.", animation: "/lottie/packaging.json", x: 46, y: 90, side: "right" },
 ];
 
