@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { Link, useParams } from "react-router";
-import { ArrowUpRight, ChevronLeft, ChevronRight, Heart, School, Sprout, Users } from "lucide-react";
+import { ArrowUpRight, Box, Check, ChevronLeft, ChevronRight, Heart, Layers, School, Sprout, TrendingUp, UserRound, Users, Zap } from "lucide-react";
 import { motion, useInView } from "motion/react";
 import { WORK, type CaseStudy, type CaseStudyChapter, type WorkItem } from "@/App";
 import { useHeroAboutParallax } from "@/lib/use-hero-about-parallax";
@@ -443,6 +443,189 @@ const CaseStudyBody = ({ study }: { study: CaseStudy }) => (
   </>
 );
 
+/* Metadrob case study, laid out to the approved reference: meta strip, context
+   with a layered visual, a problem trio, key decisions in a panel, the solution
+   with a checklist, and the outcome. Only the 200% registration figure is in the
+   project data, so no other outcome tiles are shown. */
+const METADROB_PROBLEMS = [
+  { icon: Zap, title: "Complex workflows" },
+  { icon: Layers, title: "Disconnected editing & preview" },
+  { icon: UserRound, title: "Inconsistent controls & feedback" },
+];
+
+const METADROB_SOLUTION_POINTS = ["Intuitive, no-code editing", "Real-time 3D preview", "Consistent & scalable design system"];
+
+const METADROB_STRIP = ["Problem first", "Prototype early", "Ship small", "Test with users", "Learn loudly"];
+
+const Eyebrow = ({ children }: { children: string }) => (
+  <p className="flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-neutral-400">
+    <span aria-hidden className="h-[2px] w-6" style={{ backgroundColor: ACCENT }} />
+    {children}
+  </p>
+);
+
+const SectionHeading = ({ children }: { children: string }) => (
+  <h2 className="font-display mt-6 text-[clamp(2.5rem,5vw,4.5rem)] font-bold leading-[0.95] text-white">{children}</h2>
+);
+
+function MetadrobSections({ p }: { p: WorkItem }) {
+  const meta = [
+    { label: "Client", value: "Metadrob" },
+    { label: "Category", value: "Enterprise SaaS · 3D Commerce" },
+    { label: "My Role", value: "Product Design · UI/UX · Design System" },
+  ];
+
+  return (
+    <>
+      {/* Meta strip */}
+      <section className="border-y border-white/10 px-6 py-10 sm:px-8 md:px-[120px]">
+        <dl className="grid grid-cols-1 gap-6 sm:grid-cols-3">
+          {meta.map((m) => (
+            <div key={m.label}>
+              <dt className="text-[11px] uppercase tracking-[0.2em] text-neutral-500">{m.label}</dt>
+              <dd className="mt-2 text-[15px] text-white/90">{m.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      {/* Context */}
+      <section className="grid grid-cols-1 items-center gap-14 px-6 py-24 sm:px-8 md:grid-cols-2 md:px-[120px]">
+        <div className="relative">
+          <div aria-hidden className="absolute inset-0 translate-x-6 translate-y-6 rounded-[24px] bg-gradient-to-br from-[#7c3aed]/50 to-[#1d1b3d] opacity-60" />
+          <div aria-hidden className="absolute inset-0 translate-x-3 translate-y-3 rounded-[24px] bg-gradient-to-br from-[#7c3aed]/60 to-[#1d1b3d]" />
+          <div className="relative overflow-hidden rounded-[24px] border border-white/10 bg-[#120f24]">
+            {p.img && <img src={p.img} alt={`${p.title} editor`} className="aspect-[4/3] w-full object-cover" />}
+          </div>
+        </div>
+        <div>
+          <Eyebrow>The Context</Eyebrow>
+          <SectionHeading>Enabling brands to build immersive stores without code.</SectionHeading>
+          <div className="mt-8 max-w-xl text-[clamp(1rem,1.3vw,1.15rem)] leading-[1.5] text-neutral-400">
+            <FadeLines text={p.context ?? ""} />
+          </div>
+        </div>
+      </section>
+
+      {/* Problem */}
+      <section className="px-6 pb-24 sm:px-8 md:px-[120px]">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-[1fr_1.4fr] md:gap-16">
+          <div>
+            <Eyebrow>The Problem</Eyebrow>
+            <SectionHeading>Powerful, but hard to use.</SectionHeading>
+            <p className="mt-6 max-w-md text-[16px] leading-relaxed text-neutral-400">
+              Users could create 3D stores, but the experience felt complex, fragmented, and hard to learn — slowing down
+              adoption.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:items-start">
+            {METADROB_PROBLEMS.map(({ icon: Icon, title }, i) => (
+              <div
+                key={title}
+                className={`rounded-[20px] border border-white/10 bg-gradient-to-b from-[#1d1b3d] to-[#0b0a1a] p-6 ${
+                  i === 1 ? "sm:mt-10" : ""
+                }`}
+              >
+                <span
+                  className="flex h-10 w-10 items-center justify-center rounded-full text-white"
+                  style={{ backgroundColor: ACCENT }}
+                >
+                  <Icon className="h-5 w-5" />
+                </span>
+                <p className="mt-8 text-[18px] font-semibold leading-snug text-white">{title}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Key decisions */}
+      <section className="px-6 pb-24 sm:px-8 md:px-[120px]">
+        <div className="grid grid-cols-1 gap-10 rounded-[24px] border border-white/10 bg-gradient-to-r from-[#1d1b3d] to-[#0b0a1a] p-8 md:grid-cols-[1fr_1.6fr] md:p-12">
+          <div className="flex items-center gap-5">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] border border-white/10 bg-black/40">
+              <Box className="h-7 w-7" style={{ color: ACCENT }} />
+            </span>
+            <h2 className="font-display text-[clamp(2.25rem,4vw,3.5rem)] font-bold uppercase leading-[0.95] text-white">
+              Key
+              <br />
+              Decisions
+            </h2>
+          </div>
+          <ol className="space-y-6">
+            {(p.decisions ?? []).map((item, i) => (
+              <li key={item} className="flex items-start gap-4 text-[clamp(1rem,1.4vw,1.2rem)] leading-snug text-white">
+                <span
+                  className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold"
+                  style={{ borderColor: ACCENT, color: ACCENT }}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* Solution */}
+      <section className="grid grid-cols-1 items-center gap-14 px-6 pb-24 sm:px-8 md:grid-cols-2 md:px-[120px]">
+        <div>
+          <Eyebrow>The Solution</Eyebrow>
+          <SectionHeading>A unified, visual store editor.</SectionHeading>
+          <div className="mt-6 max-w-xl text-[16px] leading-relaxed text-neutral-400">
+            <FadeLines text={p.solution ?? ""} />
+          </div>
+          <ul className="mt-8 space-y-4">
+            {METADROB_SOLUTION_POINTS.map((point) => (
+              <li key={point} className="flex items-center gap-3 text-[16px] text-white">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style={{ backgroundColor: ACCENT }}>
+                  <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />
+                </span>
+                {point}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="relative">
+          <div aria-hidden className="absolute -inset-6 rounded-[32px] bg-gradient-to-br from-[#7c3aed]/40 via-transparent to-[#FF5400]/20 blur-2xl" />
+          <div className="relative overflow-hidden rounded-[24px] border border-white/10 bg-[#120f24]">
+            {p.img && <img src={p.img} alt={`${p.title} editor preview`} className="aspect-[4/3] w-full object-cover" />}
+          </div>
+        </div>
+      </section>
+
+      {/* Outcome: only the evidenced figure is shown */}
+      <section className="px-6 pb-24 sm:px-8 md:px-[120px]">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-[1fr_1fr] md:items-center md:gap-16">
+          <div>
+            <Eyebrow>The Outcome</Eyebrow>
+            <SectionHeading>Faster setup. Higher adoption.</SectionHeading>
+            <p className="mt-6 max-w-md text-[16px] leading-relaxed text-neutral-400">{p.outcome}</p>
+          </div>
+          <div className="rounded-[20px] border border-white/10 bg-gradient-to-b from-[#1d1b3d] to-[#0b0a1a] p-8">
+            <TrendingUp className="h-6 w-6" style={{ color: ACCENT }} />
+            <p className="font-display mt-6 text-[clamp(3rem,6vw,5rem)] font-bold leading-none text-white">↑ 200%</p>
+            <p className="mt-4 text-[14px] uppercase tracking-[0.2em] text-neutral-400">New registrations</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Principles strip */}
+      <section className="overflow-hidden border-y border-white/10 py-6">
+        <p className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 px-6 text-center text-[12px] font-medium uppercase tracking-[0.25em] text-neutral-300">
+          {METADROB_STRIP.map((word, i) => (
+            <span key={word} className="flex items-center gap-6">
+              {word}
+              {i < METADROB_STRIP.length - 1 && <span style={{ color: ACCENT }}>+</span>}
+            </span>
+          ))}
+        </p>
+      </section>
+    </>
+  );
+}
+
 export function ProjectDetail() {
   const { slug } = useParams();
   // Same scrubbed hero parallax as the home page: the cover image drifts and the title lifts.
@@ -506,7 +689,9 @@ export function ProjectDetail() {
         </h1>
       </section>
 
-      {study ? (
+      {p.title === "Metadrob" ? (
+        <MetadrobSections p={p} />
+      ) : study ? (
         <CaseStudyBody study={study} />
       ) : (
         <>
