@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { Link, useParams } from "react-router";
-import { ArrowUpRight, Box, Check, ChevronLeft, ChevronRight, Heart, Layers, School, Sprout, TrendingUp, UserRound, Users, Zap } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpRight, Box, Check, ChevronLeft, ChevronRight, Clock, Heart, Layers, School, Sprout, TrendingUp, UserRound, Users, Zap } from "lucide-react";
 import { motion, useInView } from "motion/react";
 import { WORK, type CaseStudy, type CaseStudyChapter, type WorkItem } from "@/App";
 import { useHeroAboutParallax } from "@/lib/use-hero-about-parallax";
@@ -445,12 +445,18 @@ const CaseStudyBody = ({ study }: { study: CaseStudy }) => (
 
 /* Metadrob case study, laid out to the approved reference: meta strip, context
    with a layered visual, a problem trio, key decisions in a panel, the solution
-   with a checklist, and the outcome. Only the 200% registration figure is in the
-   project data, so no other outcome tiles are shown. */
+   with a checklist, and the outcome. The three outcome figures come from the
+   approved reference; the owner should confirm them against real results. */
 const METADROB_PROBLEMS = [
   { icon: Zap, title: "Complex workflows" },
   { icon: Layers, title: "Disconnected editing & preview" },
   { icon: UserRound, title: "Inconsistent controls & feedback" },
+];
+
+const METADROB_OUTCOMES = [
+  { icon: TrendingUp, value: "200%", up: true, label: "New registrations", bg: "linear-gradient(160deg,#3b2016,#1b120e)" },
+  { icon: Clock, value: "40%", up: false, label: "Time to create a store", bg: "linear-gradient(160deg,#2a1f4d,#120e24)" },
+  { icon: Users, value: "67%", up: true, label: "Activation rate", bg: "linear-gradient(160deg,#4a2514,#1f1410)" },
 ];
 
 const METADROB_SOLUTION_POINTS = ["Intuitive, no-code editing", "Real-time 3D preview", "Consistent & scalable design system"];
@@ -595,19 +601,29 @@ function MetadrobSections({ p }: { p: WorkItem }) {
         </div>
       </section>
 
-      {/* Outcome: only the evidenced figure is shown */}
+      {/* Outcome: three figures from the approved reference */}
       <section className="px-6 pb-24 sm:px-8 md:px-[120px]">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-[1fr_1fr] md:items-center md:gap-16">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-[1fr_1fr] md:items-end md:gap-16">
           <div>
             <Eyebrow>The Outcome</Eyebrow>
             <SectionHeading>Faster setup. Higher adoption.</SectionHeading>
             <p className="mt-6 max-w-md text-[16px] leading-relaxed text-neutral-400">{p.outcome}</p>
           </div>
-          <div className="rounded-[20px] border border-white/10 bg-gradient-to-b from-[#1d1b3d] to-[#0b0a1a] p-8">
-            <TrendingUp className="h-6 w-6" style={{ color: ACCENT }} />
-            <p className="font-display mt-6 text-[clamp(3rem,6vw,5rem)] font-bold leading-none text-white">↑ 200%</p>
-            <p className="mt-4 text-[14px] uppercase tracking-[0.2em] text-neutral-400">New registrations</p>
-          </div>
+        </div>
+        <div className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {METADROB_OUTCOMES.map(({ icon: Icon, value, up, label, bg }) => {
+            const Arrow = up ? ArrowUp : ArrowDown;
+            return (
+              <div key={label} className="rounded-[20px] border border-white/10 p-6" style={{ background: bg }}>
+                <Icon className="h-6 w-6" style={{ color: ACCENT }} />
+                <p className="font-display mt-8 flex items-center gap-2 text-[clamp(2.25rem,4vw,3.25rem)] font-bold leading-none text-white">
+                  <Arrow className="h-7 w-7" style={{ color: ACCENT }} strokeWidth={2.5} />
+                  {value}
+                </p>
+                <p className="mt-4 text-[12px] uppercase tracking-[0.2em] text-neutral-400">{label}</p>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -658,8 +674,8 @@ export function ProjectDetail() {
     <main className="bg-background text-white">
       {/* Hero: full-screen cover, pills at the top, name bottom-left */}
       <section className="relative h-screen w-full overflow-hidden" data-hp-stage="hero">
-        {p.img ? (
-          <img src={p.img} alt={p.title} data-hp="hero-video" className="absolute inset-0 h-full w-full object-cover" />
+        {p.heroImg ?? p.img ? (
+          <img src={p.heroImg ?? p.img} alt={p.title} data-hp="hero-video" className="absolute inset-0 h-full w-full object-cover" />
         ) : (
           <div className="absolute inset-0">
             <CoverPlaceholder title={p.title} />

@@ -57,6 +57,8 @@ export interface WorkItem {
   confidentialityNote?: string;
   featured?: boolean;
   isNew?: boolean;
+  /** Detail-page hero image, when it differs from the card image. */
+  heroImg?: string;
   /** Keep off the home page's Selected Works grid; the project stays on /allprojects. */
   hideFromHome?: boolean;
   /** Show on the home Selected Works grid even without a cover image (shows a placeholder). */
@@ -125,6 +127,7 @@ export const WORK: WorkItem[] = [
     tag: "Enterprise SaaS · 3D commerce",
     question: "Full case study on my Framer portfolio.",
     img: "/projects/metadrob.png",
+    heroImg: "/projects/metadrob-hero.webp",
     year: "2024",
     services: "UI UX Design",
     client: "Metadrob",
