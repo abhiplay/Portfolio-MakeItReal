@@ -1,9 +1,10 @@
 import { useRef } from "react";
 import { Link, useParams } from "react-router";
-import { ArrowDown, ArrowUp, ArrowUpRight, Box, Check, ChevronLeft, ChevronRight, Clock, Heart, Layers, School, Sprout, TrendingUp, UserRound, Users, Zap } from "lucide-react";
-import { motion, useInView, useScroll, useTransform } from "motion/react";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Heart, School, Sprout, Users } from "lucide-react";
+import { motion, useInView } from "motion/react";
 import { WORK, type CaseStudy, type CaseStudyChapter, type WorkItem } from "@/App";
 import { useHeroAboutParallax } from "@/lib/use-hero-about-parallax";
+import { MetadrobHero, MetadrobSections } from "@/components/ui/metadrob-page";
 
 /* Body copy fades in one line at a time as it scrolls into view. Sentences are
    the fade units, so each reveal is a short run of text rather than a single word. */
@@ -444,268 +445,6 @@ const CaseStudyBody = ({ study }: { study: CaseStudy }) => (
   </>
 );
 
-/* Metadrob case study, laid out to the approved reference: meta strip, context
-   with a layered visual, a problem trio, key decisions in a panel, the solution
-   with a checklist, and the outcome. The three outcome figures come from the
-   approved reference; the owner should confirm them against real results. */
-const METADROB_PROBLEMS = [
-  { icon: Zap, title: "Complex workflows" },
-  { icon: Layers, title: "Disconnected editing & preview" },
-  { icon: UserRound, title: "Inconsistent controls & feedback" },
-];
-
-const METADROB_OUTCOMES = [
-  { icon: TrendingUp, value: "200%", up: true, label: "New registrations", bg: "linear-gradient(160deg,#3b2016,#1b120e)" },
-  { icon: Clock, value: "40%", up: false, label: "Time to create a store", bg: "linear-gradient(160deg,#2a1f4d,#120e24)" },
-  { icon: Users, value: "67%", up: true, label: "Activation rate", bg: "linear-gradient(160deg,#4a2514,#1f1410)" },
-];
-
-const METADROB_SOLUTION_POINTS = ["Intuitive, no-code editing", "Real-time 3D preview", "Consistent & scalable design system"];
-
-const METADROB_STRIP = ["Problem first", "Prototype early", "Ship small", "Test with users", "Learn loudly"];
-
-const Eyebrow = ({ children }: { children: string }) => (
-  <p className="flex items-center gap-3 text-[11px] uppercase tracking-[0.3em] text-neutral-400">
-    <span aria-hidden className="h-[2px] w-6" style={{ backgroundColor: ACCENT }} />
-    {children}
-  </p>
-);
-
-const SectionHeading = ({ children }: { children: string }) => (
-  <h2 className="font-display mt-6 text-[clamp(2.5rem,5vw,4.5rem)] font-bold leading-[0.95] text-white">{children}</h2>
-);
-
-/* Micro-interactions for the Metadrob sections. Each section fades and rises as
-   it scrolls into view (CSS scroll-driven, no JS); hover states lift cards and
-   fill markers. Motion is switched off for users who prefer reduced motion. */
-const METADROB_MOTION_CSS = `
-.ms-reveal {
-  animation: ms-reveal linear both;
-  animation-timeline: view();
-  animation-range: entry 0% cover 32%;
-}
-@keyframes ms-reveal {
-  from { opacity: 0; transform: translateY(48px); }
-  to { opacity: 1; transform: none; }
-}
-.ms-marquee { animation: ms-marquee 32s linear infinite; }
-@keyframes ms-marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .ms-reveal, .ms-reveal * { animation: none !important; transition: none !important; }
-  .ms-marquee { animation: none !important; }
-}
-`;
-
-function MetadrobSections({ p }: { p: WorkItem }) {
-  const solutionRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: solutionRef, offset: ["start end", "end center"] });
-  const rotateX = useTransform(scrollYProgress, [0, 1], [18, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], [0.94, 1]);
-
-  const meta = [
-    { label: "Client", value: "Metadrob" },
-    { label: "Category", value: "Enterprise SaaS · 3D Commerce" },
-    { label: "My Role", value: "Product Design · UI/UX · Design System" },
-  ];
-
-  return (
-    <>
-      <style>{METADROB_MOTION_CSS}</style>
-      {/* Meta strip */}
-      <section className="ms-reveal border-y border-white/10 px-6 py-10 sm:px-8 md:px-12 xl:px-[120px]">
-        <dl className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-          {meta.map((m) => (
-            <div key={m.label}>
-              <dt className="text-[11px] uppercase tracking-[0.2em] text-neutral-400">{m.label}</dt>
-              <dd className="mt-2 text-[15px] text-white/90">{m.value}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
-
-      {/* Context */}
-      <section className="ms-reveal grid grid-cols-1 items-center gap-14 px-6 py-16 sm:px-8 md:py-24 lg:grid-cols-2 md:px-12 xl:px-[120px]">
-        <div className="relative">
-          <div aria-hidden className="absolute inset-0 translate-x-6 translate-y-6 rounded-[24px] bg-gradient-to-br from-[#7c3aed]/50 to-[#1d1b3d] opacity-60" />
-          <div aria-hidden className="absolute inset-0 translate-x-3 translate-y-3 rounded-[24px] bg-gradient-to-br from-[#7c3aed]/60 to-[#1d1b3d]" />
-          <div className="relative overflow-hidden rounded-[24px] border border-white/10 bg-[#120f24]">
-            {p.img && <img src={p.img} alt={`${p.title} editor`} className="aspect-[4/3] md:aspect-[16/10] w-full object-cover object-top transition-transform duration-700 motion-safe:md:hover:scale-105" />}
-          </div>
-        </div>
-        <div>
-          <Eyebrow>The Context</Eyebrow>
-          <SectionHeading>Enabling brands to build immersive stores without code.</SectionHeading>
-          <div className="mt-8 max-w-xl text-[clamp(1rem,1.3vw,1.15rem)] leading-[1.5] text-neutral-400">
-            <FadeLines text={p.context ?? ""} />
-          </div>
-        </div>
-      </section>
-
-      {/* Problem */}
-      <section className="ms-reveal px-6 py-16 sm:px-8 md:py-24 md:px-12 xl:px-[120px]">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
-          <div>
-            <Eyebrow>The Problem</Eyebrow>
-            <SectionHeading>Powerful, but hard to use.</SectionHeading>
-            <p className="mt-6 max-w-md text-[16px] leading-relaxed text-neutral-400">
-              Users could create 3D stores, but the experience felt complex, fragmented, and hard to learn — slowing down
-              adoption.
-            </p>
-          </div>
-          {/* Three frosted, tilted glass cards in a staggered row, as in the reference. */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:items-start lg:gap-5">
-            {METADROB_PROBLEMS.map(({ icon: Icon, title }, i) => (
-              <div
-                key={title}
-                className={`group relative transition-transform duration-300 hover:-translate-y-2 hover:border-[#FF5400]/40 rounded-[24px] border border-white/15 bg-gradient-to-br from-white/15 via-[#2a1f4d]/70 to-[#0d0b1f]/90 p-6 lg:p-7 shadow-[0_24px_60px_-20px_rgba(124,58,237,0.45)] backdrop-blur-md ${
-                  ["lg:mt-4 lg:-rotate-2", "lg:mt-20 lg:rotate-2", "lg:mt-0 lg:-rotate-1"][i]
-                }`}
-                onPointerMove={(e) => {
-                  const r = e.currentTarget.getBoundingClientRect();
-                  e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
-                  e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
-                }}
-              >
-                {/* Spotlight: a soft orange glow follows the pointer across the card. */}
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 rounded-[24px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                  style={{ background: "radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(255,84,0,0.22), transparent 70%)" }}
-                />
-                <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition-colors duration-300 group-hover:border-[#FF5400] group-hover:bg-[#FF5400]">
-                  <Icon className="h-5 w-5" />
-                </span>
-                <p className="mt-10 text-[18px] font-semibold leading-snug text-white">{title}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Key decisions */}
-      <section className="ms-reveal px-6 py-16 sm:px-8 md:py-24 md:px-12 xl:px-[120px]">
-        <div className="grid grid-cols-1 rounded-[24px] border border-white/10 bg-gradient-to-r from-[#1d1b3d] to-[#0b0a1a] p-6 md:p-12">
-          <div className="mb-10 flex items-center gap-5">
-            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] border border-white/10 bg-black/40">
-              <Box className="h-7 w-7" style={{ color: ACCENT }} />
-            </span>
-            <h2 className="font-display text-[clamp(2rem,5vw,3.5rem)] font-bold uppercase leading-[0.95] text-white break-words">
-              Key
-              <br />
-              Decisions
-            </h2>
-          </div>
-          {/* Bento grid: the first decision is the lead tile, the others sit beside it. */}
-          <ol className="grid grid-cols-1 gap-4 md:auto-rows-fr md:grid-cols-3">
-            {(p.decisions ?? []).map((item, i) => (
-              <li
-                key={item}
-                className={`group flex flex-col justify-between rounded-[20px] border border-white/10 bg-black/30 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#FF5400]/50 md:p-8 ${
-                  i === 0 ? "bg-gradient-to-br from-[#FF5400]/20 via-[#2a1f4d]/60 to-[#0b0a1a] md:col-span-2 md:row-span-2" : ""
-                }`}
-              >
-                <span
-                  className="flex h-10 w-10 items-center justify-center rounded-full border text-[12px] font-bold transition-colors duration-300 group-hover:bg-[#FF5400]/15"
-                  style={{ borderColor: ACCENT, color: ACCENT }}
-                >
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <span
-                  className={`mt-10 block leading-snug text-white ${
-                    i === 0 ? "text-[clamp(1.4rem,2.6vw,2rem)] font-semibold" : "text-[clamp(1rem,1.4vw,1.15rem)]"
-                  }`}
-                >
-                  {item}
-                </span>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      {/* Solution */}
-      <section className="ms-reveal grid grid-cols-1 items-center gap-14 px-6 py-16 sm:px-8 md:py-24 lg:grid-cols-2 md:px-12 xl:px-[120px]">
-        <div>
-          <Eyebrow>The Solution</Eyebrow>
-          <SectionHeading>A unified, visual store editor.</SectionHeading>
-          <div className="mt-6 max-w-xl text-[16px] leading-relaxed text-neutral-400">
-            <FadeLines text={p.solution ?? ""} />
-          </div>
-          <ul className="mt-8 space-y-4">
-            {METADROB_SOLUTION_POINTS.map((point) => (
-              <li key={point} className="group flex items-center gap-3 text-[16px] text-white transition-transform duration-300 hover:translate-x-1">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full transition-transform duration-300 group-hover:scale-110" style={{ backgroundColor: ACCENT }}>
-                  <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />
-                </span>
-                {point}
-              </li>
-            ))}
-          </ul>
-        </div>
-        {/* The screenshot tilts up and settles flat as it scrolls past, like a device rising into view. */}
-        <motion.div ref={solutionRef} className="relative" style={{ rotateX, scale, transformPerspective: 1400 }}>
-          <div aria-hidden className="absolute -inset-6 rounded-[32px] bg-gradient-to-br from-[#7c3aed]/40 via-transparent to-[#FF5400]/20 blur-2xl" />
-          <div className="relative overflow-hidden rounded-[24px] border border-white/10 bg-[#120f24]">
-            {p.img && <img src={p.img} alt={`${p.title} editor preview`} className="aspect-[4/3] md:aspect-[16/10] w-full object-cover object-top transition-transform duration-700 motion-safe:md:hover:scale-105" />}
-          </div>
-        </motion.div>
-      </section>
-
-      {/* Outcome: three figures from the approved reference */}
-      <section className="ms-reveal px-6 py-16 sm:px-8 md:py-24 md:px-12 xl:px-[120px]">
-        <div>
-          <div>
-            <Eyebrow>The Outcome</Eyebrow>
-            <SectionHeading>Faster setup. Higher adoption.</SectionHeading>
-            <p className="mt-6 max-w-md text-[16px] leading-relaxed text-neutral-400">{p.outcome}</p>
-          </div>
-        </div>
-        <div className="mt-12 grid grid-cols-1 gap-4 lg:grid-cols-3">
-          {METADROB_OUTCOMES.map(({ icon: Icon, value, up, label, bg }) => {
-            const Arrow = up ? ArrowUp : ArrowDown;
-            return (
-              <div
-                key={label}
-                className="group rounded-[20px] border border-white/10 p-6 transition-all duration-300 hover:-translate-y-2 hover:border-[#FF5400]/50"
-                style={{ background: bg }}
-              >
-                <Icon className="h-6 w-6" style={{ color: ACCENT }} />
-                <p className="font-display mt-8 flex items-center gap-2 text-[clamp(2rem,4vw,3.25rem)] min-w-0 break-words font-bold leading-none text-white">
-                  <Arrow
-                    className="h-7 w-7 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1"
-                    style={{ color: ACCENT }}
-                    strokeWidth={2.5}
-                  />
-                  {value}
-                </p>
-                <p className="mt-4 text-[12px] uppercase tracking-[0.2em] text-neutral-400">{label}</p>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Principles strip */}
-      <section className="ms-reveal overflow-hidden border-y border-white/10 py-10">
-        {/* Slow marquee: the list repeats so the loop is seamless. Frozen for reduced motion. */}
-        <div className="overflow-hidden">
-          <div className="ms-marquee flex w-max items-center gap-10 whitespace-nowrap text-[12px] font-medium uppercase tracking-[0.25em] text-neutral-300">
-            {[...METADROB_STRIP, ...METADROB_STRIP].map((word, i) => (
-              <span key={`${word}-${i}`} className="flex items-center gap-10 transition-colors duration-300 hover:text-[#FF5400]">
-                {word}
-                <span aria-hidden style={{ color: ACCENT }}>+</span>
-              </span>
-            ))}
-          </div>
-        </div>
-      </section>
-    </>
-  );
-}
-
 export function ProjectDetail() {
   const { slug } = useParams();
   // Same scrubbed hero parallax as the home page: the cover image drifts and the title lifts.
@@ -736,7 +475,10 @@ export function ProjectDetail() {
 
   return (
     <main className="bg-background text-white">
-      {/* Hero: full-screen cover, pills at the top, name bottom-left */}
+      {/* Metadrob has its own hero, from the reference. Other projects keep the full-screen cover. */}
+      {p.title === "Metadrob" ? (
+        <MetadrobHero p={p} />
+      ) : (
       <section className="relative h-screen w-full overflow-hidden" data-hp-stage="hero">
         {p.heroImg ?? p.img ? (
           <img src={p.heroImg ?? p.img} alt={p.title} data-hp="hero-video" className="absolute inset-0 h-full w-full object-cover" />
@@ -755,6 +497,7 @@ export function ProjectDetail() {
           {p.title}
         </h1>
       </section>
+      )}
 
       {p.title === "Metadrob" ? (
         <MetadrobSections p={p} />
