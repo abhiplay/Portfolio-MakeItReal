@@ -96,8 +96,6 @@ export function SiteHeader() {
           ))}
         </nav>
 
-        {/* Hidden on project pages, where the hero has its own Let's Talk button. */}
-        {!location.pathname.startsWith("/work/") && (
         <a
           href="#contact"
           onClick={goSection("#contact")}
@@ -120,7 +118,6 @@ export function SiteHeader() {
           </span>
           <span aria-hidden className="h-2 w-2 rounded-full bg-[#FF4B16]" />
         </a>
-        )}
       </div>
     </header>
   );

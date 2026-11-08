@@ -474,6 +474,24 @@ const SectionHeading = ({ children }: { children: string }) => (
   <h2 className="font-display mt-6 text-[clamp(2.5rem,5vw,4.5rem)] font-bold leading-[0.95] text-white">{children}</h2>
 );
 
+/* Micro-interactions for the Metadrob sections. Each section fades and rises as
+   it scrolls into view (CSS scroll-driven, no JS); hover states lift cards and
+   fill markers. Motion is switched off for users who prefer reduced motion. */
+const METADROB_MOTION_CSS = `
+.ms-reveal {
+  animation: ms-reveal linear both;
+  animation-timeline: view();
+  animation-range: entry 0% cover 32%;
+}
+@keyframes ms-reveal {
+  from { opacity: 0; transform: translateY(48px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ms-reveal, .ms-reveal * { animation: none !important; transition: none !important; }
+}
+`;
+
 function MetadrobSections({ p }: { p: WorkItem }) {
   const meta = [
     { label: "Client", value: "Metadrob" },
@@ -483,8 +501,9 @@ function MetadrobSections({ p }: { p: WorkItem }) {
 
   return (
     <>
+      <style>{METADROB_MOTION_CSS}</style>
       {/* Meta strip */}
-      <section className="border-y border-white/10 px-6 py-10 sm:px-8 md:px-[120px]">
+      <section className="ms-reveal border-y border-white/10 px-6 py-10 sm:px-8 md:px-[120px]">
         <dl className="grid grid-cols-1 gap-6 sm:grid-cols-3">
           {meta.map((m) => (
             <div key={m.label}>
@@ -496,12 +515,12 @@ function MetadrobSections({ p }: { p: WorkItem }) {
       </section>
 
       {/* Context */}
-      <section className="grid grid-cols-1 items-center gap-14 px-6 py-24 sm:px-8 md:grid-cols-2 md:px-[120px]">
+      <section className="ms-reveal grid grid-cols-1 items-center gap-14 px-6 py-24 sm:px-8 md:grid-cols-2 md:px-[120px]">
         <div className="relative">
           <div aria-hidden className="absolute inset-0 translate-x-6 translate-y-6 rounded-[24px] bg-gradient-to-br from-[#7c3aed]/50 to-[#1d1b3d] opacity-60" />
           <div aria-hidden className="absolute inset-0 translate-x-3 translate-y-3 rounded-[24px] bg-gradient-to-br from-[#7c3aed]/60 to-[#1d1b3d]" />
           <div className="relative overflow-hidden rounded-[24px] border border-white/10 bg-[#120f24]">
-            {p.img && <img src={p.img} alt={`${p.title} editor`} className="aspect-[4/3] w-full object-cover" />}
+            {p.img && <img src={p.img} alt={`${p.title} editor`} className="aspect-[4/3] w-full object-cover transition-transform duration-700 hover:scale-105" />}
           </div>
         </div>
         <div>
@@ -514,7 +533,7 @@ function MetadrobSections({ p }: { p: WorkItem }) {
       </section>
 
       {/* Problem */}
-      <section className="px-6 pb-24 sm:px-8 md:px-[120px]">
+      <section className="ms-reveal px-6 pb-24 sm:px-8 md:px-[120px]">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-[1fr_1.4fr] md:gap-16">
           <div>
             <Eyebrow>The Problem</Eyebrow>
@@ -524,21 +543,19 @@ function MetadrobSections({ p }: { p: WorkItem }) {
               adoption.
             </p>
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:items-start">
+          {/* Three frosted, tilted glass cards in a staggered row, as in the reference. */}
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 sm:items-start sm:gap-5">
             {METADROB_PROBLEMS.map(({ icon: Icon, title }, i) => (
               <div
                 key={title}
-                className={`rounded-[20px] border border-white/10 bg-gradient-to-b from-[#1d1b3d] to-[#0b0a1a] p-6 ${
-                  i === 1 ? "sm:mt-10" : ""
+                className={`group transition-transform duration-300 hover:-translate-y-2 hover:border-[#FF5400]/40 rounded-[24px] border border-white/15 bg-gradient-to-br from-white/15 via-[#2a1f4d]/70 to-[#0d0b1f]/90 p-7 shadow-[0_24px_60px_-20px_rgba(124,58,237,0.45)] backdrop-blur-md ${
+                  ["sm:mt-4 sm:-rotate-3", "sm:mt-20 sm:rotate-2", "sm:mt-0 sm:-rotate-1"][i]
                 }`}
               >
-                <span
-                  className="flex h-10 w-10 items-center justify-center rounded-full text-white"
-                  style={{ backgroundColor: ACCENT }}
-                >
+                <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition-colors duration-300 group-hover:border-[#FF5400] group-hover:bg-[#FF5400]">
                   <Icon className="h-5 w-5" />
                 </span>
-                <p className="mt-8 text-[18px] font-semibold leading-snug text-white">{title}</p>
+                <p className="mt-10 text-[18px] font-semibold leading-snug text-white">{title}</p>
               </div>
             ))}
           </div>
@@ -546,7 +563,7 @@ function MetadrobSections({ p }: { p: WorkItem }) {
       </section>
 
       {/* Key decisions */}
-      <section className="px-6 pb-24 sm:px-8 md:px-[120px]">
+      <section className="ms-reveal px-6 pb-24 sm:px-8 md:px-[120px]">
         <div className="grid grid-cols-1 gap-10 rounded-[24px] border border-white/10 bg-gradient-to-r from-[#1d1b3d] to-[#0b0a1a] p-8 md:grid-cols-[1fr_1.6fr] md:p-12">
           <div className="flex items-center gap-5">
             <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] border border-white/10 bg-black/40">
@@ -560,9 +577,9 @@ function MetadrobSections({ p }: { p: WorkItem }) {
           </div>
           <ol className="space-y-6">
             {(p.decisions ?? []).map((item, i) => (
-              <li key={item} className="flex items-start gap-4 text-[clamp(1rem,1.4vw,1.2rem)] leading-snug text-white">
+              <li key={item} className="group flex items-start gap-4 transition-transform duration-300 hover:translate-x-2 text-[clamp(1rem,1.4vw,1.2rem)] leading-snug text-white">
                 <span
-                  className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold"
+                  className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold transition-colors duration-300 group-hover:bg-[#FF5400]/15"
                   style={{ borderColor: ACCENT, color: ACCENT }}
                 >
                   {String(i + 1).padStart(2, "0")}
@@ -575,7 +592,7 @@ function MetadrobSections({ p }: { p: WorkItem }) {
       </section>
 
       {/* Solution */}
-      <section className="grid grid-cols-1 items-center gap-14 px-6 pb-24 sm:px-8 md:grid-cols-2 md:px-[120px]">
+      <section className="ms-reveal grid grid-cols-1 items-center gap-14 px-6 pb-24 sm:px-8 md:grid-cols-2 md:px-[120px]">
         <div>
           <Eyebrow>The Solution</Eyebrow>
           <SectionHeading>A unified, visual store editor.</SectionHeading>
@@ -584,8 +601,8 @@ function MetadrobSections({ p }: { p: WorkItem }) {
           </div>
           <ul className="mt-8 space-y-4">
             {METADROB_SOLUTION_POINTS.map((point) => (
-              <li key={point} className="flex items-center gap-3 text-[16px] text-white">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full" style={{ backgroundColor: ACCENT }}>
+              <li key={point} className="group flex items-center gap-3 text-[16px] text-white transition-transform duration-300 hover:translate-x-1">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full transition-transform duration-300 group-hover:scale-110" style={{ backgroundColor: ACCENT }}>
                   <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />
                 </span>
                 {point}
@@ -596,13 +613,13 @@ function MetadrobSections({ p }: { p: WorkItem }) {
         <div className="relative">
           <div aria-hidden className="absolute -inset-6 rounded-[32px] bg-gradient-to-br from-[#7c3aed]/40 via-transparent to-[#FF5400]/20 blur-2xl" />
           <div className="relative overflow-hidden rounded-[24px] border border-white/10 bg-[#120f24]">
-            {p.img && <img src={p.img} alt={`${p.title} editor preview`} className="aspect-[4/3] w-full object-cover" />}
+            {p.img && <img src={p.img} alt={`${p.title} editor preview`} className="aspect-[4/3] w-full object-cover transition-transform duration-700 hover:scale-105" />}
           </div>
         </div>
       </section>
 
       {/* Outcome: three figures from the approved reference */}
-      <section className="px-6 pb-24 sm:px-8 md:px-[120px]">
+      <section className="ms-reveal px-6 pb-24 sm:px-8 md:px-[120px]">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-[1fr_1fr] md:items-end md:gap-16">
           <div>
             <Eyebrow>The Outcome</Eyebrow>
@@ -614,10 +631,18 @@ function MetadrobSections({ p }: { p: WorkItem }) {
           {METADROB_OUTCOMES.map(({ icon: Icon, value, up, label, bg }) => {
             const Arrow = up ? ArrowUp : ArrowDown;
             return (
-              <div key={label} className="rounded-[20px] border border-white/10 p-6" style={{ background: bg }}>
+              <div
+                key={label}
+                className="group rounded-[20px] border border-white/10 p-6 transition-all duration-300 hover:-translate-y-2 hover:border-[#FF5400]/50"
+                style={{ background: bg }}
+              >
                 <Icon className="h-6 w-6" style={{ color: ACCENT }} />
                 <p className="font-display mt-8 flex items-center gap-2 text-[clamp(2.25rem,4vw,3.25rem)] font-bold leading-none text-white">
-                  <Arrow className="h-7 w-7" style={{ color: ACCENT }} strokeWidth={2.5} />
+                  <Arrow
+                    className="h-7 w-7 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1"
+                    style={{ color: ACCENT }}
+                    strokeWidth={2.5}
+                  />
                   {value}
                 </p>
                 <p className="mt-4 text-[12px] uppercase tracking-[0.2em] text-neutral-400">{label}</p>
@@ -628,10 +653,10 @@ function MetadrobSections({ p }: { p: WorkItem }) {
       </section>
 
       {/* Principles strip */}
-      <section className="overflow-hidden border-y border-white/10 py-6">
+      <section className="ms-reveal overflow-hidden border-y border-white/10 py-6">
         <p className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 px-6 text-center text-[12px] font-medium uppercase tracking-[0.25em] text-neutral-300">
           {METADROB_STRIP.map((word, i) => (
-            <span key={word} className="flex items-center gap-6">
+            <span key={word} className="flex cursor-default items-center gap-6 transition-colors duration-300 hover:text-[#FF5400]">
               {word}
               {i < METADROB_STRIP.length - 1 && <span style={{ color: ACCENT }}>+</span>}
             </span>
@@ -682,19 +707,6 @@ export function ProjectDetail() {
           </div>
         )}
         <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/30" />
-
-        <div className="absolute left-0 right-0 top-0 flex items-center justify-between px-6 pt-6 sm:px-8 md:px-[40px]">
-          <span aria-hidden />
-          <a
-            href="mailto:abhinesh.productdesign@gmail.com"
-            className="inline-flex items-center gap-3 rounded-full bg-black py-2 pl-6 pr-2 text-sm font-medium text-white glass-hover"
-          >
-            Let&apos;s Talk
-            <span className="flex h-9 w-9 items-center justify-center rounded-full text-white" style={{ backgroundColor: ACCENT }}>
-              <ArrowUpRight className="h-4 w-4" />
-            </span>
-          </a>
-        </div>
 
         <h1
           data-hp="hero-copy"
