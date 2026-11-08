@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { Link, useParams } from "react-router";
 import { ArrowDown, ArrowUp, ArrowUpRight, Box, Check, ChevronLeft, ChevronRight, Clock, Heart, Layers, School, Sprout, TrendingUp, UserRound, Users, Zap } from "lucide-react";
-import { motion, useInView } from "motion/react";
+import { motion, useInView, useScroll, useTransform } from "motion/react";
 import { WORK, type CaseStudy, type CaseStudyChapter, type WorkItem } from "@/App";
 import { useHeroAboutParallax } from "@/lib/use-hero-about-parallax";
 
@@ -488,12 +488,23 @@ const METADROB_MOTION_CSS = `
   from { opacity: 0; transform: translateY(48px); }
   to { opacity: 1; transform: none; }
 }
+.ms-marquee { animation: ms-marquee 32s linear infinite; }
+@keyframes ms-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
 @media (prefers-reduced-motion: reduce) {
   .ms-reveal, .ms-reveal * { animation: none !important; transition: none !important; }
+  .ms-marquee { animation: none !important; }
 }
 `;
 
 function MetadrobSections({ p }: { p: WorkItem }) {
+  const solutionRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: solutionRef, offset: ["start end", "end center"] });
+  const rotateX = useTransform(scrollYProgress, [0, 1], [18, 0]);
+  const scale = useTransform(scrollYProgress, [0, 1], [0.94, 1]);
+
   const meta = [
     { label: "Client", value: "Metadrob" },
     { label: "Category", value: "Enterprise SaaS · 3D Commerce" },
@@ -549,10 +560,21 @@ function MetadrobSections({ p }: { p: WorkItem }) {
             {METADROB_PROBLEMS.map(({ icon: Icon, title }, i) => (
               <div
                 key={title}
-                className={`group transition-transform duration-300 hover:-translate-y-2 hover:border-[#FF5400]/40 rounded-[24px] border border-white/15 bg-gradient-to-br from-white/15 via-[#2a1f4d]/70 to-[#0d0b1f]/90 p-6 lg:p-7 shadow-[0_24px_60px_-20px_rgba(124,58,237,0.45)] backdrop-blur-md ${
+                className={`group relative transition-transform duration-300 hover:-translate-y-2 hover:border-[#FF5400]/40 rounded-[24px] border border-white/15 bg-gradient-to-br from-white/15 via-[#2a1f4d]/70 to-[#0d0b1f]/90 p-6 lg:p-7 shadow-[0_24px_60px_-20px_rgba(124,58,237,0.45)] backdrop-blur-md ${
                   ["lg:mt-4 lg:-rotate-2", "lg:mt-20 lg:rotate-2", "lg:mt-0 lg:-rotate-1"][i]
                 }`}
+                onPointerMove={(e) => {
+                  const r = e.currentTarget.getBoundingClientRect();
+                  e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
+                  e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+                }}
               >
+                {/* Spotlight: a soft orange glow follows the pointer across the card. */}
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 rounded-[24px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                  style={{ background: "radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(255,84,0,0.22), transparent 70%)" }}
+                />
                 <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white transition-colors duration-300 group-hover:border-[#FF5400] group-hover:bg-[#FF5400]">
                   <Icon className="h-5 w-5" />
                 </span>
@@ -611,12 +633,13 @@ function MetadrobSections({ p }: { p: WorkItem }) {
             ))}
           </ul>
         </div>
-        <div className="relative">
+        {/* The screenshot tilts up and settles flat as it scrolls past, like a device rising into view. */}
+        <motion.div ref={solutionRef} className="relative" style={{ rotateX, scale, transformPerspective: 1400 }}>
           <div aria-hidden className="absolute -inset-6 rounded-[32px] bg-gradient-to-br from-[#7c3aed]/40 via-transparent to-[#FF5400]/20 blur-2xl" />
           <div className="relative overflow-hidden rounded-[24px] border border-white/10 bg-[#120f24]">
             {p.img && <img src={p.img} alt={`${p.title} editor preview`} className="aspect-[4/3] md:aspect-[16/10] w-full object-cover object-top transition-transform duration-700 motion-safe:md:hover:scale-105" />}
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* Outcome: three figures from the approved reference */}
@@ -655,14 +678,17 @@ function MetadrobSections({ p }: { p: WorkItem }) {
 
       {/* Principles strip */}
       <section className="ms-reveal overflow-hidden border-y border-white/10 py-10">
-        <p className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 px-6 text-center text-[12px] font-medium uppercase tracking-[0.25em] text-neutral-300">
-          {METADROB_STRIP.map((word, i) => (
-            <span key={word} className="flex cursor-default items-center gap-6 transition-colors duration-300 hover:text-[#FF5400]">
-              {word}
-              {i < METADROB_STRIP.length - 1 && <span style={{ color: ACCENT }}>+</span>}
-            </span>
-          ))}
-        </p>
+        {/* Slow marquee: the list repeats so the loop is seamless. Frozen for reduced motion. */}
+        <div className="overflow-hidden">
+          <div className="ms-marquee flex w-max items-center gap-10 whitespace-nowrap text-[12px] font-medium uppercase tracking-[0.25em] text-neutral-300">
+            {[...METADROB_STRIP, ...METADROB_STRIP].map((word, i) => (
+              <span key={`${word}-${i}`} className="flex items-center gap-10 transition-colors duration-300 hover:text-[#FF5400]">
+                {word}
+                <span aria-hidden style={{ color: ACCENT }}>+</span>
+              </span>
+            ))}
+          </div>
+        </div>
       </section>
     </>
   );
