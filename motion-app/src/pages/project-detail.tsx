@@ -587,8 +587,8 @@ function MetadrobSections({ p }: { p: WorkItem }) {
 
       {/* Key decisions */}
       <section className="ms-reveal px-6 py-16 sm:px-8 md:py-24 md:px-12 xl:px-[120px]">
-        <div className="grid grid-cols-1 gap-10 rounded-[24px] border border-white/10 bg-gradient-to-r from-[#1d1b3d] to-[#0b0a1a] p-6 md:p-12 lg:grid-cols-[1fr_1.6fr]">
-          <div className="flex items-center gap-5">
+        <div className="grid grid-cols-1 rounded-[24px] border border-white/10 bg-gradient-to-r from-[#1d1b3d] to-[#0b0a1a] p-6 md:p-12">
+          <div className="mb-10 flex items-center gap-5">
             <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[14px] border border-white/10 bg-black/40">
               <Box className="h-7 w-7" style={{ color: ACCENT }} />
             </span>
@@ -598,16 +598,28 @@ function MetadrobSections({ p }: { p: WorkItem }) {
               Decisions
             </h2>
           </div>
-          <ol className="space-y-6">
+          {/* Bento grid: the first decision is the lead tile, the others sit beside it. */}
+          <ol className="grid grid-cols-1 gap-4 md:auto-rows-fr md:grid-cols-3">
             {(p.decisions ?? []).map((item, i) => (
-              <li key={item} className="group flex items-start gap-4 transition-transform duration-300 hover:translate-x-2 text-[clamp(1rem,1.4vw,1.2rem)] leading-snug text-white">
+              <li
+                key={item}
+                className={`group flex flex-col justify-between rounded-[20px] border border-white/10 bg-black/30 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#FF5400]/50 md:p-8 ${
+                  i === 0 ? "bg-gradient-to-br from-[#FF5400]/20 via-[#2a1f4d]/60 to-[#0b0a1a] md:col-span-2 md:row-span-2" : ""
+                }`}
+              >
                 <span
-                  className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border text-[12px] font-bold transition-colors duration-300 group-hover:bg-[#FF5400]/15"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border text-[12px] font-bold transition-colors duration-300 group-hover:bg-[#FF5400]/15"
                   style={{ borderColor: ACCENT, color: ACCENT }}
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span>{item}</span>
+                <span
+                  className={`mt-10 block leading-snug text-white ${
+                    i === 0 ? "text-[clamp(1.4rem,2.6vw,2rem)] font-semibold" : "text-[clamp(1rem,1.4vw,1.15rem)]"
+                  }`}
+                >
+                  {item}
+                </span>
               </li>
             ))}
           </ol>
