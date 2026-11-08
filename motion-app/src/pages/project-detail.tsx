@@ -1,8 +1,8 @@
 import { useRef } from "react";
 import { Link, useParams } from "react-router";
-import { ArrowUpRight, Heart, School, Sprout, Users } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Heart, School, Sprout, Users } from "lucide-react";
 import { motion, useInView } from "motion/react";
-import { WORK, type CaseStudy, type CaseStudyChapter } from "@/App";
+import { WORK, type CaseStudy, type CaseStudyChapter, type WorkItem } from "@/App";
 import { useHeroAboutParallax } from "@/lib/use-hero-about-parallax";
 
 /* Body copy fades in one line at a time as it scrolls into view. Sentences are
@@ -55,8 +55,67 @@ const TONES = {
 export const slugOf = (title: string) =>
   title
     .toLowerCase()
+    .replace(/['’]/g, "")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
+
+/* More Works: a horizontal carousel. Three cards show on desktop, two on tablet,
+   and one and a half on phones so the next card peeks in. Arrows step one card. */
+function MoreWorksCarousel({ items }: { items: WorkItem[] }) {
+  const trackRef = useRef<HTMLDivElement>(null);
+
+  const step = (dir: 1 | -1) => {
+    const el = trackRef.current;
+    if (!el) return;
+    const card = el.firstElementChild as HTMLElement | null;
+    const distance = card ? card.offsetWidth + parseFloat(getComputedStyle(el).columnGap || "0") : el.clientWidth;
+    el.scrollBy({ left: dir * distance, behavior: "smooth" });
+  };
+
+  const arrowClass =
+    "flex h-11 w-11 items-center justify-center rounded-full border border-white/15 text-white transition-colors hover:border-[#FF5400] hover:text-[#FF5400]";
+
+  return (
+    <div className="mt-12">
+      <div className="mb-6 flex justify-end gap-3">
+        <button type="button" aria-label="Previous project" onClick={() => step(-1)} className={arrowClass}>
+          <ChevronLeft className="h-5 w-5" />
+        </button>
+        <button type="button" aria-label="Next project" onClick={() => step(1)} className={arrowClass}>
+          <ChevronRight className="h-5 w-5" />
+        </button>
+      </div>
+
+      <div
+        ref={trackRef}
+        className="flex snap-x snap-mandatory gap-8 overflow-x-auto pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {items.map((m) => (
+          <Link
+            key={m.title}
+            to={`/work/${slugOf(m.title)}`}
+            className="group block w-[calc((100%-2rem)/1.5)] shrink-0 snap-start sm:w-[calc((100%-2rem)/2)] md:w-[calc((100%-4rem)/3)]"
+          >
+            <div className="aspect-[4/3] overflow-hidden rounded-[16px] bg-neutral-900">
+              {m.img ? (
+                <img
+                  src={m.img}
+                  alt={m.title}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              ) : (
+                <CoverPlaceholder title={m.title} />
+              )}
+            </div>
+            <p className="mt-4 text-[12px] uppercase tracking-[0.2em] text-neutral-500">{m.tag}</p>
+            <h3 className="mt-2 text-[24px] font-bold uppercase leading-tight">{m.title}</h3>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 const SectionLabel = ({ children }: { children: string }) => (
   <p className="text-[12px] uppercase tracking-[0.2em] text-neutral-500">{children}</p>
@@ -521,26 +580,7 @@ export function ProjectDetail() {
       <section className="border-t border-white/10 px-6 py-24 sm:px-8 md:px-[120px]">
         <SectionLabel>{"Featured project"}</SectionLabel>
         <h2 className="font-display mt-4 text-[clamp(2.5rem,6vw,5rem)] font-bold leading-[0.95]">More Works</h2>
-        <div className="mt-12 grid grid-cols-1 gap-x-8 gap-y-12 md:grid-cols-3">
-          {more.map((m) => (
-            <Link key={m.title} to={`/work/${slugOf(m.title)}`} className="group block">
-              <div className="aspect-[4/3] overflow-hidden rounded-[16px] bg-neutral-900">
-                {m.img ? (
-                  <img
-                    src={m.img}
-                    alt={m.title}
-                    loading="lazy"
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                ) : (
-                  <CoverPlaceholder title={m.title} />
-                )}
-              </div>
-              <p className="mt-4 text-[12px] uppercase tracking-[0.2em] text-neutral-500">{m.tag}</p>
-              <h3 className="mt-2 text-[24px] font-bold uppercase leading-tight">{m.title}</h3>
-            </Link>
-          ))}
-        </div>
+        <MoreWorksCarousel items={more} />
       </section>
 
       {/* Closing call to action */}

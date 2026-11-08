@@ -15,7 +15,7 @@ import { IntroSequence } from "@/components/ui/intro-sequence";
 import { destroyLenis, getLenis, initLenis } from "@/lib/lenis";
 import { useHeroAboutParallax } from "@/lib/use-hero-about-parallax";
 import { AllProjects } from "@/pages/all-projects";
-import { ProjectDetail } from "@/pages/project-detail";
+import { ProjectDetail, slugOf } from "@/pages/project-detail";
 import {
   HoverLink,
   HoverPreviewStyles,
@@ -57,6 +57,10 @@ export interface WorkItem {
   confidentialityNote?: string;
   featured?: boolean;
   isNew?: boolean;
+  /** Keep off the home page's Selected Works grid; the project stays on /allprojects. */
+  hideFromHome?: boolean;
+  /** Show on the home Selected Works grid even without a cover image (shows a placeholder). */
+  showOnHome?: boolean;
   /** Two-line filmstrip headline, e.g. "Funded\nGlobal". */
   cardTitle?: string;
   /** Short category for filmstrip meta. */
@@ -183,13 +187,14 @@ export const WORK: WorkItem[] = [
     limitations: "Next steps could include moderated usability testing, accessibility checks, persistence, permissions and authentication, and carefully governed integrations. These are future work.",
   },
   {
-    title: "COE",
+    title: "Mother's Grace",
     tier: "selected",
     summary: "A role-based platform concept for coordinating student information, specialist support, assessments, and sessions across a Centre of Excellence.",
     tag: "EdTech · Special education · Admin SaaS",
     question: "Role-based platform concept for a Centre of Excellence.",
     img: "",
-    context: "The COE platform supports operational workflows around students and specialist services. The experience spans student intake, parent information, plans and packages, specialist assignment, scheduling, assessments, session logs, and administrative oversight.",
+    showOnHome: true,
+    context: "The Mother's Grace platform supports operational workflows around students and specialist services. The experience spans student intake, parent information, plans and packages, specialist assignment, scheduling, assessments, session logs, and administrative oversight.",
     outcome: "A connected set of interfaces for managing student-related operations across multiple roles.",
   },
   {
@@ -309,6 +314,7 @@ export const WORK: WorkItem[] = [
     tag: "Inclusive education · EdTech",
     question: "Digital experiences supporting inclusion in mainstream schools.",
     img: "",
+    showOnHome: true,
     context: "Project Inclusion focuses on supporting inclusive education. Inclusive education involves different needs and stakeholders.",
   },
   {
@@ -331,6 +337,7 @@ export const WORK: WorkItem[] = [
     tag: "Product design",
     question: "Full case study on my Framer portfolio.",
     img: "/projects/exploring-protopie.png",
+    hideFromHome: true,
   },
   {
     title: "Bugchyo",
@@ -339,6 +346,7 @@ export const WORK: WorkItem[] = [
     tag: "Brand identity · E-commerce concept",
     question: "Brand and e-commerce concept inspired by a Rajasthani term.",
     img: "",
+    showOnHome: true,
     context: "Bugchyo is a product-focused brand concept built around a traditional Rajasthani term. The project explores how cultural inspiration can inform a contemporary identity and a focused e-commerce experience for a single product. The design challenge is to create a recognisable identity and a shopping experience that makes one hero product feel distinctive, useful, and desirable.",
     outcome: "A coherent brand and digital-commerce direction for a focused product concept.",
   },
@@ -443,7 +451,7 @@ function Portfolio() {
         {/* SELECTED WORK — Boutique grid with clip-mask reveals */}
         <div className="px-6 sm:px-8 md:px-[120px]">
           {/* Only projects with a cover image; the Work page shows the rest with placeholders. */}
-          <SelectedWorks items={WORK.filter((p) => p.img).map((p) => ({ title: p.title, tag: p.tag, img: p.img }))} />
+          <SelectedWorks items={WORK.filter((p) => (p.img || p.showOnHome) && !p.hideFromHome).map((p) => ({ title: p.title, tag: p.tag, img: p.img, href: `/work/${slugOf(p.title)}` }))} />
           <div className="pb-20 pt-4">
             <ToolkitStrip />
           </div>

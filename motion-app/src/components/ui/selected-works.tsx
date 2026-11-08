@@ -2,6 +2,7 @@
 
 import { useId, useRef } from "react";
 import { motion, useInView } from "motion/react";
+import { Link } from "react-router";
 
 /* Selected Work, styled after the two26.studio projects section: three
    451px portrait cards in a row with square corners, a 74px caption row with a
@@ -24,6 +25,8 @@ export interface SelectedWorkItem {
   hoverImg?: string;
   /** Brush colour for this card's hover. Defaults to a palette entry by position. */
   brushColor?: string;
+  /** Project page this card opens. Omit for a card that is not clickable. */
+  href?: string;
 }
 
 interface SelectedWorksProps {
@@ -130,7 +133,17 @@ export function BrushHover({
   );
 }
 
-function WorkCard({ item, delay, brush }: { item: SelectedWorkItem; delay: number; brush: string }) {
+/* Wraps the card in a link when the item has a project page. */
+function WorkCard(props: { item: SelectedWorkItem; delay: number; brush: string }) {
+  if (!props.item.href) return <WorkCardBody {...props} />;
+  return (
+    <Link to={props.item.href} className="block">
+      <WorkCardBody {...props} />
+    </Link>
+  );
+}
+
+function WorkCardBody({ item, delay, brush }: { item: SelectedWorkItem; delay: number; brush: string }) {
   // Trigger from the card itself: the clip mask hides most of the image, so
   // observing the masked element would never reach the visibility threshold.
   const ref = useRef<HTMLElement>(null);
@@ -150,7 +163,17 @@ function WorkCard({ item, delay, brush }: { item: SelectedWorkItem; delay: numbe
         animate={{ clipPath: inView ? CLIP_SHOWN : CLIP_HIDDEN }}
         transition={{ duration: 1.25, ease: EASE }}
       >
-        <BrushHover src={item.img} hoverSrc={item.hoverImg} brush={brush} alt={item.title} />
+        {item.img ? (
+          <BrushHover src={item.img} hoverSrc={item.hoverImg} brush={brush} alt={item.title} />
+        ) : (
+          <div
+            role="img"
+            aria-label={`${item.title}: cover image coming soon`}
+            className="flex h-full w-full items-center justify-center border border-white/10 bg-[linear-gradient(145deg,#1a1a1a,#0b0b0b)]"
+          >
+            <span className="text-[12px] uppercase tracking-[0.2em] text-neutral-500">Cover coming soon</span>
+          </div>
+        )}
       </motion.div>
 
       <div className="mt-3 flex h-[74px] items-center justify-between gap-[16px] pr-[16px]">
