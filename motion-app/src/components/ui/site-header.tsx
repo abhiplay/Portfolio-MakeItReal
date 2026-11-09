@@ -9,7 +9,7 @@ import { smoothScrollToHref } from "@/components/ui/prisma-hero";
    Let's-talk pill right. Transparent over the hero, fine over dark sections. */
 
 const LINKS = [
-  { label: "Work", href: "#work" },
+  { label: "Work", href: "/allprojects" },
   { label: "Process", href: "#build" },
   { label: "Play", href: "#lab" },
   { label: "About", href: "#about" },
@@ -21,6 +21,8 @@ export function SiteHeader() {
 
   // Transparent over the hero; gains a blurred backdrop once scrolled.
   const [scrolled, setScrolled] = useState(false);
+  // A page can mark a light hero with data-header-tone="light". Under it, the transparent header uses dark text.
+  const [lightHero, setLightHero] = useState(false);
 
   // Chapter anchors live on home; from /allprojects, go home first.
   const goSection = (href: string) => (e: MouseEvent) => {
@@ -42,6 +44,11 @@ export function SiteHeader() {
         const next = window.scrollY > 24;
         return s === next ? s : next;
       });
+      // True while a light hero sits under the header's bar.
+      const hero = document.querySelector<HTMLElement>('[data-header-tone="light"]');
+      const rect = hero?.getBoundingClientRect();
+      const light = !!rect && rect.top <= 40 && rect.bottom > 40;
+      setLightHero((s) => (s === light ? s : light));
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -52,7 +59,9 @@ export function SiteHeader() {
       window.removeEventListener("scroll", onScroll);
       if (raf) cancelAnimationFrame(raf);
     };
-  }, []);
+  }, [location.pathname]);
+
+  const darkText = lightHero && !scrolled;
 
   return (
     <header
@@ -67,13 +76,18 @@ export function SiteHeader() {
           href="#top"
           onClick={(e) => {
             e.preventDefault();
+            // From another page, go home; the route change scrolls to the top.
+            if (location.pathname !== "/") {
+              navigate("/");
+              return;
+            }
             if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
               window.scrollTo(0, 0);
             } else {
               window.scrollTo({ top: 0, behavior: "smooth" });
             }
           }}
-          className="justify-self-start text-xl font-extrabold tracking-tight text-white"
+          className={`justify-self-start text-xl font-extrabold tracking-tight ${darkText ? "text-[#17130f]" : "text-white"}`}
         >
           ABHINESH B.
         </a>
@@ -84,7 +98,7 @@ export function SiteHeader() {
               key={item.label}
               href={item.href}
               onClick={goSection(item.href)}
-              className="text-base text-[#E1E0CC]/70 transition-colors hover:text-[#E1E0CC]"
+              className={`text-base transition-colors hover:text-[#FF5400] ${darkText ? "text-[#17130f]/70" : "text-[#E1E0CC]/70"}`}
             >
               {item.label}
             </a>
@@ -92,8 +106,9 @@ export function SiteHeader() {
         </nav>
 
         <a
-          href="mailto:hello@abhinesh.design"
-          className="inline-flex items-center gap-2 justify-self-end rounded-full border border-white/10 bg-black px-6 py-2.5 text-base font-medium text-white transition-colors hover:border-white/25"
+          href="#contact"
+          onClick={goSection("#contact")}
+          className="inline-flex items-center gap-2 justify-self-end rounded-full border border-white/10 bg-black px-6 py-2.5 text-base font-medium text-white glass-hover"
         >
           <span className="relative">
             Let&apos;s talk
