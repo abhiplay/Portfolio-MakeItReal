@@ -59,8 +59,6 @@ export interface WorkItem {
   isNew?: boolean;
   /** Detail-page hero image, when it differs from the card image. */
   heroImg?: string;
-  /** Metadrob-page hero background, the clean store scene. Falls back to heroImg. */
-  heroScreen?: string;
   /** Keep off the home page's Selected Works grid; the project stays on /allprojects. */
   hideFromHome?: boolean;
   /** Show on the home Selected Works grid even without a cover image (shows a placeholder). */
@@ -130,7 +128,6 @@ export const WORK: WorkItem[] = [
     question: "Full case study on my Framer portfolio.",
     img: "/projects/metadrob.png",
     heroImg: "/projects/metadrob-hero.webp",
-    heroScreen: "/projects/metadrob/hero-scene.webp",
     year: "2024",
     services: "UI UX Design",
     client: "Metadrob",
@@ -172,7 +169,7 @@ export const WORK: WorkItem[] = [
       { role: "Reviewer 1", action: "A subject matter expert does the first review and uploads the reviewed work." },
       { role: "Reviewer 2", action: "A second subject matter expert makes the final decision on the lesson plan: accept it, or send it back for rework." },
     ],
-    gallery: ["/projects/gallery/cbl-cba-teacher.png", "/projects/gallery/cbl-cba-rework.png", "/projects/gallery/cbl-cba-admin-tasks.png", "/projects/gallery/cbl-cba-assign-task.png", "/projects/gallery/cbl-cba-screen-3.png"],
+    gallery: ["/projects/gallery/cbl-cba-teacher.png", "/projects/gallery/cbl-cba-rework.png", "/projects/gallery/cbl-cba-tasks.png", "/projects/gallery/cbl-cba-screen-3.png"],
     outcome: "Transformed a fragmented, teacher-driven assessment process into a structured digital workflow for competency-based learning. The platform connected lesson planning, project work, Student Readiness Tests (SRT), Classroom Readiness Tests (CRT), and assessment reviews in one coordinated experience. Teachers could submit their work for review, reviewers could evaluate and request modifications, and approved content could be published through a clear, role-based workflow. This improved process visibility, established clearer ownership at each stage, and created a more consistent approach to preparing, reviewing, and managing learning assessments.",
   },
   {
@@ -582,7 +579,7 @@ export default function App() {
     return () => destroyLenis();
   }, []);
   return (
-    <div className="dark relative w-full bg-background min-h-screen font-sans selection:bg-white/20 overflow-x-clip">
+    <div className="dark relative w-full bg-background min-h-screen font-sans selection:bg-white/20 overflow-x-hidden">
       <HoverPreviewStyles />
       <SiteHeader />
       <ScrollToTop />

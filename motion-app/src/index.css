@@ -25,7 +25,10 @@
   --border: oklch(1 0 0 / 10%);
 }
 
+/* Two26-style type: Archivo expanded for headings, Hanken Grotesk for body.
+   Stand-ins for Mdnichrometest Dark and Neue Montreal. */
 @theme inline {
+  --font-sans: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
@@ -34,6 +37,65 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-destructive: var(--destructive);
   --color-border: var(--border);
+  --color-card-foreground: var(--card-foreground);
+}
+
+/* Glass testimonial stack (components/ui/glass-testimonial-swiper.tsx). */
+:root {
+  --card-foreground: oklch(0.985 0 0);
+}
+
+/* Toolkit marquee loop. The track moves one copy's width, so the loop is seamless. Hover pauses it. */
+@keyframes marquee-track {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  animation: marquee-track linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* Card positions and tilts are set by motion, so no CSS transition here. */
+.testimonial-card {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  width: 100%;
+  border-radius: 1.25rem;
+  user-select: none;
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4);
+}
+
+/* One heading family across the site: every heading tag uses Archivo. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Archivo', sans-serif;
 }
 
 body {
@@ -74,6 +136,34 @@ body::-webkit-scrollbar,
   }
 }
 
+/* Shared button hover: the footer's glass pill (motion-footer.tsx), applied to
+   any button surface. Unlayered so it beats the Tailwind background utilities
+   (bg-white, hover:bg-white/10). The ring is an inset shadow, so hover never
+   shifts the layout. */
+.glass-hover {
+  transition:
+    background 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-hover:hover {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow:
+    0 20px 40px -10px rgba(0, 0, 0, 0.7),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.2),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-hover {
+    transition: none;
+  }
+}
+
 /* Film-grain texture used by the Prisma hero overlay
    (class referenced by prisma-hero.tsx; defined here so it
    ships with the global stylesheet, Tailwind v4 style). */
@@ -82,14 +172,15 @@ body::-webkit-scrollbar,
   background-size: 180px 180px;
 }
 
-/* Handwritten margin annotations (mockup voice). */
+/* Annotations use the body face now, so they read like the rest of the copy. */
 .font-hand {
-  font-family: 'Caveat', cursive;
+  font-family: 'Hanken Grotesk', sans-serif;
 }
 
-/* Intro beat statements — matches the Figma filmstrip voice. */
+/* Intro beat statements use the heading face. */
 .font-beat {
-  font-family: 'Indie Flower', cursive;
+  font-family: 'Archivo', sans-serif;
+  font-stretch: 125%;
 }
 
 /* Scroll-cue idle animation: bobbing arrow + soft sonar ring. */
@@ -142,12 +233,32 @@ body::-webkit-scrollbar,
 
 /* Display grotesk for editorial headlines (mockup voice). */
 .font-display {
-  font-family: 'Space Grotesk', sans-serif;
+  font-family: 'Archivo', sans-serif;
+  font-stretch: 125%;
 }
 
-/* Condensed black for the About statement (reference voice). */
+/* Heavy expanded face for the About statement and Selected Works headings. */
 .font-condensed {
-  font-family: 'Anton', sans-serif;
+  font-family: 'Archivo', sans-serif;
+  font-stretch: 125%;
+}
+
+/* Selected Work: arrow swings up-left, then springs back while hovered. */
+@keyframes work-arrow-kick {
+  0% { transform: rotate(0deg); }
+  30% { transform: rotate(-45deg); }
+  100% { transform: rotate(0deg); }
+}
+/* Closing tags drift a little around their spot. Animates the separate
+   `translate` property, so it doesn't fight the entrance `transform`. */
+@keyframes closing-tag-float {
+  0%, 100% { translate: 0 0; }
+  33% { translate: 6px -10px; }
+  66% { translate: -5px -4px; }
+}
+
+.group:hover .work-arrow {
+  animation: work-arrow-kick 0.93s cubic-bezier(0.34, 1.4, 0.64, 1);
 }
 
 /* Dissolves a media frame into the page on all four sides. */

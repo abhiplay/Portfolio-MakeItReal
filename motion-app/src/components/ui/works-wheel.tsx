@@ -239,6 +239,8 @@ export function WorksWheel({
     const el = stageRef.current;
     if (!el) return;
     const onWheel = (event: WheelEvent) => {
+      // Not seated yet (or already leaving): the page scrolls, the drum waits.
+      if (!isSeated()) return;
       const next = target.current + event.deltaY / WHEEL_UNITS;
       if (next > 0 && next < last + 1) event.preventDefault();
       to(next);
@@ -262,6 +264,17 @@ export function WorksWheel({
   const drag = React.useRef<number | null>(null);
   const settling = React.useRef(0);
 
+  /* The wheel only captures the scroll once the section is seated - fully
+     covering the viewport. While it is still arriving (or already leaving)
+     every gesture passes through to the page's own scroll, so the drum
+     never starts turning before the section has stuck to the top. */
+  const isSeated = () => {
+    const el = stageRef.current;
+    if (!el) return false;
+    const rect = el.getBoundingClientRect();
+    return rect.top <= 1 && rect.bottom >= window.innerHeight - 1;
+  };
+
   return (
     <section
       aria-label={label}
@@ -284,6 +297,8 @@ export function WorksWheel({
         className="focus-visible:outline-foreground absolute inset-0 cursor-grab touch-pan-x outline-none focus-visible:outline-2 focus-visible:-outline-offset-4 active:cursor-grabbing"
         style={{ perspective: `${metrics.depth}px` }}
         onPointerDown={(event) => {
+          // Drag only turns the drum while the section is seated.
+          if (!isSeated()) return;
           drag.current = event.clientY;
           event.currentTarget.setPointerCapture(event.pointerId);
         }}

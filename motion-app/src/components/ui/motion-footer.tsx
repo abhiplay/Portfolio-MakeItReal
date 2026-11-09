@@ -13,12 +13,12 @@ if (typeof window !== "undefined") {
 
 // -------------------------------------------------------------------------
 // 1. THEME-ADAPTIVE INLINE STYLES
-// NOTE: The Plus Jakarta Sans @import lives in index.html <link> instead of
+// NOTE: The Hanken Grotesk @import lives in index.html <link> instead of
 // here so the font loads in parallel instead of blocking on style injection.
 // -------------------------------------------------------------------------
 const STYLES = `
 .cinematic-footer-wrapper {
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Hanken Grotesk', sans-serif;
   -webkit-font-smoothing: antialiased;
 
   /* Dynamic Variables using standard shadcn/tailwind v4 tokens */
@@ -382,7 +382,7 @@ export function CinematicFooter({
               {/* Primary Pills */}
               <div className="flex flex-wrap justify-center gap-4 w-full">
                 {primaryPills.map((pill) => (
-                  <MagneticButton key={pill.label} as="a" href={pill.href} className="footer-glass-pill px-10 py-5 rounded-full text-foreground font-bold text-sm md:text-base flex items-center gap-3 group">
+                  <MagneticButton key={pill.label} as="a" href={pill.href} target={pill.href.endsWith(".pdf") ? "_blank" : undefined} rel={pill.href.endsWith(".pdf") ? "noopener noreferrer" : undefined} className="footer-glass-pill px-10 py-5 rounded-full text-foreground font-bold text-sm md:text-base flex items-center gap-3 group">
                     {pill.icon}
                     {pill.label}
                   </MagneticButton>
@@ -392,7 +392,7 @@ export function CinematicFooter({
               {/* Secondary Text Links */}
               <div className="flex flex-wrap justify-center gap-3 md:gap-6 w-full mt-2">
                 {secondaryPills.map((pill) => (
-                  <MagneticButton key={pill.label} as="a" href={pill.href} className="footer-glass-pill px-6 py-3 rounded-full text-muted-foreground font-medium text-xs md:text-sm hover:text-foreground">
+                  <MagneticButton key={pill.label} as="a" href={pill.href} target={pill.href.startsWith("http") ? "_blank" : undefined} rel={pill.href.startsWith("http") ? "noopener noreferrer" : undefined} className="footer-glass-pill px-6 py-3 rounded-full text-muted-foreground font-medium text-xs md:text-sm hover:text-foreground">
                     {pill.label}
                   </MagneticButton>
                 ))}
