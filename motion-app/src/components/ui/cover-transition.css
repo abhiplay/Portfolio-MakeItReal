@@ -1,19 +1,21 @@
-/* Metadrob cover morph, forward only: the rounded card image on /allprojects becomes the
-   full-viewport hero on /work/metadrob. Back, Forward and header links are plain navigations.
+/* Card-to-hero morph, forward only: a project card's cover box on the list (or the home page, or
+   a More Works card) becomes the full-viewport cover of its detail page. Back, Forward and header
+   links are plain navigations.
+
+   The names are set from JavaScript (lib/project-morph.ts): the clicked card's cover box and the
+   destination hero's cover box both carry `project-cover`, so only the pair in one morph share it.
 
    Motion: a critically damped spring (SwiftUI .smooth: response 0.5 s, bounce 0, so damping ratio 1,
    no overshoot). The cover box and its photo use it over 0.7 s; the hero copy uses it over 0.5 s per line.
    Each rule sets a cubic-bezier fallback first and the linear() spring second. A browser that cannot
    parse linear() drops the second declaration and keeps the first. */
 
-/* Names. Each one exists once in each view. */
-.vt-cover-metadrob { view-transition-name: cover-metadrob; }
-.vt-hero-copy { view-transition-name: hero-copy; }
+/* The header is one element on every page, so its name is static. */
 .vt-site-header { view-transition-name: site-header; }
 
 /* Cover box and photo. Both snapshots fill the animating box and crop with object-fit: cover,
    so the photo is never stretched while the box changes shape. */
-::view-transition-group(cover-metadrob) {
+::view-transition-group(project-cover) {
   animation-duration: 0.7s;
   animation-timing-function: cubic-bezier(0.361, 0.678, 0.043, 0.913);
   animation-timing-function: linear(0, 0.027, 0.091, 0.175, 0.267, 0.358, 0.445, 0.526, 0.598, 0.661, 0.716, 0.764, 0.804, 0.839, 0.867, 0.891, 0.911, 0.928, 0.941, 0.953, 0.962, 0.969, 0.976, 0.981, 0.985, 0.988, 0.991, 0.993, 0.994, 0.996, 0.997, 0.998, 0.999, 0.999, 1, 1);
@@ -23,22 +25,22 @@
   border-radius: 16px;
 }
 
-::view-transition-old(cover-metadrob),
-::view-transition-new(cover-metadrob) {
+::view-transition-old(project-cover),
+::view-transition-new(project-cover) {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 70% 50%;
+  object-position: 50% 50%;
 }
 
 /* The photo crossfades with the old card leaving quickly and the hero arriving on the spring,
    which hides the difference between the two snapshots. */
-::view-transition-old(cover-metadrob) {
+::view-transition-old(project-cover) {
   animation-duration: 0.3s;
   animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
 }
 
-::view-transition-new(cover-metadrob) {
+::view-transition-new(project-cover) {
   animation-duration: 0.45s;
   animation-timing-function: cubic-bezier(0, 0, 0.58, 1);
 }
@@ -51,7 +53,7 @@
   animation-timing-function: linear(0, 0.027, 0.091, 0.175, 0.267, 0.358, 0.445, 0.526, 0.598, 0.661, 0.716, 0.764, 0.804, 0.839, 0.867, 0.891, 0.911, 0.928, 0.941, 0.953, 0.962, 0.969, 0.976, 0.981, 0.985, 0.988, 0.991, 0.993, 0.994, 0.996, 0.997, 0.998, 0.999, 0.999, 1, 1);
 }
 
-/* Hero copy is new only. Its content is live, so the rise plays in place while the cover settles.
+/* Hero copy is new only. Its content is live, so it shows in place while the cover settles.
    The group does not fade; each line carries its own opacity. */
 ::view-transition-group(hero-copy),
 ::view-transition-new(hero-copy) {
@@ -104,12 +106,13 @@
   to { opacity: 1; }
 }
 
-/* Reduced motion: no morph, no rise, no fade of the cover. Navigation keeps the short root fade. */
+/* Reduced motion: no morph, no rise, no fade of the cover. Navigation keeps the short root fade.
+   !important so the inline names set from JavaScript are overridden too. */
 @media (prefers-reduced-motion: reduce) {
-  .vt-cover-metadrob,
-  .vt-hero-copy,
+  [data-project-cover],
+  [data-hero-copy],
   .vt-site-header {
-    view-transition-name: none;
+    view-transition-name: none !important;
   }
 
   .hero-rise,

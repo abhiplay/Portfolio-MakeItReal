@@ -2,7 +2,8 @@
 
 import { useId, useRef } from "react";
 import { motion, useInView } from "motion/react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { openWithMorph } from "@/lib/project-morph";
 
 /* Selected Work, styled after the two26.studio projects section: three
    451px portrait cards in a row with square corners, a 74px caption row with a
@@ -135,9 +136,11 @@ export function BrushHover({
 
 /* Wraps the card in a link when the item has a project page. */
 function WorkCard(props: { item: SelectedWorkItem; delay: number; brush: string }) {
+  const navigate = useNavigate();
   if (!props.item.href) return <WorkCardBody {...props} />;
+  const slug = props.item.href.replace(/^\/work\//, "");
   return (
-    <Link to={props.item.href} className="block">
+    <Link to={props.item.href} onClick={(e) => openWithMorph(e, slug, navigate)} className="block">
       <WorkCardBody {...props} />
     </Link>
   );
@@ -158,6 +161,7 @@ function WorkCardBody({ item, delay, brush }: { item: SelectedWorkItem; delay: n
       transition={{ duration: 0.9, ease: EASE, delay }}
     >
       <motion.div
+        data-project-cover=""
         className="relative aspect-[451/520] overflow-hidden rounded-[16px] bg-neutral-300"
         initial={{ clipPath: CLIP_HIDDEN }}
         animate={{ clipPath: inView ? CLIP_SHOWN : CLIP_HIDDEN }}

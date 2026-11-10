@@ -1,9 +1,11 @@
-import { useRef } from "react";
-import { Link, useParams } from "react-router";
+import { useLayoutEffect, useRef } from "react";
+import { Link, useNavigate, useParams } from "react-router";
 import { ArrowUpRight, ChevronLeft, ChevronRight, Heart, School, Sprout, Users } from "lucide-react";
 import { motion, useInView } from "motion/react";
 import { WORK, type CaseStudy, type CaseStudyChapter, type WorkItem } from "@/App";
 import { useHeroAboutParallax } from "@/lib/use-hero-about-parallax";
+import { COPY_NAME, COVER_NAME, isMorphDestination, markHeroLanded, openWithMorph } from "@/lib/project-morph";
+import { slugOf } from "@/lib/slug";
 import { MetadrobHero, MetadrobSections } from "@/components/ui/metadrob-page";
 import { CblHero } from "@/components/ui/cbl-hero";
 import { ChallengeSection } from "@/components/ui/challenge-section";
@@ -58,17 +60,13 @@ const TONES = {
   white: "#000000",
 } as const;
 
-export const slugOf = (title: string) =>
-  title
-    .toLowerCase()
-    .replace(/['’]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
+export { slugOf };
 
 /* More Works: a horizontal carousel. Three cards show on desktop, two on tablet,
    and one and a half on phones so the next card peeks in. Arrows step one card. */
 function MoreWorksCarousel({ items }: { items: WorkItem[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
 
   const step = (dir: 1 | -1) => {
     const el = trackRef.current;
@@ -101,15 +99,16 @@ function MoreWorksCarousel({ items }: { items: WorkItem[] }) {
           <Link
             key={m.title}
             to={`/work/${slugOf(m.title)}`}
+            onClick={(e) => openWithMorph(e, slugOf(m.title), navigate)}
             className="group block w-[calc((100%-2rem)/1.5)] shrink-0 snap-start sm:w-[calc((100%-2rem)/2)] md:w-[calc((100%-4rem)/3)]"
           >
-            <div className="aspect-[4/3] overflow-hidden rounded-[16px] bg-neutral-900">
+            <div data-project-cover="" className="aspect-[4/3] overflow-hidden rounded-[16px] bg-neutral-900">
               {m.img ? (
                 <img
                   src={m.img}
                   alt={m.title}
                   loading="lazy"
-                  className="h-full w-full object-cover transition-transform duration-700 motion-safe:group-hover:scale-105"
+                  className={`h-full w-full object-cover transition-transform duration-700 motion-safe:group-hover:scale-105${m.title === "Metadrob" ? " object-[70%_50%]" : ""}`}
                 />
               ) : (
                 <CoverPlaceholder title={m.title} />
@@ -454,6 +453,10 @@ export function ProjectDetail() {
   const { slug } = useParams();
   // Same scrubbed hero parallax as the home page: the cover image drifts and the title lifts.
   useHeroAboutParallax();
+  // The page a card morph is taking the reader to reports that its hero is on screen.
+  useLayoutEffect(() => {
+    if (slug) markHeroLanded(slug);
+  }, [slug]);
   const index = WORK.findIndex((p) => slugOf(p.title) === slug);
 
   if (index < 0) {
@@ -487,19 +490,27 @@ export function ProjectDetail() {
         <CblHero p={p} />
       ) : (
       <section className="relative h-screen w-full overflow-hidden" data-hp-stage="hero">
-        {p.heroImg ?? p.img ? (
-          <img src={p.heroImg ?? p.img} alt={p.title} data-hp="hero-video" className="absolute inset-0 h-full w-full object-cover" />
-        ) : (
-          <div className="absolute inset-0">
-            <CoverPlaceholder title={p.title} />
-          </div>
-        )}
-        <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/30" />
+        {/* The cover box and its scrim move together, so the morph from the card lands on the same picture. */}
+        <div
+          data-project-cover=""
+          className="hero-cover absolute inset-0 overflow-hidden"
+          style={isMorphDestination(slugOf(p.title)) ? { viewTransitionName: COVER_NAME } : undefined}
+        >
+          {p.img ? (
+            <img src={p.img} alt={p.title} data-hp="hero-video" className="absolute inset-0 h-full w-full object-cover" />
+          ) : (
+            <div className="absolute inset-0">
+              <CoverPlaceholder title={p.title} />
+            </div>
+          )}
+          <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/30" />
+        </div>
 
         <h1
           data-hp="hero-copy"
+          data-hero-copy=""
           className="font-display absolute bottom-6 left-6 text-[clamp(2rem,8.5vw,10rem)] font-bold uppercase leading-[0.9] tracking-[-0.02em] sm:left-8 md:left-[40px] md:text-[clamp(3rem,11vw,10rem)]"
-          style={{ color: CREAM }}
+          style={isMorphDestination(slugOf(p.title)) ? { color: CREAM, viewTransitionName: COPY_NAME } : { color: CREAM }}
         >
           {p.title}
         </h1>

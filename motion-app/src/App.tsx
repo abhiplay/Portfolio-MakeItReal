@@ -150,7 +150,7 @@ export const WORK: WorkItem[] = [
     cardOutcome: "Connected lesson planning, competency-based assessments, reviews and approvals in one structured digital workflow.",
     tag: "EdTech · Workflow design · Education",
     question: "Full case study on my Framer portfolio.",
-    img: "/projects/cbl-cba.png",
+    img: "/projects/cbl-cba/hero-devices.webp",
     isNew: true,
     year: "2025",
     services: "UI UX Design | Product Design | Usability Testing",

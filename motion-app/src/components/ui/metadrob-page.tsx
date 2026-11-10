@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import {
   ArrowRight,
   Box,
@@ -26,7 +26,8 @@ import {
 import type { WorkItem } from "@/App";
 import { ImageComparison } from "@/components/ui/image-comparison-slider";
 import "@/components/ui/cover-transition.css";
-import { markMetadrobHeroLanded } from "@/lib/metadrob-morph";
+import { COPY_NAME, COVER_NAME, isMorphDestination } from "@/lib/project-morph";
+import { slugOf } from "@/lib/slug";
 
 /* Metadrob case study. Wording is the approved reference's own. Screens are
    exports from the Metadrob Figma file (Super Admin V1.0.1). The +200%
@@ -91,14 +92,12 @@ const HERO_META = [
 export function MetadrobHero({ p }: { p: WorkItem }) {
   // The card cover, so the morph from the card lands on the same picture.
   const scene = p.img ?? p.heroScreen ?? p.heroImg;
-  // Tells a pending view transition that the hero is on screen, so the capture includes it.
-  useLayoutEffect(() => {
-    markMetadrobHeroLanded();
-  }, []);
+  // Named only on the page a card morph is taking the reader to.
+  const destination = isMorphDestination(slugOf(p.title));
   return (
     <section className="relative isolate flex min-h-[max(640px,100svh)] flex-col overflow-hidden">
       {/* One named box for the photo and both scrims, so the scrims move with the photo and nothing steps at the handoff. */}
-      <div className="vt-cover-metadrob hero-cover absolute inset-0 -z-10 overflow-hidden">
+      <div data-project-cover="" style={destination ? { viewTransitionName: COVER_NAME } : undefined} className="hero-cover absolute inset-0 -z-10 overflow-hidden">
         {scene && (
           <img
             src={scene}
@@ -112,7 +111,7 @@ export function MetadrobHero({ p }: { p: WorkItem }) {
           className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#1a1009]/85 via-[#1a1009]/40 to-transparent"
         />
       </div>
-      <div className="vt-hero-copy relative flex flex-1 flex-col px-6 pb-10 pt-32 sm:px-8 md:px-[120px]">
+      <div data-hero-copy="" style={destination ? { viewTransitionName: COPY_NAME } : undefined} className="relative flex flex-1 flex-col px-6 pb-10 pt-32 sm:px-8 md:px-[120px]">
         <p className={`hero-rise hero-rise-1 ${TYPE.eyebrow} text-white/90`}>Product design case study</p>
         <h1 className="hero-rise hero-rise-2 font-display mt-6 max-w-[620px] text-[clamp(2.75rem,5vw,4.9rem)] font-bold leading-[1.02] tracking-[-0.025em] text-white">
           Shopping should feel like an{" "}
@@ -166,8 +165,10 @@ export function MetadrobHero({ p }: { p: WorkItem }) {
 }
 
 /* ---------------- Sections below the hero ---------------- */
-const METADROB_STUDIO = "/projects/metadrob/metadrob-studio.webp";
-const PUBLISH_MODAL = "/projects/metadrob/publish-modal.webp";
+// 1200 px wide, resampled from the 500 px original, so the cards show it sharper on retina screens.
+const METADROB_STUDIO = "/projects/metadrob/metadrob-studio-hd.webp";
+// 1200 px wide, resampled from the 306 px original, so the card shows it sharper on retina screens.
+const PUBLISH_MODAL = "/projects/metadrob/publish-modal-hd.webp";
 
 // Backdrop pre-set to the panel colour, so the clip needs no mask or overlay.
 const PROCESS_CAT = "/projects/metadrob/process-cat-clean.webp";

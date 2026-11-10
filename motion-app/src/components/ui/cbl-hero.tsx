@@ -2,6 +2,8 @@ import { motion } from "motion/react";
 import { Laptop, Layers, Pencil, User, Users } from "lucide-react";
 import type { WorkItem } from "@/App";
 import { CBL_MOTION_CSS, EASE_OUT, drawOnLoad, inView, onLoad, popIn, useCblReduce } from "@/components/ui/cbl-motion";
+import { COVER_NAME, isMorphDestination } from "@/lib/project-morph";
+import { slugOf } from "@/lib/slug";
 
 /* CBL CBA case-study hero, rebuilt from the reference. The art is the reference with its text, chips,
    callouts and connectors removed (public/projects/cbl-cba/hero-plate.webp). Everything on top is live:
@@ -34,7 +36,7 @@ const CALLOUTS = [
     text: "Review, provide feedback and approve.",
     color: VIOLET,
     tile: "#EEEAFD",
-    pos: "lg:left-[31.7%] lg:top-[4.8%] lg:w-[17.1%]",
+    pos: "lg:left-[31.7%] lg:bottom-[calc(83.69%+16px)] lg:w-[17.1%]",
     dot: { x: 50.46, y: 16.31 },
     path: "M748 104 C 764 110, 776 128, 775 160",
   },
@@ -44,35 +46,26 @@ const CALLOUTS = [
     text: "Create learning activities and submit for review.",
     color: ACCENT,
     tile: "#FFE9DA",
-    pos: "lg:left-[80%] lg:top-[4.8%] lg:w-[17.1%]",
+    pos: "lg:left-[80%] lg:bottom-[calc(84.67%+16px)] lg:w-[17.1%]",
     dot: { x: 78.32, y: 15.33 },
     path: "M1232 110 C 1222 118, 1210 134, 1203 150",
   },
 ];
 
-export function CblHero({ p: _p }: { p: WorkItem }) {
+export function CblHero({ p }: { p: WorkItem }) {
   const reduce = useCblReduce();
+  // The art is the morph target on the page a card morph is taking the reader to.
+  const destination = isMorphDestination(slugOf(p.title));
   return (
     <section
       data-header-tone="light"
       aria-labelledby="cbl-hero-title"
-      className="relative isolate overflow-hidden bg-[#FAF4FD] px-6 pb-16 pt-28 sm:px-8 lg:px-0 lg:pb-0 lg:pt-[88px]"
+      className="relative isolate overflow-hidden bg-[#FAF4FD] px-6 pb-16 pt-28 sm:px-8 lg:px-0 lg:pb-[5.4%] lg:pt-[88px]"
       style={{ color: INK }}
     >
       <style>{CBL_MOTION_CSS}</style>
 
-      <div className="@container relative lg:aspect-[3/2]">
-        <motion.img
-          src={PLATE}
-          alt=""
-          aria-hidden
-          className="absolute inset-0 -z-10 hidden h-full w-full object-cover lg:block"
-          style={{ maskImage: "linear-gradient(to bottom, #000 93%, transparent 100%)" }}
-          initial={reduce ? false : { opacity: 0, scale: 1.04 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.6, ease: EASE_OUT }}
-        />
-
+      <div className="@container relative lg:aspect-[15/8]">
         <div className="flex flex-col items-start gap-6 lg:absolute lg:left-[120px] lg:top-[11.5%] lg:w-[40%] lg:gap-0">
           <motion.p
             className="flex items-center gap-2.5 text-[15px] font-bold lg:mb-[1.5cqw] lg:gap-[0.8cqw] lg:text-[clamp(14px,1.17cqw,18px)]"
@@ -92,7 +85,7 @@ export function CblHero({ p: _p }: { p: WorkItem }) {
 
           <h1
             id="cbl-hero-title"
-            className="font-display text-[clamp(28px,8.2vw,40px)] font-bold leading-[0.98] tracking-[-0.02em] lg:mb-[2.9cqw] lg:text-[clamp(34px,4cqw,66px)]"
+            className="font-display text-[clamp(28px,8.2vw,40px)] font-bold leading-[0.98] tracking-[-0.02em] lg:mb-[2.9cqw] lg:text-[clamp(34px,3.6cqw,66px)]"
             style={NORMAL_WIDTH}
           >
             <motion.span className="block" {...onLoad(reduce, 0.3)}>
@@ -156,9 +149,33 @@ export function CblHero({ p: _p }: { p: WorkItem }) {
         <motion.img
           src={DEVICES}
           alt="The CBL CBA dashboard on a laptop, with the Review and Task Submission screens on two tablets"
+          data-project-cover=""
+          style={destination ? { viewTransitionName: COVER_NAME } : undefined}
           className="mt-10 block h-auto w-full lg:hidden"
           {...inView(reduce, 0.1)}
         />
+
+        {/* The art box: the plate, callouts, connectors and dots are positioned inside it, so they move together.
+            On lg and up it sits to the right at 80% width, which keeps the headline clear of the tablets and laptop. */}
+        <div className="lg:absolute lg:left-[20%] lg:top-[10%] lg:aspect-[3/2] lg:w-[80%]">
+          <motion.img
+            src={PLATE}
+            alt=""
+            aria-hidden
+            data-project-cover=""
+            className="absolute inset-0 -z-10 hidden h-full w-full object-cover lg:block"
+            style={{
+              // Fades the bottom and the left edge, so the plate's plant and book dissolve instead of ending in a hard line.
+              maskImage:
+                "linear-gradient(to bottom, #000 93%, transparent 100%), linear-gradient(to right, transparent 22%, #000 38%)",
+              maskComposite: "intersect",
+              WebkitMaskComposite: "source-in",
+              ...(destination ? { viewTransitionName: COVER_NAME } : {}),
+            }}
+            initial={reduce ? false : { opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.6, ease: EASE_OUT }}
+          />
 
         <svg
           aria-hidden
@@ -195,25 +212,25 @@ export function CblHero({ p: _p }: { p: WorkItem }) {
         {CALLOUTS.map(({ icon: Icon, title, text, color, tile, pos }, i) => (
           <motion.div
             key={title}
-            className={`mt-4 flex items-center gap-4 rounded-[20px] bg-white p-4 shadow-[0_18px_40px_-18px_rgba(60,30,100,0.35)] transition-[translate] duration-500 motion-safe:hover:-translate-y-1 lg:absolute lg:mt-0 lg:h-[8.8%] lg:min-h-[8.8%] lg:gap-[1.2cqw] lg:rounded-[1.3cqw] lg:p-[1.1cqw] ${pos}`}
+            className={`mt-4 grid grid-cols-[auto_1fr] items-center gap-x-4 gap-y-2 rounded-[20px] bg-white p-4 shadow-[0_18px_40px_-18px_rgba(60,30,100,0.35)] transition-[translate] duration-500 motion-safe:hover:-translate-y-1 lg:absolute lg:mt-0 lg:gap-x-[0.9cqw] lg:gap-y-[0.8cqw] lg:rounded-[1.3cqw] lg:p-[1.1cqw] ${pos}`}
             {...inView(reduce, 0.95 + i * 0.15)}
           >
+            {/* The icon and title share a row; the description runs under both. The card grows with its text. */}
             <span
               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] lg:h-[2.6cqw] lg:w-[2.6cqw] lg:rounded-[1cqw]"
               style={{ background: tile }}
             >
               <Icon className="h-5 w-5 lg:h-[1.4cqw] lg:w-[1.4cqw]" style={{ color }} aria-hidden />
             </span>
-            <span>
-              <span className="block text-[15px] font-semibold lg:text-[clamp(13px,1.1cqw,17px)]" style={{ color: INK }}>
-                {title}
-              </span>
-              <span className="mt-0.5 block text-[14px] leading-snug text-[#4A4360] lg:text-[clamp(12px,0.98cqw,15px)]">
-                {text}
-              </span>
+            <span className="block text-[15px] font-semibold lg:text-[clamp(13px,1.1cqw,17px)]" style={{ color: INK }}>
+              {title}
+            </span>
+            <span className="col-start-2 block text-[14px] leading-snug text-[#4A4360] lg:col-span-2 lg:col-start-1 lg:text-[clamp(12px,0.98cqw,15px)]">
+              {text}
             </span>
           </motion.div>
         ))}
+        </div>
       </div>
     </section>
   );
