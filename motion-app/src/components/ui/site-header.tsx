@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type MouseEvent } from "react";
+import { useLayoutEffect, useState, type MouseEvent } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { smoothScrollToHref } from "@/components/ui/prisma-hero";
 
@@ -36,7 +36,8 @@ export function SiteHeader() {
     }
   };
 
-  useEffect(() => {
+  // A layout effect, so the scrolled state is correct in the commit that changes pages.
+  useLayoutEffect(() => {
     let raf = 0;
     const update = () => {
       raf = 0;
@@ -65,7 +66,7 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-colors duration-500 motion-reduce:transition-none ${
+      className={`vt-site-header fixed inset-x-0 top-0 z-50 transition-colors duration-500 motion-reduce:transition-none ${
         scrolled
           ? "border-b border-white/10 bg-black/70 backdrop-blur-md"
           : "border-b border-transparent bg-transparent"

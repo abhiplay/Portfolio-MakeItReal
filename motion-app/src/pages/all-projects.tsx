@@ -1,4 +1,6 @@
-import { Link } from "react-router";
+import { useRef, type MouseEvent } from "react";
+import { awaitMetadrobHero } from "@/lib/metadrob-morph";
+import { Link, useNavigate } from "react-router";
 import { WORK } from "@/App";
 import { CoverPlaceholder, slugOf } from "@/pages/project-detail";
 import type { WorkItem } from "@/App";
@@ -20,15 +22,24 @@ const TIERS: { key: WorkItem["tier"]; label: string; heading: string }[] = [
 
 /* One card structure for every project. The description is the card outcome
    when one is evidenced, otherwise the summary, otherwise the short line. */
-const WorkCard = ({ project: p }: { project: WorkItem }) => (
-  <Link to={`/work/${slugOf(p.title)}`} className="group block">
-    <div className="relative aspect-[4/3] overflow-hidden rounded-[16px] bg-neutral-900">
+// Metadrob's cover morphs into its full-screen detail hero. Other cards navigate as before.
+const morphsToHero = (p: WorkItem) => p.title === "Metadrob";
+
+const WorkCard = ({
+  project: p,
+  onOpen,
+}: {
+  project: WorkItem;
+  onOpen: (e: MouseEvent<HTMLAnchorElement>, p: WorkItem) => void;
+}) => (
+  <Link to={`/work/${slugOf(p.title)}`} onClick={(e) => onOpen(e, p)} className="group block">
+    <div className={`relative aspect-[4/3] overflow-hidden rounded-[16px] bg-neutral-900${morphsToHero(p) ? " vt-cover-metadrob" : ""}`}>
       {p.img ? (
         <img
           src={p.img}
           alt={p.title}
           loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          className={`h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105${morphsToHero(p) ? " object-[70%_50%]" : ""}`}
         />
       ) : (
         <CoverPlaceholder title={p.title} />
@@ -46,6 +57,28 @@ const WorkCard = ({ project: p }: { project: WorkItem }) => (
 );
 
 export function AllProjects() {
+  const navigate = useNavigate();
+  // True from the click until the hero has committed. A second activation in that window is ignored.
+  const morphing = useRef(false);
+
+  // The router runs in declarative mode, where Link has no viewTransition, so the Metadrob morph starts here.
+  // The update callback returns a promise that resolves when the hero commits, so the browser captures the new page with the hero in it.
+  // Other cards, and modified or non-primary clicks, keep the normal Link behaviour.
+  const openProject = (e: MouseEvent<HTMLAnchorElement>, p: WorkItem) => {
+    if (!morphsToHero(p) || !("startViewTransition" in document)) return;
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    e.preventDefault();
+    if (morphing.current) return;
+    morphing.current = true;
+    document.startViewTransition(() => {
+      const landed = awaitMetadrobHero();
+      navigate(`/work/${slugOf(p.title)}`);
+      return landed.then(() => {
+        morphing.current = false;
+      });
+    });
+  };
+
   return (
     <main className="relative z-10 bg-background">
       <section className="px-6 pb-16 pt-28 sm:px-8 md:px-[120px] md:pb-24 md:pt-36">
@@ -102,7 +135,7 @@ export function AllProjects() {
               </h2>
               <div className="mt-12 grid grid-cols-1 gap-x-8 gap-y-16 md:grid-cols-2">
                 {items.map((p) => (
-                  <WorkCard key={p.title} project={p} />
+                  <WorkCard key={p.title} project={p} onOpen={openProject} />
                 ))}
               </div>
             </div>

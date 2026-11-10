@@ -1,0 +1,119 @@
+/* Metadrob cover morph, forward only: the rounded card image on /allprojects becomes the
+   full-viewport hero on /work/metadrob. Back, Forward and header links are plain navigations.
+
+   Motion: a critically damped spring (SwiftUI .smooth: response 0.5 s, bounce 0, so damping ratio 1,
+   no overshoot). The cover box and its photo use it over 0.7 s; the hero copy uses it over 0.5 s per line.
+   Each rule sets a cubic-bezier fallback first and the linear() spring second. A browser that cannot
+   parse linear() drops the second declaration and keeps the first. */
+
+/* Names. Each one exists once in each view. */
+.vt-cover-metadrob { view-transition-name: cover-metadrob; }
+.vt-hero-copy { view-transition-name: hero-copy; }
+.vt-site-header { view-transition-name: site-header; }
+
+/* Cover box and photo. Both snapshots fill the animating box and crop with object-fit: cover,
+   so the photo is never stretched while the box changes shape. */
+::view-transition-group(cover-metadrob) {
+  animation-duration: 0.7s;
+  animation-timing-function: cubic-bezier(0.361, 0.678, 0.043, 0.913);
+  animation-timing-function: linear(0, 0.027, 0.091, 0.175, 0.267, 0.358, 0.445, 0.526, 0.598, 0.661, 0.716, 0.764, 0.804, 0.839, 0.867, 0.891, 0.911, 0.928, 0.941, 0.953, 0.962, 0.969, 0.976, 0.981, 0.985, 0.988, 0.991, 0.993, 0.994, 0.996, 0.997, 0.998, 0.999, 0.999, 1, 1);
+  /* Clip both snapshots to the animating box. Without this the new photo spills past the box
+     as a square ghost frame. The radius matches the card, so the morph starts from its corners. */
+  overflow: clip;
+  border-radius: 16px;
+}
+
+::view-transition-old(cover-metadrob),
+::view-transition-new(cover-metadrob) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 70% 50%;
+}
+
+/* The photo crossfades with the old card leaving quickly and the hero arriving on the spring,
+   which hides the difference between the two snapshots. */
+::view-transition-old(cover-metadrob) {
+  animation-duration: 0.3s;
+  animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+}
+
+::view-transition-new(cover-metadrob) {
+  animation-duration: 0.45s;
+  animation-timing-function: cubic-bezier(0, 0, 0.58, 1);
+}
+
+/* Header: stays above the photo for the whole morph, cross-fading on the same spring. */
+::view-transition-group(site-header) {
+  z-index: 2;
+  animation-duration: 0.7s;
+  animation-timing-function: cubic-bezier(0.361, 0.678, 0.043, 0.913);
+  animation-timing-function: linear(0, 0.027, 0.091, 0.175, 0.267, 0.358, 0.445, 0.526, 0.598, 0.661, 0.716, 0.764, 0.804, 0.839, 0.867, 0.891, 0.911, 0.928, 0.941, 0.953, 0.962, 0.969, 0.976, 0.981, 0.985, 0.988, 0.991, 0.993, 0.994, 0.996, 0.997, 0.998, 0.999, 0.999, 1, 1);
+}
+
+/* Hero copy is new only. Its content is live, so the rise plays in place while the cover settles.
+   The group does not fade; each line carries its own opacity. */
+::view-transition-group(hero-copy),
+::view-transition-new(hero-copy) {
+  animation: none;
+}
+
+/* Page layers: the list leaves quickly and the hero background arrives underneath it. */
+::view-transition-old(root) {
+  animation: vt-root-out 0.22s cubic-bezier(0.42, 0, 1, 1) both;
+}
+
+::view-transition-new(root) {
+  animation: vt-root-in 0.42s cubic-bezier(0, 0, 0.58, 1) 0.08s both;
+}
+
+@keyframes vt-root-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes vt-root-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Hero copy rise: the spring over 0.5 s, sampled every 20 ms. The delays start the copy
+   while the photo is still settling, so the text moves during the morph. */
+.hero-rise {
+  animation: hero-rise 0.5s cubic-bezier(0.361, 0.678, 0.043, 0.913) both;
+  animation-timing-function: linear(0, 0.027, 0.092, 0.177, 0.27, 0.363, 0.451, 0.532, 0.605, 0.669, 0.725, 0.773, 0.814, 0.849, 0.878, 0.902, 0.923, 0.939, 0.953, 0.964, 0.974, 0.981, 0.988, 0.993, 0.997, 1);
+}
+.hero-rise-1 { animation-delay: 0.36s; }
+.hero-rise-2 { animation-delay: 0.42s; }
+.hero-rise-3 { animation-delay: 0.48s; }
+.hero-rise-4 { animation-delay: 0.54s; }
+.hero-rise-5 { animation-delay: 0.7s; }
+
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Browsers without View Transitions fade the hero cover in on load instead of morphing it. */
+@supports not selector(::view-transition) {
+  .hero-cover { animation: hero-cover-fade 0.9s ease-out both; }
+}
+
+@keyframes hero-cover-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Reduced motion: no morph, no rise, no fade of the cover. Navigation keeps the short root fade. */
+@media (prefers-reduced-motion: reduce) {
+  .vt-cover-metadrob,
+  .vt-hero-copy,
+  .vt-site-header {
+    view-transition-name: none;
+  }
+
+  .hero-rise,
+  .hero-cover {
+    animation: none;
+  }
+}

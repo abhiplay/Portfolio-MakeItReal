@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { Route, Routes, useLocation } from "react-router";
 import { CinematicFooter } from "@/components/ui/motion-footer";
 import { PrismaHero } from "@/components/ui/prisma-hero";
@@ -128,7 +128,7 @@ export const WORK: WorkItem[] = [
     summary: "Designing a virtual store editor that helps users shape immersive retail spaces through a digital creation workflow.",
     tag: "Enterprise SaaS · 3D commerce",
     question: "Full case study on my Framer portfolio.",
-    img: "/projects/metadrob.png",
+    img: "/projects/metadrob-cover.webp",
     heroImg: "/projects/metadrob-hero.webp",
     heroScreen: "/projects/metadrob/hero-scene.webp",
     year: "2024",
@@ -566,11 +566,13 @@ function Portfolio() {
   );
 }
 
+// A layout effect, so the reset lands in the same commit as the new page, before any view-transition capture.
+// force lets it run while Lenis is stopped (during the intro).
 function ScrollToTop() {
   const { pathname } = useLocation();
-  useEffect(() => {
+  useLayoutEffect(() => {
     const lenis = getLenis();
-    if (lenis) lenis.scrollTo(0, { immediate: true });
+    if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
     else window.scrollTo(0, 0);
   }, [pathname]);
   return null;
@@ -584,8 +586,8 @@ export default function App() {
   return (
     <div className="dark relative w-full bg-background min-h-screen font-sans selection:bg-white/20 overflow-x-clip">
       <HoverPreviewStyles />
-      <SiteHeader />
       <ScrollToTop />
+      <SiteHeader />
       <Routes>
         <Route path="/" element={<Portfolio />} />
         <Route path="/allprojects" element={<AllProjects />} />

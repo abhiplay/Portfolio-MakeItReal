@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useLayoutEffect, type ReactNode } from "react";
 import {
   ArrowRight,
   Box,
@@ -25,6 +25,8 @@ import {
 } from "lucide-react";
 import type { WorkItem } from "@/App";
 import { ImageComparison } from "@/components/ui/image-comparison-slider";
+import "@/components/ui/cover-transition.css";
+import { markMetadrobHeroLanded } from "@/lib/metadrob-morph";
 
 /* Metadrob case study. Wording is the approved reference's own. Screens are
    exports from the Metadrob Figma file (Super Admin V1.0.1). The +200%
@@ -87,33 +89,41 @@ const HERO_META = [
 ];
 
 export function MetadrobHero({ p }: { p: WorkItem }) {
-  const scene = p.heroScreen ?? p.heroImg ?? p.img;
+  // The card cover, so the morph from the card lands on the same picture.
+  const scene = p.img ?? p.heroScreen ?? p.heroImg;
+  // Tells a pending view transition that the hero is on screen, so the capture includes it.
+  useLayoutEffect(() => {
+    markMetadrobHeroLanded();
+  }, []);
   return (
-    <section className="relative isolate flex min-h-[640px] flex-col overflow-hidden md:min-h-[min(46vw,760px)]">
-      {scene && (
-        <img
-          src={scene}
-          alt="Virtual Metadrob store with a mannequin on a display plinth"
-          className="absolute inset-0 -z-10 h-full w-full object-cover object-[70%_50%]"
+    <section className="relative isolate flex min-h-[max(640px,100svh)] flex-col overflow-hidden">
+      {/* One named box for the photo and both scrims, so the scrims move with the photo and nothing steps at the handoff. */}
+      <div className="vt-cover-metadrob hero-cover absolute inset-0 -z-10 overflow-hidden">
+        {scene && (
+          <img
+            src={scene}
+            alt="Virtual Metadrob store with a mannequin on a display plinth"
+            className="h-full w-full object-cover object-[70%_50%]"
+          />
+        )}
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-[#1a1009]/55 md:hidden" />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#1a1009]/85 via-[#1a1009]/40 to-transparent"
         />
-      )}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 bg-[#1a1009]/55 md:hidden" />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-[#1a1009]/85 via-[#1a1009]/40 to-transparent"
-      />
-      <div className="relative flex flex-1 flex-col px-6 pb-10 pt-32 sm:px-8 md:px-[120px]">
-        <p className={`${TYPE.eyebrow} text-white/90`}>Product design case study</p>
-        <h1 className="font-display mt-6 max-w-[620px] text-[clamp(2.75rem,5vw,4.9rem)] font-bold leading-[1.02] tracking-[-0.025em] text-white">
+      </div>
+      <div className="vt-hero-copy relative flex flex-1 flex-col px-6 pb-10 pt-32 sm:px-8 md:px-[120px]">
+        <p className={`hero-rise hero-rise-1 ${TYPE.eyebrow} text-white/90`}>Product design case study</p>
+        <h1 className="hero-rise hero-rise-2 font-display mt-6 max-w-[620px] text-[clamp(2.75rem,5vw,4.9rem)] font-bold leading-[1.02] tracking-[-0.025em] text-white">
           Shopping should feel like an{" "}
           <span className="bg-gradient-to-r from-[#FFD2B8] to-[#FF9A6B] bg-clip-text text-transparent">experience.</span>
         </h1>
-        <p className={`mt-8 max-w-[520px] text-white/80 ${TYPE.lead}`}>
+        <p className={`hero-rise hero-rise-3 mt-8 max-w-[520px] text-white/80 ${TYPE.lead}`}>
           I helped design Metadrob, a 3D commerce platform that gives merchants the tools to build immersive virtual stores
           and customers a new way to explore digital retail.
         </p>
 
-        <ul className="mt-auto grid grid-cols-2 gap-x-6 gap-y-8 pt-14 md:flex md:gap-0">
+        <ul className="hero-rise hero-rise-4 mt-auto grid grid-cols-2 gap-x-6 gap-y-8 pt-14 md:flex md:gap-0">
           {HERO_META.map(({ icon: Icon, label, value }, i) => (
             <li
               key={label}
@@ -129,7 +139,7 @@ export function MetadrobHero({ p }: { p: WorkItem }) {
 
       <div
         aria-hidden
-        className="absolute right-[5%] top-[26%] hidden w-[clamp(190px,14vw,220px)] rounded-[22px] border border-white/30 bg-white/15 p-4 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.55)] backdrop-blur-xl lg:block"
+        className="hero-rise hero-rise-5 absolute right-[5%] top-[26%] hidden w-[clamp(190px,14vw,220px)] rounded-[22px] border border-white/30 bg-white/15 p-4 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.55)] backdrop-blur-xl lg:block"
       >
         <X className="ml-auto block h-4 w-4 text-white" />
         <div className="relative mt-3 aspect-square overflow-hidden rounded-[14px] bg-[#EFEBE8]">
