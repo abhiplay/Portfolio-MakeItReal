@@ -81,7 +81,7 @@ export function ChallengeSection({ p: _p }: { p: WorkItem }) {
         />
 
         <motion.p
-          className="flex items-center gap-4 text-[14px] font-semibold uppercase tracking-[0.12em] lg:absolute lg:left-[4.55%] lg:top-[7.4%] lg:w-[40%] lg:text-[clamp(13px,1.1cqw,17px)]"
+          className="flex items-center gap-4 text-[14px] font-semibold uppercase tracking-[0.18em] lg:absolute lg:left-[120px] lg:top-[7.4%] lg:w-[40%]"
           style={{ color: EYEBROW }}
           {...inView(reduce, 0)}
         >
@@ -91,7 +91,7 @@ export function ChallengeSection({ p: _p }: { p: WorkItem }) {
         </motion.p>
 
         <h2
-          className="mt-6 font-display text-[clamp(30px,8vw,40px)] font-bold leading-[1.05] tracking-[-0.02em] lg:absolute lg:left-[4.55%] lg:top-[15.4%] lg:mt-0 lg:text-[clamp(30px,3.6cqw,60px)]"
+          className="mt-6 font-display text-[clamp(36px,4vw,56px)] font-bold leading-[1.05] tracking-[-0.02em] lg:absolute lg:left-[120px] lg:top-[15.4%] lg:mt-0"
           style={{ ...NORMAL_WIDTH, color: INK }}
         >
           <motion.span className="block" {...inView(reduce, 0.1)}>
@@ -125,7 +125,7 @@ export function ChallengeSection({ p: _p }: { p: WorkItem }) {
         </h2>
 
         <motion.p
-          className="mt-8 text-[15px] leading-[1.6] lg:absolute lg:left-[4.6%] lg:top-[37.3%] lg:mt-0 lg:w-[38%] lg:text-[clamp(15px,1.24cqw,19px)] lg:leading-[1.55]"
+          className="mt-8 text-[17px] leading-[1.6] md:text-[19px] lg:absolute lg:left-[120px] lg:top-[37.3%] lg:mt-0 lg:w-[38%] lg:leading-[1.55]"
           {...inView(reduce, 0.25)}
         >
           Assessments were often content-heavy, fragmented, and lacked a collaborative process, making it difficult for
@@ -146,7 +146,7 @@ export function ChallengeSection({ p: _p }: { p: WorkItem }) {
         </ul>
 
         <motion.h3
-          className="mt-14 font-display text-[clamp(28px,8vw,40px)] font-bold leading-[1.1] lg:absolute lg:left-[4.55%] lg:top-[65.4%] lg:mt-0 lg:text-[clamp(28px,2.7cqw,44px)]"
+          className="mt-14 font-display text-[clamp(36px,4vw,56px)] font-bold leading-[1.05] lg:absolute lg:left-[120px] lg:top-[65.4%] lg:mt-0"
           style={{ ...NORMAL_WIDTH, color: OPP_INK }}
           {...inView(reduce, 0.15)}
         >
@@ -154,7 +154,7 @@ export function ChallengeSection({ p: _p }: { p: WorkItem }) {
         </motion.h3>
 
         <motion.p
-          className="mt-5 text-[15px] leading-[1.6] lg:absolute lg:left-[4.6%] lg:top-[72.4%] lg:mt-0 lg:w-[24%] lg:text-[clamp(15px,1.14cqw,18px)] lg:leading-[1.55]"
+          className="mt-5 text-[17px] leading-[1.6] lg:absolute lg:left-[120px] lg:top-[72.4%] lg:mt-0 lg:w-[24%] lg:leading-[1.55]"
           {...inView(reduce, 0.25)}
         >
           Design a digital platform that brings structure, collaboration and clarity to the creation and review of
@@ -163,7 +163,7 @@ export function ChallengeSection({ p: _p }: { p: WorkItem }) {
 
         <motion.span
           aria-hidden
-          className="mt-8 flex h-14 w-14 items-center justify-center rounded-full bg-[#ECE1FC] transition-[translate] duration-300 motion-safe:hover:translate-x-1 lg:absolute lg:left-[4.8%] lg:top-[85.5%] lg:mt-0 lg:h-[4.3cqw] lg:w-[4.3cqw]"
+          className="mt-8 flex h-14 w-14 items-center justify-center rounded-full bg-[#ECE1FC] transition-[translate] duration-300 motion-safe:hover:translate-x-1 lg:absolute lg:left-[120px] lg:top-[85.5%] lg:mt-0 lg:h-[4.3cqw] lg:w-[4.3cqw]"
           {...inView(reduce, 0.35)}
         >
           <ArrowRight className="h-6 w-6 text-[#6939B5] lg:h-[1.6cqw] lg:w-[1.6cqw]" strokeWidth={1.75} />
@@ -189,12 +189,12 @@ export function ChallengeSection({ p: _p }: { p: WorkItem }) {
                 <Icon className={`h-7 w-7 ${color} lg:h-[2.2cqw] lg:w-[2.2cqw]`} strokeWidth={1.75} aria-hidden />
               </span>
               <h4
-                className="mt-4 min-h-[2.4em] font-display text-[18px] font-bold leading-[1.2] lg:mt-[2.2cqw] lg:text-[clamp(17px,1.5cqw,24px)]"
+                className="mt-4 min-h-[2.4em] font-display text-[24px] font-bold leading-[1.2] lg:mt-[2.2cqw]"
                 style={{ ...NORMAL_WIDTH, color: CARD_INK }}
               >
                 {title}
               </h4>
-              <p className="mt-2 text-[15px] leading-[1.5] lg:text-[clamp(12px,1.04cqw,16px)] lg:leading-[1.45]" style={{ color: CARD_BODY }}>
+              <p className="mt-2 text-[16px] leading-[1.5] lg:leading-[1.45]" style={{ color: CARD_BODY }}>
                 {text}
               </p>
             </motion.li>

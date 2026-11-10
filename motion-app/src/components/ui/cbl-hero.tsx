@@ -73,7 +73,7 @@ export function CblHero({ p: _p }: { p: WorkItem }) {
           transition={{ duration: 1.6, ease: EASE_OUT }}
         />
 
-        <div className="flex flex-col items-start gap-6 lg:absolute lg:left-[4.2%] lg:top-[11.5%] lg:w-[40%] lg:gap-0">
+        <div className="flex flex-col items-start gap-6 lg:absolute lg:left-[120px] lg:top-[11.5%] lg:w-[40%] lg:gap-0">
           <motion.p
             className="flex items-center gap-2.5 text-[15px] font-bold lg:mb-[1.5cqw] lg:gap-[0.8cqw] lg:text-[clamp(14px,1.17cqw,18px)]"
             style={{ color: PURPLE }}
@@ -125,7 +125,7 @@ export function CblHero({ p: _p }: { p: WorkItem }) {
           </h1>
 
           <motion.p
-            className="text-[15px] leading-[1.55] lg:mb-[2.5cqw] lg:max-w-[29.5cqw] lg:text-[clamp(15px,1.24cqw,20px)] lg:leading-[1.5]"
+            className="text-[17px] leading-[1.6] md:text-[19px] lg:mb-[2.5cqw] lg:max-w-[29.5cqw] lg:leading-[1.55]"
             style={{ color: BODY }}
             {...onLoad(reduce, 0.6)}
           >

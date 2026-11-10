@@ -1,7 +1,17 @@
 "use client";
 
 import type * as React from "react";
+import { useRef } from "react";
+import { motion, useScroll, useSpring, useTransform, type MotionValue } from "motion/react";
 import { WordsPullUp } from "@/components/ui/prisma-hero";
+
+const NOTES = ["Ideas", "Sketches", "Coffee", "Progress"];
+
+/* One handwritten note that fades from faint to full as the section scrolls. */
+function NoteWord({ label, index, progress }: { label: string; index: number; progress: MotionValue<number> }) {
+  const opacity = useTransform(progress, [0.2 + index * 0.1, 0.3 + index * 0.1], [0.25, 1]);
+  return <motion.span className="block" style={{ opacity }}>{label}</motion.span>;
+}
 
 /* ---------------- About ----------------
    Cream editorial band directly below the hero, per reference:
@@ -16,6 +26,14 @@ function hideOnError(e: React.SyntheticEvent<HTMLImageElement>) {
 }
 
 export function About() {
+  const polaroidsRef = useRef<HTMLDivElement>(null);
+
+  // Scroll progress through the photo column, smoothed so the motion glides.
+  const { scrollYProgress } = useScroll({ target: polaroidsRef, offset: ["start end", "end center"] });
+  const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 30 });
+  // The polaroid starts tilted and straightens as it comes into view.
+  const tilt = useTransform(progress, [0.1, 0.55], [-5, 1.5]);
+
   return (
     <section
       id="about"
@@ -35,7 +53,7 @@ export function About() {
 
         <div className="mt-10 grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
           <div data-hp="about-head">
-            <h2 className="font-condensed max-w-xl text-[clamp(2.75rem,6vw,5.5rem)] uppercase leading-[0.95] tracking-tight text-neutral-950">
+            <h2 className="font-condensed max-w-xl text-[clamp(36px,4vw,56px)] uppercase leading-[1.05] tracking-tight text-neutral-950">
               <WordsPullUp text={"I LIKE GETTING\nCLOSE TO\nTHE WORK."} />
             </h2>
 
@@ -45,15 +63,15 @@ export function About() {
                 thinking, interaction, prototyping and emerging technology.
               </p>
               <p>
-                I like getting involved early — when the question is still
-                unclear, the constraints are real, and there&apos;s more to
-                figure out than to design.
+                I believe creative work needs focus. That&apos;s why I keep my 
+                process tight and my involvement high, so every project gets 
+                my full attention.
               </p>
-              <p>
-                I move between research, flows, interfaces, prototypes,
-                systems and sometimes code to turn rough ideas into products
-                people can actually use.
-              </p>
+              <div className="flex flex-wrap gap-x-6 gap-y-2 pt-4 font-medium italic text-neutral-600">
+                <span>Professional overthinker</span>
+                <span>Nerding out on design</span>
+                <span>Allergic to generic</span>
+              </div>
             </div>
 
             <p className="font-hand mt-10 whitespace-pre-line text-3xl leading-snug text-neutral-900 md:text-4xl">
@@ -72,10 +90,12 @@ export function About() {
             </svg>
           </div>
 
-          <div className="relative" data-hp="about-polaroids">
-            <p className="font-hand absolute -top-14 right-2 hidden w-40 -rotate-3 whitespace-pre-line text-right text-2xl leading-tight text-neutral-800 sm:block">
-              {"Ideas\nSketches\nCoffee\nProgress"}
-            </p>
+          <div ref={polaroidsRef} className="relative" data-hp="about-polaroids">
+            <div className="font-hand absolute -top-14 right-2 hidden w-40 -rotate-3 text-right text-2xl leading-tight text-neutral-800 sm:block">
+              {NOTES.map((label, i) => (
+                <NoteWord key={label} label={label} index={i} progress={progress} />
+              ))}
+            </div>
             <svg
               aria-hidden
               viewBox="0 0 60 60"
@@ -89,7 +109,10 @@ export function About() {
               <path d="M42 40 L50 49 L54 38" />
             </svg>
 
-            <div className="w-full max-w-md rotate-[1.5deg] bg-white p-3 pb-4 shadow-[0_18px_50px_rgba(0,0,0,0.25)]">
+            <motion.div
+              className="w-full max-w-md bg-white p-3 pb-4 shadow-[0_18px_50px_rgba(0,0,0,0.25)]"
+              style={{ rotate: tilt }}
+            >
               <img
                 src={PHOTO}
                 alt="Wall of sketches, wireframes and sticky notes"
@@ -101,7 +124,7 @@ export function About() {
               <p className="font-hand whitespace-pre-line px-1 pt-3 text-2xl leading-tight text-neutral-800">
                 {"Same curiosity.\nDifferent problems."}
               </p>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>

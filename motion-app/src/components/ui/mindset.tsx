@@ -32,16 +32,16 @@ const PRINCIPLES = [
 export function Mindset() {
   return (
     <section id="mindset" className="py-20 md:py-28 snap-start">
-      <p className="text-xs uppercase tracking-[0.3em] text-neutral-400 lg:text-xl">
+      <p className="text-[14px] uppercase tracking-[0.18em] text-neutral-400">
         How I think
       </p>
 
       <div className="mt-8 grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div>
-          <h2 className="font-display text-[8vw] font-bold leading-[0.95] tracking-[-0.02em] text-white sm:text-[5.5vw] lg:text-[4vw]">
+          <h2 className="font-display text-[clamp(36px,4vw,56px)] font-bold leading-[1.05] tracking-[-0.02em] text-white">
             <WordsPullUp text={"I don't need\na perfect brief."} />
           </h2>
-          <p className="mt-6 max-w-xl text-lg leading-relaxed text-neutral-400 md:text-xl">
+          <p className="mt-6 max-w-xl text-[17px] leading-[1.6] text-neutral-400 md:text-[19px]">
             Give me a messy problem, an ambitious idea, or something that
             doesn&apos;t exist yet. I&apos;ll figure out what needs to be built.
           </p>
@@ -60,6 +60,7 @@ export function Mindset() {
           <div className="relative mt-8">
             <LoopVideo
               src="/art/cat-playing.mp4"
+              poster="/art/cat-poster.webp"
               className="fade-all-sides aspect-video w-full"
             />
             <div
@@ -80,10 +81,10 @@ export function Mindset() {
                 {p.n}
               </span>
               <div>
-                <h3 className="text-lg font-bold uppercase tracking-wide text-white md:text-xl">
+                <h3 className="text-[24px] font-bold uppercase tracking-wide text-white">
                   {p.title}
                 </h3>
-                <p className="mt-1 text-base text-neutral-400 md:text-lg">{p.copy}</p>
+                <p className="mt-1 text-[16px] text-neutral-400">{p.copy}</p>
               </div>
             </div>
           ))}

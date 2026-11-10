@@ -528,7 +528,7 @@ function Portfolio() {
               <p className="text-[11px] uppercase tracking-[0.3em] text-neutral-300">
                 05&nbsp;&nbsp;/&nbsp;&nbsp;What&apos;s next
               </p>
-              <h2 className="font-display mt-4 max-w-3xl text-[8vw] font-bold leading-[0.95] tracking-[-0.02em] text-white sm:text-5xl lg:text-6xl">
+              <h2 className="font-display mt-4 max-w-3xl text-[clamp(36px,4vw,56px)] font-bold leading-[1.05] tracking-[-0.02em] text-white">
                 What should
                 <br />
                 we build next?

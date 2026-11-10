@@ -33,12 +33,12 @@ import { ImageComparison } from "@/components/ui/image-comparison-slider";
 const ACCENT = "#FF5400";
 
 // One type scale and one spacing rule for the whole page. Sizes are in px (the page root is 14px).
-const SECTION = "px-6 py-20 sm:px-8 md:px-[88px] md:py-28";
+const SECTION = "px-6 py-20 sm:px-8 md:px-[120px] md:py-28";
 const TYPE = {
   eyebrow: "text-[14px] font-semibold uppercase tracking-[0.18em]",
-  h2: "font-display text-[clamp(2rem,3.6vw,3.75rem)] font-bold leading-[1.08] tracking-[-0.02em]",
+  h2: "font-display text-[clamp(36px,4vw,56px)] font-bold leading-[1.05] tracking-[-0.02em]",
   h3: "font-display text-[24px] font-bold leading-[1.2]",
-  lead: "text-[19px] leading-[1.6]",
+  lead: "text-[17px] leading-[1.6] md:text-[19px]",
   body: "text-[17px] leading-[1.6]",
   label: "text-[16px] leading-snug",
 };
@@ -102,7 +102,7 @@ export function MetadrobHero({ p }: { p: WorkItem }) {
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-r from-[#1a1009]/85 via-[#1a1009]/40 to-transparent"
       />
-      <div className="relative flex flex-1 flex-col px-6 pb-10 pt-32 sm:px-8 md:px-[88px]">
+      <div className="relative flex flex-1 flex-col px-6 pb-10 pt-32 sm:px-8 md:px-[120px]">
         <p className={`${TYPE.eyebrow} text-white/90`}>Product design case study</p>
         <h1 className="font-display mt-6 max-w-[620px] text-[clamp(2.75rem,5vw,4.9rem)] font-bold leading-[1.02] tracking-[-0.025em] text-white">
           Shopping should feel like an{" "}

@@ -37,7 +37,7 @@ export function ConclusionSection({ p: _p }: { p: WorkItem }) {
         />
 
         <motion.p
-          className="flex items-center gap-4 text-[14px] font-semibold uppercase tracking-[0.12em] lg:absolute lg:left-[4.5%] lg:top-[6.6%] lg:w-[35%] lg:text-[clamp(12px,1.0cqw,16px)]"
+          className="flex items-center gap-4 text-[14px] font-semibold uppercase tracking-[0.18em] lg:absolute lg:left-[120px] lg:top-[6.6%] lg:w-[35%]"
           style={{ color: EYEBROW }}
           {...inView(reduce, 0)}
         >
@@ -47,7 +47,7 @@ export function ConclusionSection({ p: _p }: { p: WorkItem }) {
 
         <h2
           id="conclusion-title"
-          className="mt-6 font-display text-[clamp(30px,8vw,46px)] font-bold leading-[1.02] tracking-[-0.02em] lg:absolute lg:left-[4.5%] lg:top-[12.2%] lg:mt-0 lg:text-[clamp(30px,3.9cqw,62px)]"
+          className="mt-6 font-display text-[clamp(36px,4vw,56px)] font-bold leading-[1.05] tracking-[-0.02em] lg:absolute lg:left-[120px] lg:top-[12.2%] lg:mt-0"
           style={{ ...NORMAL_WIDTH, color: INK }}
         >
           <motion.span className="block" {...inView(reduce, 0.1)}>
@@ -78,7 +78,7 @@ export function ConclusionSection({ p: _p }: { p: WorkItem }) {
         </h2>
 
         <motion.p
-          className="mt-8 text-[16px] leading-[1.6] lg:absolute lg:left-[4.5%] lg:top-[31.2%] lg:mt-0 lg:w-[38%] lg:text-[clamp(15px,1.36cqw,21px)] lg:leading-[1.55]"
+          className="mt-8 text-[17px] leading-[1.6] md:text-[19px] lg:absolute lg:left-[120px] lg:top-[31.2%] lg:mt-0 lg:w-[38%] lg:leading-[1.55]"
           {...inView(reduce, 0.25)}
         >
           CBL-CBA creates a connected ecosystem where teachers can create, get feedback, improve, and share quality learning
@@ -86,7 +86,7 @@ export function ConclusionSection({ p: _p }: { p: WorkItem }) {
         </motion.p>
 
         <motion.p
-          className="mt-5 text-[16px] leading-[1.6] lg:absolute lg:left-[4.5%] lg:top-[45.8%] lg:mt-0 lg:w-[39%] lg:text-[clamp(15px,1.36cqw,21px)] lg:leading-[1.55]"
+          className="mt-5 text-[17px] leading-[1.6] md:text-[19px] lg:absolute lg:left-[120px] lg:top-[45.8%] lg:mt-0 lg:w-[39%] lg:leading-[1.55]"
           {...inView(reduce, 0.35)}
         >
           The real impact comes after approval: the work becomes a shared resource that other teachers can discover, adapt, and use
@@ -94,11 +94,11 @@ export function ConclusionSection({ p: _p }: { p: WorkItem }) {
         </motion.p>
 
         <motion.div
-          className="mt-8 flex items-center gap-5 rounded-[22px] bg-white/70 px-6 py-5 shadow-[0_12px_30px_-18px_rgba(60,30,100,0.35)] lg:absolute lg:left-[3.4%] lg:top-[60.2%] lg:mt-0 lg:h-[9.7%] lg:w-[32.3%] lg:gap-[1.6cqw] lg:rounded-[1.4cqw] lg:px-[2cqw]"
+          className="mt-8 flex items-center gap-5 rounded-[22px] bg-white/70 px-6 py-5 shadow-[0_12px_30px_-18px_rgba(60,30,100,0.35)] lg:absolute lg:left-[120px] lg:top-[60.2%] lg:mt-0 lg:h-[9.7%] lg:w-[32.3%] lg:gap-[1.6cqw] lg:rounded-[1.4cqw] lg:px-[2cqw]"
           {...inView(reduce, 0.45)}
         >
           <Sprout aria-hidden className="h-7 w-7 shrink-0 text-[#6939B5] lg:h-[2.2cqw] lg:w-[2.2cqw]" strokeWidth={1.75} />
-          <p className="text-[17px] font-bold leading-[1.35] lg:text-[clamp(14px,1.4cqw,21px)]" style={{ color: INK }}>
+          <p className="text-[17px] font-bold leading-[1.35]" style={{ color: INK }}>
             <span className="block">One submission. Shared knowledge.</span>
             <span className="block">Better learning experiences.</span>
           </p>

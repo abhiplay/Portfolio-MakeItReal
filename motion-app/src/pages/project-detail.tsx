@@ -138,11 +138,11 @@ const ContentBlock = ({ topic, heading, text }: { topic?: string; heading: strin
       </p>
     )}
     <div className={topic ? "" : "md:col-span-2"}>
-      <h2 className="font-display text-[clamp(2.75rem,6vw,5rem)] font-bold leading-[0.95] text-white">
+      <h2 className="font-display text-[clamp(36px,4vw,56px)] font-bold leading-[1.05] text-white">
         {heading}
       </h2>
       {/* Body copy reveals word by word as it scrolls into view */}
-      <div className="mt-8 max-w-3xl text-[clamp(1.1rem,1.6vw,1.4rem)] leading-[1.35] text-white">
+      <div className="mt-8 max-w-3xl text-[17px] leading-[1.6] md:text-[19px] text-white">
         <FadeLines text={text} />
       </div>
     </div>
@@ -164,8 +164,8 @@ export const CoverPlaceholder = ({ title }: { title: string }) => (
 /* Numbered design decisions, one row each. */
 const DecisionList = ({ items }: { items: string[] }) => (
   <section className="grid grid-cols-1 gap-8 px-6 pb-24 pt-24 sm:px-8 md:grid-cols-[1fr_2fr] md:gap-12 md:px-[120px]">
-    <h2 className="font-display text-[clamp(2.75rem,6vw,5rem)] font-bold leading-[0.95] text-white">Key Decisions</h2>
-    <ol className="space-y-6 text-[clamp(1.1rem,1.6vw,1.4rem)] leading-[1.35] text-white">
+    <h2 className="font-display text-[clamp(36px,4vw,56px)] font-bold leading-[1.05] text-white">Key Decisions</h2>
+    <ol className="space-y-6 text-[17px] leading-[1.6] md:text-[19px] text-white">
       {items.map((item, i) => (
         <li key={item} className="flex gap-4">
           <span className="font-display font-bold" style={{ color: ACCENT }}>
@@ -188,7 +188,7 @@ function WorkflowFlow({ steps }: { steps: { role: string; action: string }[] }) 
       <p className="text-[14px] font-medium leading-snug" style={{ color: ACCENT }}>
         Workflow
       </p>
-      <h2 className="font-display mt-4 text-[clamp(2.75rem,6vw,5rem)] font-bold leading-[0.95] text-white">
+      <h2 className="font-display mt-4 text-[clamp(36px,4vw,56px)] font-bold leading-[1.05] text-white">
         The Workflow
       </h2>
       <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-3">
@@ -305,10 +305,10 @@ const Chapter = ({ chapter }: { chapter: CaseStudyChapter }) => {
       <p className="text-[14px] font-medium leading-snug" style={{ color: LABEL }}>
         {number} — {label}
       </p>
-      <h2 className="font-display mt-6 text-[clamp(2rem,3.6vw,3.25rem)] font-bold leading-[1.05]" style={{ color: INK }}>
+      <h2 className="font-display mt-6 text-[clamp(36px,4vw,56px)] font-bold leading-[1.05]" style={{ color: INK }}>
         {heading}
       </h2>
-      <div className="mt-8 max-w-xl text-[clamp(1.1rem,1.6vw,1.4rem)] leading-[1.35]" style={{ color: BODY }}>
+      <div className="mt-8 max-w-xl text-[17px] leading-[1.6] md:text-[19px]" style={{ color: BODY }}>
         <FadeLines text={text} />
       </div>
       {visual?.kind === "stats" && <Stats stats={visual.stats} />}
@@ -404,10 +404,10 @@ const CaseStudyBody = ({ study }: { study: CaseStudy }) => (
     <section className="px-6 py-24 sm:px-8 md:px-[120px]" style={{ backgroundColor: TONES.paper }}>
       <div className="grid grid-cols-1 gap-12 md:grid-cols-2 md:items-center">
         <div>
-          <h2 className="font-display text-[clamp(2rem,3.6vw,3.25rem)] font-bold leading-[1.05]" style={{ color: INK }}>
+          <h2 className="font-display text-[clamp(36px,4vw,56px)] font-bold leading-[1.05]" style={{ color: INK }}>
             {study.closing.heading}
           </h2>
-          <div className="mt-8 max-w-xl text-[clamp(1.1rem,1.6vw,1.4rem)] leading-[1.35]" style={{ color: BODY }}>
+          <div className="mt-8 max-w-xl text-[17px] leading-[1.6] md:text-[19px]" style={{ color: BODY }}>
             <FadeLines text={study.closing.text} />
           </div>
           {/* An external link opens the app's store page with the Play Store mark; an internal one goes to the in-site route. */}
@@ -599,7 +599,7 @@ export function ProjectDetail() {
       <section
         className={
           p.title === "Metadrob"
-            ? "border-t border-white/10 px-6 py-20 sm:px-8 md:px-[88px] md:py-28"
+            ? "border-t border-white/10 px-6 py-20 sm:px-8 md:px-[120px] md:py-28"
             : "border-t border-white/10 px-6 py-24 sm:px-8 md:px-[120px]"
         }
       >
@@ -614,8 +614,8 @@ export function ProjectDetail() {
         <h2
           className={
             p.title === "Metadrob"
-              ? "font-display mt-6 text-[clamp(2rem,3.6vw,3.75rem)] font-bold leading-[1.08] tracking-[-0.02em]"
-              : "font-display mt-4 text-[clamp(2.5rem,6vw,5rem)] font-bold leading-[0.95]"
+              ? "font-display mt-6 text-[clamp(36px,4vw,56px)] font-bold leading-[1.05] tracking-[-0.02em]"
+              : "font-display mt-4 text-[clamp(36px,4vw,56px)] font-bold leading-[1.05]"
           }
           style={p.title === "Metadrob" ? { fontStretch: "100%" } : undefined}
         >
@@ -628,15 +628,15 @@ export function ProjectDetail() {
       <section
         className={
           p.title === "Metadrob"
-            ? "px-6 py-20 text-center sm:px-8 md:px-[88px] md:py-28"
+            ? "px-6 py-20 text-center sm:px-8 md:px-[120px] md:py-28"
             : "px-6 pb-32 pt-12 text-center sm:px-8 md:px-[120px]"
         }
       >
         <p
           className={
             p.title === "Metadrob"
-              ? "font-display text-[clamp(2rem,3.6vw,3.75rem)] font-bold leading-[1.08] tracking-[-0.02em]"
-              : "font-display text-[clamp(2rem,5vw,4rem)] font-bold leading-[0.95]"
+              ? "font-display text-[clamp(36px,4vw,56px)] font-bold leading-[1.05] tracking-[-0.02em]"
+              : "font-display text-[clamp(36px,4vw,56px)] font-bold leading-[1.05]"
           }
           style={p.title === "Metadrob" ? { fontStretch: "100%" } : undefined}
         >

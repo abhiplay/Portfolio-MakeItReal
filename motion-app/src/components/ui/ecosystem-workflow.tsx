@@ -44,7 +44,7 @@ const ROLES = [
     iconColor: "text-[#6939B5]",
     tileAt: "lg:left-[14.65%] lg:top-[27.05%] lg:h-[7.03%] lg:w-[4.95%]",
     titleAt: "lg:left-[20.4%] lg:top-[27.5%] lg:w-[14%]",
-    subAt: "lg:left-[20.4%] lg:top-[31.05%] lg:w-[13.5%]",
+    subAt: "lg:left-[20.4%] lg:top-[31.05%] lg:w-[15.5%]",
     listAt: "lg:left-[16.15%] lg:top-[37.7%] lg:w-[18%]",
   },
   {
@@ -58,7 +58,7 @@ const ROLES = [
     iconColor: "text-[#F89836]",
     tileAt: "lg:left-[45.4%] lg:top-[26.9%] lg:h-[7.3%] lg:w-[4.95%]",
     titleAt: "lg:left-[51.4%] lg:top-[27.5%] lg:w-[14%]",
-    subAt: "lg:left-[51.4%] lg:top-[31.2%] lg:w-[13.5%]",
+    subAt: "lg:left-[51.4%] lg:top-[31.2%] lg:w-[15.5%]",
     listAt: "lg:left-[48.7%] lg:top-[37.7%] lg:w-[14.9%]",
   },
   {
@@ -78,7 +78,7 @@ const ROLES = [
     iconColor: "text-[#6939B5]",
     tileAt: "lg:left-[77.6%] lg:top-[27.0%] lg:h-[7.03%] lg:w-[4.95%]",
     titleAt: "lg:left-[83.2%] lg:top-[27.1%] lg:w-[14%]",
-    subAt: "lg:left-[83.3%] lg:top-[33.2%] lg:w-[12%]",
+    subAt: "lg:left-[83.3%] lg:top-[33.2%] lg:w-[14%]",
     listAt: "lg:left-[79.9%] lg:top-[37.9%] lg:w-[18.4%]",
   },
 ];
@@ -112,7 +112,7 @@ export function EcosystemWorkflow({ p: _p }: { p: WorkItem }) {
         <img src={PLATE} alt="" aria-hidden className="absolute inset-0 -z-10 hidden h-full w-full object-cover lg:block" />
 
         <motion.p
-          className="flex items-center gap-4 text-[13px] font-semibold uppercase tracking-[0.14em] text-[#7649BE] lg:absolute lg:left-[3.0%] lg:top-[3.6%] lg:w-[35%] lg:text-[clamp(12px,1.0cqw,16px)]"
+          className="flex items-center gap-4 text-[14px] font-semibold uppercase tracking-[0.18em] text-[#7649BE] lg:absolute lg:left-[120px] lg:top-[3.6%] lg:w-[35%]"
           {...inView(reduce, 0)}
         >
           <span>03</span>
@@ -121,7 +121,7 @@ export function EcosystemWorkflow({ p: _p }: { p: WorkItem }) {
         </motion.p>
 
         <h2
-          className="mt-6 font-display text-[clamp(30px,8vw,44px)] font-bold leading-[1.02] tracking-[-0.02em] lg:absolute lg:left-[3.7%] lg:top-[9.5%] lg:mt-0 lg:w-[50%] lg:text-[clamp(30px,3.5cqw,60px)]"
+          className="mt-6 font-display text-[clamp(36px,4vw,56px)] font-bold leading-[1.05] tracking-[-0.02em] lg:absolute lg:left-[120px] lg:top-[9.5%] lg:mt-0 lg:w-[50%]"
           style={NORMAL_WIDTH}
         >
           <motion.span className="block" {...inView(reduce, 0.1)}>
@@ -153,7 +153,7 @@ export function EcosystemWorkflow({ p: _p }: { p: WorkItem }) {
         </h2>
 
         <motion.p
-          className="mt-6 text-[16px] leading-[1.6] text-[#241840] lg:absolute lg:left-[55.7%] lg:top-[8.0%] lg:mt-0 lg:w-[40.6%] lg:text-[clamp(14px,1.24cqw,19px)] lg:leading-[1.55]"
+          className="mt-6 text-[17px] leading-[1.6] text-[#241840] md:text-[19px] lg:absolute lg:left-[55.7%] lg:top-[8.0%] lg:mt-0 lg:w-[40.6%] lg:leading-[1.55]"
           {...inView(reduce, 0.15)}
         >
           CBL-CBA brings together teachers, allocators and reviewers in a single platform, where each role has a clear
@@ -194,7 +194,7 @@ export function EcosystemWorkflow({ p: _p }: { p: WorkItem }) {
                     <Icon className={`h-7 w-7 ${iconColor} lg:h-[2.6cqw] lg:w-[2.6cqw]`} strokeWidth={1.75} />
                   </motion.span>
                   <motion.h3
-                    className={`font-display text-[22px] font-bold leading-[1.1] text-[#16083A] lg:absolute lg:text-[clamp(18px,1.7cqw,26px)] ${titleAt}`}
+                    className={`font-display text-[24px] font-bold leading-[1.2] text-[#16083A] lg:absolute ${titleAt}`}
                     style={NORMAL_WIDTH}
                     {...inView(reduce, base + 0.08)}
                   >
@@ -202,7 +202,7 @@ export function EcosystemWorkflow({ p: _p }: { p: WorkItem }) {
                   </motion.h3>
                 </div>
                 <motion.p
-                  className={`mt-3 text-[15px] leading-[1.45] text-[#31294A] lg:absolute lg:mt-0 lg:text-[clamp(12px,1.0cqw,15px)] lg:leading-[1.35] ${subAt}`}
+                  className={`mt-3 text-[16px] leading-[1.45] text-[#31294A] lg:absolute lg:mt-0 lg:leading-[1.35] ${subAt}`}
                   {...inView(reduce, base + 0.16)}
                 >
                   {subtitle}
@@ -211,7 +211,7 @@ export function EcosystemWorkflow({ p: _p }: { p: WorkItem }) {
                   {items.map((item, j) => (
                     <motion.li
                       key={item}
-                      className="flex items-start gap-2 text-[15px] leading-[1.45] text-[#2A2238] lg:text-[clamp(12px,1.0cqw,15px)]"
+                      className="flex items-start gap-2 text-[16px] leading-[1.45] text-[#2A2238]"
                       {...inView(reduce, base + 0.3 + j * 0.08, 12, 0.6)}
                     >
                       <CheckCircle2 aria-hidden className="mt-[0.2em] h-4 w-4 shrink-0 text-[#7547CB] lg:h-[1.2cqw] lg:w-[1.2cqw]" strokeWidth={2} />
@@ -225,14 +225,14 @@ export function EcosystemWorkflow({ p: _p }: { p: WorkItem }) {
         </ul>
 
         <motion.h2
-          className="mt-20 font-display text-[clamp(30px,8vw,44px)] font-bold leading-[1.1] tracking-[-0.01em] lg:absolute lg:left-[4.4%] lg:top-[62.1%] lg:mt-0 lg:text-[clamp(28px,3.0cqw,46px)]"
+          className="mt-20 font-display text-[clamp(36px,4vw,56px)] font-bold leading-[1.05] tracking-[-0.02em] lg:absolute lg:left-[120px] lg:top-[62.1%] lg:mt-0"
           style={{ ...NORMAL_WIDTH, color: "#1D083F" }}
           {...inView(reduce, 0)}
         >
           The Workflow
         </motion.h2>
         <motion.p
-          className="mt-4 text-[16px] leading-[1.55] text-[#2A2540] lg:absolute lg:left-[27.0%] lg:top-[61.7%] lg:mt-0 lg:w-[49.8%] lg:text-[clamp(14px,1.24cqw,19px)] lg:leading-[1.45]"
+          className="mt-4 text-[17px] leading-[1.6] text-[#2A2540] md:text-[19px] lg:absolute lg:left-[27.0%] lg:top-[61.7%] lg:mt-0 lg:w-[49.8%] lg:leading-[1.45]"
           {...inView(reduce, 0.1)}
         >
           A structured, end-to-end process that takes a learning activity from assignment to publication, with collaboration
@@ -267,14 +267,14 @@ export function EcosystemWorkflow({ p: _p }: { p: WorkItem }) {
                   </motion.span>
                 </motion.span>
                 <motion.h3
-                  className={`mt-4 font-display text-[18px] font-bold leading-[1.2] text-[#09072A] lg:absolute lg:top-[79.1%] lg:mt-0 lg:w-[14%] lg:text-[clamp(14px,1.25cqw,20px)] ${pos}`}
+                  className={`mt-4 font-display text-[24px] font-bold leading-[1.2] text-[#09072A] lg:absolute lg:top-[79.1%] lg:mt-0 lg:w-[14%] ${pos}`}
                   style={NORMAL_WIDTH}
                   {...inView(reduce, base + 0.1)}
                 >
                   {title}
                 </motion.h3>
                 <motion.p
-                  className={`mt-2 text-[15px] leading-[1.45] text-[#22203A] lg:absolute lg:top-[81.7%] lg:mt-0 lg:w-[14%] lg:text-[clamp(12px,1.05cqw,16px)] lg:leading-[1.4] ${pos}`}
+                  className={`mt-2 text-[16px] leading-[1.45] text-[#22203A] lg:absolute lg:top-[81.7%] lg:mt-0 lg:w-[14%] lg:leading-[1.4] ${pos}`}
                   {...inView(reduce, base + 0.18)}
                 >
                   {text}
@@ -317,7 +317,7 @@ export function EcosystemWorkflow({ p: _p }: { p: WorkItem }) {
         </motion.svg>
 
         <motion.p
-          className="relative mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-[#E3CEFC] px-5 py-2.5 text-[15px] font-semibold text-[#6220B8] lg:absolute lg:left-[78.9%] lg:top-[88.3%] lg:mt-0 lg:h-[3.6%] lg:w-[16.2%] lg:text-[clamp(12px,1.05cqw,16px)]"
+          className="relative mt-8 inline-flex items-center justify-center gap-2 rounded-full bg-[#E3CEFC] px-5 py-2.5 text-[16px] font-semibold text-[#6220B8] lg:absolute lg:left-[78.9%] lg:top-[88.3%] lg:mt-0 lg:h-[3.6%] lg:w-[16.2%]"
           {...inView(reduce, 0.4)}
         >
           <span aria-hidden className="cbl-ring pointer-events-none absolute inset-0 rounded-full" />

@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, type RefObject } from "react";
 import { cn } from "@/lib/utils";
 
 /* ---------------- LoopVideo ----------------
    Gapless looping video. A plain `loop` attribute visibly cuts when the
    last frame doesn't match the first, so this stacks two synced layers:
    near the end of the front layer the back layer restarts from 0 and the
-   two crossfade, hiding the loop point entirely. */
+   two crossfade, hiding the loop point entirely.
+   The video file is only requested once the box is close to the screen,
+   so the poster shows first and the page's first load stays light. */
 
 interface LoopVideoProps {
   src: string;
@@ -33,6 +35,8 @@ export function LoopVideo({
   fadeDuration = 0.6,
   fadeToBlack = 0,
 }: LoopVideoProps) {
+  const { ref, near } = useNearViewport<HTMLDivElement>();
+
   if (fadeToBlack > 0) {
     return (
       <FadeBlackLoop
@@ -42,6 +46,8 @@ export function LoopVideo({
         dataHp={dataHp}
         poster={poster}
         fadeSeconds={fadeToBlack}
+        wrapRef={ref}
+        near={near}
       />
     );
   }
@@ -53,8 +59,35 @@ export function LoopVideo({
       dataHp={dataHp}
       poster={poster}
       fadeDuration={fadeDuration}
+      wrapRef={ref}
+      near={near}
     />
   );
+}
+
+/* Turns true once the element is within 800px of the viewport, then stops watching. */
+function useNearViewport<T extends Element>() {
+  const ref = useRef<T>(null);
+  const [near, setNear] = useState(false);
+
+  useEffect(() => {
+    if (near) return;
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setNear(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "800px 0px" },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [near]);
+
+  return { ref, near };
 }
 
 /* ---------------- Fade-to-black loop ----------------
@@ -69,6 +102,8 @@ function FadeBlackLoop({
   dataHp,
   poster,
   fadeSeconds,
+  wrapRef,
+  near,
 }: {
   src: string;
   className?: string;
@@ -76,6 +111,8 @@ function FadeBlackLoop({
   dataHp?: string;
   poster?: string;
   fadeSeconds: number;
+  wrapRef: RefObject<HTMLDivElement | null>;
+  near: boolean;
 }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const shadeRef = useRef<HTMLDivElement>(null);
@@ -112,7 +149,7 @@ function FadeBlackLoop({
   }, [fadeSeconds]);
 
   return (
-    <div className={cn("relative overflow-hidden", className)} data-hp={dataHp}>
+    <div ref={wrapRef} className={cn("relative overflow-hidden", className)} data-hp={dataHp}>
       <video
         ref={videoRef}
         muted
@@ -127,7 +164,7 @@ function FadeBlackLoop({
           "absolute inset-0 h-full w-full object-cover",
           videoClassName,
         )}
-        src={src}
+        src={near ? src : undefined}
       />
       <div
         ref={shadeRef}
@@ -145,6 +182,8 @@ function CrossfadeLoop({
   dataHp,
   poster,
   fadeDuration,
+  wrapRef,
+  near,
 }: {
   src: string;
   className?: string;
@@ -152,6 +191,8 @@ function CrossfadeLoop({
   dataHp?: string;
   poster?: string;
   fadeDuration: number;
+  wrapRef: RefObject<HTMLDivElement | null>;
+  near: boolean;
 }) {
   const aRef = useRef<HTMLVideoElement>(null);
   const bRef = useRef<HTMLVideoElement>(null);
@@ -159,7 +200,7 @@ function CrossfadeLoop({
   useEffect(() => {
     const a = aRef.current;
     const b = bRef.current;
-    if (!a || !b) return;
+    if (!a || !b || !near) return;
 
     let front = a;
     let back = b;
@@ -204,13 +245,13 @@ function CrossfadeLoop({
       stopped = true;
       cancelAnimationFrame(raf);
     };
-  }, [src, fadeDuration]);
+  }, [src, fadeDuration, near]);
 
   const layerClass =
     "absolute inset-0 h-full w-full object-cover transition-opacity ease-linear";
 
   return (
-    <div className={cn("relative overflow-hidden", className)} data-hp={dataHp}>
+    <div ref={wrapRef} className={cn("relative overflow-hidden", className)} data-hp={dataHp}>
       <video
         ref={aRef}
         muted
@@ -222,7 +263,7 @@ function CrossfadeLoop({
         poster={poster}
         className={cn(layerClass, videoClassName)}
         style={{ transitionDuration: `${fadeDuration}s` }}
-        src={src}
+        src={near ? src : undefined}
       />
       <video
         ref={bRef}
@@ -234,7 +275,7 @@ function CrossfadeLoop({
         poster={poster}
         className={cn(layerClass, videoClassName)}
         style={{ transitionDuration: `${fadeDuration}s` }}
-        src={src}
+        src={near ? src : undefined}
       />
     </div>
   );

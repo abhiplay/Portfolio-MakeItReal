@@ -201,7 +201,7 @@ export function IntroSequence({ onDone, className }: IntroSequenceProps) {
       <button
         type="button"
         onClick={skip}
-        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 rounded-full border border-white/25 px-5 py-2 text-[11px] uppercase tracking-[0.3em] text-white/70 transition-colors hover:border-white/60 hover:text-white"
+        className="absolute bottom-8 left-1/2 z-10 -translate-x-1/2 rounded-full border border-white/25 px-5 py-2 text-[11px] uppercase tracking-[0.3em] text-white/70 glass-hover"
       >
         Skip
       </button>

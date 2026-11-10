@@ -81,7 +81,7 @@ export function TeacherExperience({ p }: { p: WorkItem }) {
 
       <div className="@container relative lg:aspect-[3/2]">
         <motion.p
-          className="flex items-center gap-4 text-[14px] font-semibold uppercase tracking-[0.12em] text-[#7649BE] lg:absolute lg:left-[4.1%] lg:top-[5.2%] lg:w-[35%] lg:text-[clamp(12px,1.0cqw,16px)]"
+          className="flex items-center gap-4 text-[14px] font-semibold uppercase tracking-[0.18em] text-[#7649BE] lg:absolute lg:left-[120px] lg:top-[5.2%] lg:w-[35%]"
           {...inView(reduce, 0)}
         >
           <span>05</span>
@@ -91,7 +91,7 @@ export function TeacherExperience({ p }: { p: WorkItem }) {
 
         <h2
           id="teacher-experience-title"
-          className="mt-6 font-display text-[clamp(30px,8vw,44px)] font-bold leading-[1.04] tracking-[-0.02em] lg:absolute lg:left-[4.1%] lg:top-[9.8%] lg:mt-0 lg:text-[clamp(30px,3.9cqw,62px)]"
+          className="mt-6 font-display text-[clamp(36px,4vw,56px)] font-bold leading-[1.05] tracking-[-0.02em] lg:absolute lg:left-[120px] lg:top-[9.8%] lg:mt-0"
           style={NORMAL_WIDTH}
         >
           <motion.span className="block" {...inView(reduce, 0.1)}>
@@ -127,7 +127,7 @@ export function TeacherExperience({ p }: { p: WorkItem }) {
         />
 
         <motion.p
-          className="mt-5 text-[16px] leading-[1.6] lg:absolute lg:left-[50.7%] lg:top-[9.8%] lg:mt-0 lg:w-[40%] lg:text-[clamp(15px,1.4cqw,22px)] lg:leading-[1.5]"
+          className="mt-5 text-[17px] leading-[1.6] md:text-[19px] lg:absolute lg:left-[50.7%] lg:top-[9.8%] lg:mt-0 lg:w-[40%] lg:leading-[1.5]"
           style={{ color: BODY }}
           {...inView(reduce, 0.15)}
         >
@@ -220,7 +220,7 @@ export function TeacherExperience({ p }: { p: WorkItem }) {
           </button>
         </div>
 
-        <ul className="mt-12 grid gap-8 sm:grid-cols-2 lg:absolute lg:left-[4.9%] lg:right-[4.9%] lg:top-[83%] lg:mt-0 lg:grid-cols-4 lg:gap-0">
+        <ul className="mt-12 grid gap-8 sm:grid-cols-2 lg:absolute lg:left-[120px] lg:right-[120px] lg:top-[83%] lg:mt-0 lg:grid-cols-4 lg:gap-0">
           {FEATURES.map(({ icon: Icon, title, text, tile, color }, i) => (
             <motion.li
               key={title}
@@ -233,10 +233,10 @@ export function TeacherExperience({ p }: { p: WorkItem }) {
                 <Icon className={`h-6 w-6 ${color} lg:h-[2.1cqw] lg:w-[2.1cqw]`} strokeWidth={1.75} aria-hidden />
               </span>
               <span>
-                <span className="block font-display text-[18px] font-bold leading-[1.2] lg:text-[clamp(15px,1.45cqw,22px)]" style={NORMAL_WIDTH}>
+                <span className="block font-display text-[24px] font-bold leading-[1.2]" style={NORMAL_WIDTH}>
                   {title}
                 </span>
-                <span className="mt-1 block text-[15px] leading-[1.45] lg:text-[clamp(13px,1.12cqw,17px)]" style={{ color: BODY }}>
+                <span className="mt-1 block text-[16px] leading-[1.45]" style={{ color: BODY }}>
                   {text}
                 </span>
               </span>
