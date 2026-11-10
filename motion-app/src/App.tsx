@@ -198,7 +198,7 @@ export const WORK: WorkItem[] = [
     summary: "A role-based platform concept for coordinating student information, specialist support, assessments, and sessions across a Centre of Excellence.",
     tag: "EdTech · Special education · Admin SaaS",
     question: "Role-based platform concept for a Centre of Excellence.",
-    img: "",
+    img: "/projects/mothers-grace-plate.webp",
     showOnHome: true,
     context: "The Mother's Grace platform supports operational workflows around students and specialist services. The experience spans student intake, parent information, plans and packages, specialist assignment, scheduling, assessments, session logs, and administrative oversight.",
     outcome: "A connected set of interfaces for managing student-related operations across multiple roles.",

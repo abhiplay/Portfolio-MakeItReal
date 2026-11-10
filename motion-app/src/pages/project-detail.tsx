@@ -8,6 +8,11 @@ import { COPY_NAME, COVER_NAME, isMorphDestination, markHeroLanded, openWithMorp
 import { slugOf } from "@/lib/slug";
 import { MetadrobHero, MetadrobSections } from "@/components/ui/metadrob-page";
 import { CblHero } from "@/components/ui/cbl-hero";
+import { MothersGraceHero } from "@/components/ui/mothers-grace-hero";
+import { BeginningSection } from "@/components/ui/beginning-section";
+import { OpportunitySection } from "@/components/ui/opportunity-section";
+import { RoleSection } from "@/components/ui/role-section";
+import { OutcomeSection } from "@/components/ui/outcome-section";
 import { ChallengeSection } from "@/components/ui/challenge-section";
 import { EcosystemWorkflow } from "@/components/ui/ecosystem-workflow";
 import { TeacherExperience } from "@/components/ui/teacher-experience";
@@ -488,6 +493,8 @@ export function ProjectDetail() {
         <MetadrobHero p={p} />
       ) : p.title === "CBL CBA" ? (
         <CblHero p={p} />
+      ) : p.title === "Mother's Grace" ? (
+        <MothersGraceHero p={p} />
       ) : (
       <section className="relative h-screen w-full overflow-hidden" data-hp-stage="hero">
         {/* The cover box and its scrim move together, so the morph from the card lands on the same picture. */}
@@ -524,7 +531,7 @@ export function ProjectDetail() {
       ) : (
         <>
           {/* Meta row */}
-          {p.title !== "CBL CBA" && (meta.length > 0 || p.liveLink) && (
+          {p.title !== "CBL CBA" && p.title !== "Mother's Grace" && (meta.length > 0 || p.liveLink) && (
             <section className="px-6 py-16 sm:px-8 md:px-[120px]">
               <dl className="grid grid-cols-1 gap-6 sm:grid-cols-4">
                 {meta.map((m) => (
@@ -554,12 +561,19 @@ export function ProjectDetail() {
             </section>
           )}
 
-          {/* CBL CBA has its own "02 The Challenge" section, from the reference, in place of The Context. */}
+          {/* CBL CBA has its own "02 The Challenge", and Mother's Grace its own "02 The Beginning", both from their references, in place of The Context. */}
           {p.title === "CBL CBA" ? (
             <ChallengeSection p={p} />
+          ) : p.title === "Mother's Grace" ? (
+            <BeginningSection p={p} />
           ) : (
             p.context && <ContentBlock topic={p.tag} heading="The Context" text={p.context} />
           )}
+
+          {/* Mother's Grace's "03 The Opportunity", from its reference, follows section 02. */}
+          {p.title === "Mother's Grace" && <OpportunitySection p={p} />}
+          {/* Mother's Grace's "04 My Role", from its reference, follows section 03. */}
+          {p.title === "Mother's Grace" && <RoleSection p={p} />}
 
           {p.role && <ContentBlock heading="My Role" text={p.role} />}
 
@@ -598,6 +612,9 @@ export function ProjectDetail() {
           {/* CBL CBA's closing section is the conclusion, from the reference, in place of The Outcome. */}
           {p.title === "CBL CBA" ? (
             <ConclusionSection p={p} />
+          ) : p.title === "Mother's Grace" ? (
+            /* Mother's Grace's "05 The Outcome", from its reference, in place of the generic outcome text. */
+            <OutcomeSection p={p} />
           ) : (
             p.outcome && <ContentBlock topic="Outcome" heading="The Outcome" text={p.outcome} />
           )}

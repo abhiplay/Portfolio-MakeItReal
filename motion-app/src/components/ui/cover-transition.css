@@ -53,11 +53,21 @@
   animation-timing-function: linear(0, 0.027, 0.091, 0.175, 0.267, 0.358, 0.445, 0.526, 0.598, 0.661, 0.716, 0.764, 0.804, 0.839, 0.867, 0.891, 0.911, 0.928, 0.941, 0.953, 0.962, 0.969, 0.976, 0.981, 0.985, 0.988, 0.991, 0.993, 0.994, 0.996, 0.997, 0.998, 0.999, 0.999, 1, 1);
 }
 
-/* Hero copy is new only. Its content is live, so it shows in place while the cover settles.
-   The group does not fade; each line carries its own opacity. */
+/* Hero copy and chips are new only. Their content is live, and each element carries its own rise,
+   so the groups do not fade. The photo's group covers the whole box on lg, so these groups paint above it. */
 ::view-transition-group(hero-copy),
-::view-transition-new(hero-copy) {
+::view-transition-new(hero-copy),
+::view-transition-group(hero-chip-a),
+::view-transition-new(hero-chip-a),
+::view-transition-group(hero-chip-b),
+::view-transition-new(hero-chip-b) {
   animation: none;
+}
+
+::view-transition-group(hero-copy),
+::view-transition-group(hero-chip-a),
+::view-transition-group(hero-chip-b) {
+  z-index: 3;
 }
 
 /* Page layers: the list leaves quickly and the hero background arrives underneath it. */
