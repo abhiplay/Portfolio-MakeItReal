@@ -14,6 +14,8 @@ import { OpportunitySection } from "@/components/ui/opportunity-section";
 import { RoleSection } from "@/components/ui/role-section";
 import { OutcomeSection } from "@/components/ui/outcome-section";
 import { AuroscholarHero } from "@/components/ui/auroscholar-hero";
+import { RedesignSection } from "@/components/ui/redesign-section";
+import { ProductThinkingSection } from "@/components/ui/product-section";
 import { ChallengeSection } from "@/components/ui/challenge-section";
 import { EcosystemWorkflow } from "@/components/ui/ecosystem-workflow";
 import { TeacherExperience } from "@/components/ui/teacher-experience";
@@ -303,6 +305,10 @@ const Stats = ({ stats }: { stats: { icon: keyof typeof STAT_ICONS; value?: stri
    run full width below the copy. */
 const Chapter = ({ chapter }: { chapter: CaseStudyChapter }) => {
   const { number, label, heading, text, image, imageSide = "right", tone = "paper", visual } = chapter;
+  // The redesign section has its own layout, built from its reference.
+  if (visual?.kind === "redesign") return <RedesignSection />;
+  if (visual?.kind === "product") return <ProductThinkingSection />;
+
   const background = { backgroundColor: TONES[tone] };
 
   const copy = (
@@ -383,22 +389,24 @@ const Chapter = ({ chapter }: { chapter: CaseStudyChapter }) => {
 };
 
 /* Case study body: meta row, numbered chapters and a closing block. */
-const CaseStudyBody = ({ study }: { study: CaseStudy }) => (
+const CaseStudyBody = ({ study, showMeta = true }: { study: CaseStudy; showMeta?: boolean }) => (
   <>
-    <section className="px-6 py-16 sm:px-8 md:px-[120px]" style={{ backgroundColor: TONES.paper }}>
-      <dl className="grid grid-cols-2 gap-6 md:grid-cols-4">
-        {study.meta.map((m) => (
-          <div key={m.label}>
-            <dt className="text-[13px] uppercase tracking-[0.2em]" style={{ color: MUTED }}>
-              {m.label}
-            </dt>
-            <dd className="mt-3 text-[22px] leading-snug text-white transition-colors duration-300 hover:text-[#FF5400]">
-              {m.value}
-            </dd>
-          </div>
-        ))}
-      </dl>
-    </section>
+    {showMeta && (
+      <section className="px-6 py-16 sm:px-8 md:px-[120px]" style={{ backgroundColor: TONES.paper }}>
+        <dl className="grid grid-cols-2 gap-6 md:grid-cols-4">
+          {study.meta.map((m) => (
+            <div key={m.label}>
+              <dt className="text-[13px] uppercase tracking-[0.2em]" style={{ color: MUTED }}>
+                {m.label}
+              </dt>
+              <dd className="mt-3 text-[22px] leading-snug text-white transition-colors duration-300 hover:text-[#FF5400]">
+                {m.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    )}
 
     {study.chapters.map((chapter) => (
       <div key={chapter.number} id={`chapter-${chapter.number}`}>
@@ -531,7 +539,7 @@ export function ProjectDetail() {
       {p.title === "Metadrob" ? (
         <MetadrobSections p={p} />
       ) : study ? (
-        <CaseStudyBody study={study} />
+        <CaseStudyBody study={study} showMeta={p.title !== "Auroscholar"} />
       ) : (
         <>
           {/* Meta row */}

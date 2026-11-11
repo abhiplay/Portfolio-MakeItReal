@@ -112,7 +112,9 @@ export interface CaseStudyChapter {
   visual?:
     | { kind: "flow"; steps: string[] }
     | { kind: "stats"; stats: { icon: "users" | "school" | "sprout" | "heart"; value?: string; label: string }[] }
-    | { kind: "cards"; cards: { title: string; text: string; image?: string }[] };
+    | { kind: "cards"; cards: { title: string; text: string; image?: string }[] }
+    | { kind: "redesign" }
+    | { kind: "product" };
 }
 
 export interface CaseStudy {
@@ -226,17 +228,7 @@ export const WORK: WorkItem[] = [
           tone: "paper",
           heading: "Learning beyond the classroom.",
           text: "AuroScholar brings digital learning into students' everyday lives, connecting educational content and learning experiences through digital platforms.",
-          image: "/projects/auroscholar-overview.webp",
-          imageSide: "right",
-        },
-        {
-          number: "02",
-          label: "The Challenge",
-          tone: "paper",
-          heading: "Making digital learning easier to navigate.",
-          text: "The challenge was to translate educational requirements into a clear, accessible digital experience that works across different devices and user needs.",
-          image: "/projects/auroscholar-screen-1.webp",
-          imageSide: "left",
+          visual: { kind: "redesign" },
         },
         {
           number: "03",
@@ -244,10 +236,7 @@ export const WORK: WorkItem[] = [
           tone: "sky",
           heading: "One learning experience. Two platforms.",
           text: "I focused on creating clear user journeys and consistent interface patterns across web and Android, adapting the experience to each platform's needs.",
-          visual: {
-            kind: "flow",
-            steps: ["Understand users & needs", "Map learning journeys", "Design & iterate", "Adapt for Web & Android", "Refine & support launch"],
-          },
+          visual: { kind: "product" },
         },
         {
           number: "04",
