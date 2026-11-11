@@ -13,6 +13,7 @@ import { BeginningSection } from "@/components/ui/beginning-section";
 import { OpportunitySection } from "@/components/ui/opportunity-section";
 import { RoleSection } from "@/components/ui/role-section";
 import { OutcomeSection } from "@/components/ui/outcome-section";
+import { AuroscholarHero } from "@/components/ui/auroscholar-hero";
 import { ChallengeSection } from "@/components/ui/challenge-section";
 import { EcosystemWorkflow } from "@/components/ui/ecosystem-workflow";
 import { TeacherExperience } from "@/components/ui/teacher-experience";
@@ -495,6 +496,9 @@ export function ProjectDetail() {
         <CblHero p={p} />
       ) : p.title === "Mother's Grace" ? (
         <MothersGraceHero p={p} />
+      ) : p.title === "Auroscholar" ? (
+        /* AuroScholar's hero, from its design: the screens are art, the headline and the features are live. */
+        <AuroscholarHero p={p} />
       ) : (
       <section className="relative h-screen w-full overflow-hidden" data-hp-stage="hero">
         {/* The cover box and its scrim move together, so the morph from the card lands on the same picture. */}
