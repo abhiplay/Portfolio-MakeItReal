@@ -24,8 +24,9 @@ const ICON = "#6819E4";
 const NUMBER = "#6320DB";
 const CIRCLE = "#EBDCFC";
 
-// The plate fades out at its bottom, so the dusk band below it reaches black without a cut.
-const PLATE_FADE = "linear-gradient(to bottom, #000 0%, #000 92%, transparent 100%)";
+// The plate fades in at its top, so the lilac section above meets it without a seam, and out at its
+// bottom, so the dusk band below reaches black without a cut. The top fade ends above the eyebrow.
+const PLATE_FADE = "linear-gradient(to bottom, transparent 0%, #000 3%, #000 92%, transparent 100%)";
 
 // Positions are in the reference's own units, 1670 across and 941 down. On xl the box keeps that
 // ratio, so a unit is 1/1670 of the width and 1/941 of the height.
@@ -63,13 +64,9 @@ export function ProductThinkingSection() {
   return (
     <section
       aria-labelledby="product-title"
-      className="relative isolate overflow-hidden px-6 pb-16 pt-24 sm:px-8 md:px-[120px] xl:px-0 xl:pb-0 xl:pt-[7vw]"
+      className="relative isolate overflow-hidden px-6 pb-16 pt-24 sm:px-8 md:px-[120px] xl:px-0 xl:pb-0 xl:pt-0"
       style={{ backgroundColor: SECTION_BG, color: DESC }}
     >
-      {/* The black chapter above fades into the section: a band over the top padding (xl) and over the first 64px (below xl). */}
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 hidden h-[7vw] bg-gradient-to-b from-black to-transparent xl:block" />
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black to-transparent xl:hidden" />
-
       <div className="@container relative xl:aspect-[1670/941]">
         <motion.img
           src={PLATE}

@@ -192,12 +192,7 @@ export function RedesignSection() {
           </ul>
         </div>
 
-        {/* On xl the plate's lilac takes a dusk band down to the black chapter below. */}
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 hidden bg-gradient-to-b from-transparent to-black xl:block xl:h-[9cqw]" />
       </div>
-
-      {/* Below xl the section ends on its bottom padding: this band takes the lilac down to the black chapter below. */}
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-b from-transparent to-black xl:hidden" />
     </section>
   );
 }
